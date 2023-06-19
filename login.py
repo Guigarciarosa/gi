@@ -8,7 +8,7 @@ from main import main
 import streamlit_authenticator as stauth
 from PIL import Image
 
-
+#asda
 
 st.set_page_config(page_title="Relatório Placas",
                    page_icon="tk_logo_1.png", layout = 'centered')
