@@ -55,7 +55,7 @@ def main():
             return None
 
     st.sidebar.title('Menu Relatórios')
-    paginaSelecionada = st.sidebar.selectbox('Selecione a página', ['Conferência de Placas','Placas Ativas com Rastreador'])
+    paginaSelecionada = st.sidebar.selectbox('Selecione a página', ['Conferência de Placas','Placas Ativas com Rastreador', 'FIPE veículos'])
 
     if paginaSelecionada == 'Conferência de Placas':
         st.title("Relatório Conferência de Placas")
@@ -106,6 +106,56 @@ def main():
             data=excel_data,
             file_name=f'placas_ativas_rastreador_{hoje}.xlsx',
             mime="application/vnd.ms-excel")
+        
+    if paginaSelecionada == 'FIPE veículos':
+        st.title('Relatório da Tabela FIPE Veículos')
+
+        hoje = date.today()
+
+        query_lm = open(r'sql/listagem_mestra.sql')
+        query_lm = query_lm.read()
+        listagem_mestra = awr.athena.read_sql_query(query_lm, database='gold')
+
+        placas_lm = list(listagem_mestra['placa'])
+
+        query_it = open(r'sql/insurance_trailer.sql')
+        query_it = query_it.read()
+        insurance_trailer = awr.athena.read_sql_query(query_it, database='silver')
+
+        insurance_trailer = insurance_trailer.rename(columns = {'board':'placa', 'chassi':'chassi_trailer'})
+
+        insurance_trailer = insurance_trailer[insurance_trailer['placa'].isin(placas_lm)]
+
+        query_iv = open(r'sql/insurance_vehicle.sql')
+        query_iv = query_iv.read()
+        insurance_vehicle = awr.athena.read_sql_query(query_iv, database='silver')
+
+        insurance_vehicle = insurance_vehicle.rename(columns={'board': 'placa', 'chassi': 'chassi_veiculo'})
+
+        insurance_vehicle = insurance_vehicle[insurance_vehicle['placa'].isin(placas_lm)]
+
+        df_fipe = listagem_mestra.merge(insurance_trailer, on='placa', how='left')
+
+        df_merged = df_fipe.merge(insurance_vehicle[['placa', 'chassi_veiculo']], on='placa', how='left')
+
+        df_merged['chassi'] = df_merged['chassi_veiculo'].fillna(df_merged['chassi_trailer'])
+        df_merged = df_merged.drop(columns = ['chassi_trailer','chassi_veiculo'])
+
+        st.write('Carregando tabela...')
+        st.write('Tabela carregada.')
+
+        st.write('Realizar Download:')
+        output = BytesIO()
+        df_merged.to_excel(output, index=False)
+        excel_data = output.getvalue()
+        output.close()
+
+        btn = st.download_button(
+            label='Download',
+            data=excel_data,
+            file_name=f'placas_fipe_{hoje}.xlsx',
+            mime="application/vnd.ms-excel")
+        
 
     return
 

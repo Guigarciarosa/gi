@@ -10,7 +10,7 @@ from PIL import Image
 
 #asda
 
-st.set_page_config(page_title="Relatório Placas",
+st.set_page_config(page_title="Relatórios TK",
                    page_icon="tk_logo_1.png", layout = 'centered')
 
 # Load the image

@@ -1,0 +1,1 @@
+SELECT DISTINCT board, chassi FROM insurance_trailer WHERE LENGTH(chassi) > 13;
