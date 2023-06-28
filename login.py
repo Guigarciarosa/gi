@@ -1,14 +1,8 @@
 import streamlit as st
 import pandas as pd
-from dotenv import load_dotenv
-import os
-from sqlalchemy import create_engine
-from pathlib import Path
 from main import main
-import streamlit_authenticator as stauth
 from PIL import Image
 
-#asda
 
 st.set_page_config(page_title="Relatórios TK",
                    page_icon="tk_logo_1.png", layout = 'centered')
