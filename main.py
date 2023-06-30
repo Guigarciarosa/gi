@@ -138,7 +138,7 @@ def main():
 
         df_merged = df_fipe.merge(insurance_vehicle[['placa', 'chassi_veiculo']], on='placa', how='left')
 
-        df_merged.insert(5, "chassi", df_merged['chassi_veiculo'].fillna(df_merged['chassi_trailer']))
+        df_merged.insert(1, "chassi", df_merged['chassi_veiculo'].fillna(df_merged['chassi_trailer']))
         df_merged = df_merged.drop(columns = ['chassi_trailer','chassi_veiculo'])
 
         st.write('Carregando tabela...')
