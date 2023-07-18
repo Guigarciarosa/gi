@@ -130,6 +130,10 @@ def main():
         query_iv = query_iv.read()
         insurance_vehicle = awr.athena.read_sql_query(query_iv, database='silver')
 
+        query_adimplencia = open(r'sql/adimplencia.sql')
+        query_adimplencia = query_adimplencia.read()
+        adimplencia = awr.athena.read_sql_query(query_adimplencia, database='silver')
+
         insurance_vehicle = insurance_vehicle.rename(columns={'board': 'placa', 'chassi': 'chassi_veiculo'})
 
         insurance_vehicle = insurance_vehicle[insurance_vehicle['placa'].isin(placas_lm)]
@@ -137,6 +141,8 @@ def main():
         df_fipe = listagem_mestra.merge(insurance_trailer, on='placa', how='left')
 
         df_merged = df_fipe.merge(insurance_vehicle[['placa', 'chassi_veiculo']], on='placa', how='left')
+
+        df_merged = df_merged.merge(adimplencia, how='left', on = 'conjunto')
 
         df_merged.insert(1, "chassi", df_merged['chassi_veiculo'].fillna(df_merged['chassi_trailer']))
         df_merged = df_merged.drop(columns = ['chassi_trailer','chassi_veiculo'])
