@@ -147,6 +147,8 @@ def main():
         df_merged.insert(1, "chassi", df_merged['chassi_veiculo'].fillna(df_merged['chassi_trailer']))
         df_merged = df_merged.drop(columns = ['chassi_trailer','chassi_veiculo'])
 
+        df_merged['status_financeiro'] = df_merged['status_financeiro'].fillna('Não Aplicável')
+
         st.write('Carregando tabela...')
         st.write('Tabela carregada.')
 
