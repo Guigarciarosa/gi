@@ -5,8 +5,8 @@ from PIL import Image
 import datetime
 import time
 
-hora_inicio = datetime.time(9, 35)  # 7 da manhã
-hora_fim = datetime.time(20, 0)   # 8 da noite (20 horas)
+hora_inicio = datetime.time(2, 0)
+hora_fim = datetime.time(23, 50)   
 
 def esta_dentro_do_horario():
     agora = datetime.datetime.now().time()
