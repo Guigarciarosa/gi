@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Posts Cardume — grade inicial</title>
+<link rel="stylesheet" href="../../identidade-visual/tokens.css">
+<style>
+/* Cada <section class="post"> vira um PNG 1080×1350 (scripts/renderizar_posts.mjs).
+   Conteúdo essencial dentro da área central de 1012 px de largura: a grade do perfil
+   corta as laterais para 3:4. */
+body { margin: 0; background: #7d8a92; display: flex; flex-wrap: wrap; gap: 40px; padding: 40px; }
+.post {
+  width: 1080px; height: 1350px; position: relative; overflow: hidden; box-sizing: border-box;
+  padding: var(--margem-post); display: flex; flex-direction: column; gap: 40px;
+  font-family: var(--f-texto); -webkit-font-smoothing: antialiased;
+}
+.escuro { background: var(--abissal); color: #EAF3F4; --acento: var(--cardume-claro); --destaque: var(--coral-claro); --suave: var(--nevoa-clara); --linha: #22476B; }
+.claro  { background: var(--espuma); color: var(--abissal); --acento: var(--cardume); --destaque: var(--coral); --suave: var(--nevoa); --linha: #C9DBDD; }
+.marca  { background: var(--cardume); color: #FFFFFF; --acento: #FFFFFF; --destaque: #FFD2C2; --suave: #CDEDEA; --linha: #2E9894; }
+
+.topo { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
+.topo img { height: 62px; }
+.etiqueta { font-family: var(--f-dado); font-size: var(--t-etiqueta); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--acento); }
+.miolo { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 40px; position: relative; z-index: 2; }
+.rodape { display: flex; justify-content: space-between; align-items: center; font-family: var(--f-dado); font-size: var(--t-legenda); color: var(--suave); position: relative; z-index: 2; }
+.rodape b { color: inherit; font-weight: 600; }
+
+h1, h2 { font-family: var(--f-display); margin: 0; letter-spacing: -.028em; text-wrap: balance; font-variation-settings: "opsz" 96; }
+h1 { font-size: var(--t-mega); font-weight: 800; line-height: .94; }
+h2 { font-size: var(--t-titulo); font-weight: 780; line-height: .98; }
+.sub { font-family: var(--f-display); font-size: var(--t-subtitulo); font-weight: 560; line-height: 1.08; letter-spacing: -.015em; color: var(--acento); margin: 0; text-wrap: balance; }
+p { margin: 0; font-size: var(--t-corpo); line-height: 1.38; max-width: 860px; }
+.suave { color: var(--suave); }
+em { font-style: normal; color: var(--destaque); }
+.mono { font-family: var(--f-dado); }
+
+.peixe { width: 38px; height: 26px; background: var(--acento); clip-path: polygon(0 0, 100% 50%, 0 100%); transform: rotate(-18deg); flex: none; }
+.peixe.lider { background: var(--destaque); }
+
+/* Cardume decorativo, parcialmente fora do quadro */
+.deco { position: absolute; z-index: 1; pointer-events: none; }
+.deco img { width: 100%; }
+
+/* ---------- p02: grade dos 9 agentes ---------- */
+.agentes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.agente { border: 2px solid var(--linha); border-radius: var(--raio); padding: 26px 24px; display: grid; gap: 14px; align-content: start; min-height: 196px; background: #FFFFFF; }
+.agente b { font-family: var(--f-display); font-size: 33px; font-weight: 720; line-height: 1.05; letter-spacing: -.01em; }
+.agente span { font-size: 27px; line-height: 1.3; color: var(--suave); }
+.agente .n { font-family: var(--f-dado); font-size: 20px; color: var(--acento); letter-spacing: .1em; }
+
+/* ---------- p03b: barras de custo ---------- */
+.barras { display: grid; gap: 30px; }
+.barra { display: grid; grid-template-columns: 230px 1fr; align-items: center; gap: 20px; }
+.barra .nome { font-size: 34px; font-weight: 600; }
+.barra .trilho { display: flex; align-items: center; gap: 16px; }
+.barra .valor-barra { height: 70px; border-radius: 0 10px 10px 0; background: var(--acento); }
+.barra.menor .valor-barra { background: var(--destaque); }
+.barra .rotulo { font-family: var(--f-dado); font-size: 30px; font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.eixo { border-top: 2px solid var(--linha); padding-top: 18px; font-size: 24px; line-height: 1.4; color: var(--suave); }
+
+/* ---------- listas com peixe ---------- */
+.lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 30px; }
+.lista li { display: grid; grid-template-columns: 52px 1fr; align-items: start; gap: 18px; font-size: 38px; line-height: 1.25; }
+.lista li .peixe { margin-top: 12px; }
+.numero { font-family: var(--f-display); font-weight: 800; font-size: 64px; line-height: 1; color: var(--destaque); }
+.sinais { display: grid; gap: 34px; }
+.sinal { display: grid; grid-template-columns: 96px 1fr; gap: 20px; align-items: start; font-size: 42px; line-height: 1.22; font-weight: 600; }
+
+.formula { font-family: var(--f-dado); font-size: 31px; line-height: 1.5; padding: 34px 36px; border-radius: var(--raio); background: #FFFFFF; border: 2px solid var(--linha); }
+.formula .op { color: var(--destaque); font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 14px; }
+.chip { font-family: var(--f-dado); font-size: 26px; padding: 12px 22px; border-radius: 999px; border: 2px solid var(--linha); }
+
+.fluxo { display: grid; gap: 26px; }
+.rota { display: grid; grid-template-columns: 1fr 70px 1fr; align-items: center; gap: 14px; }
+.caixa { border: 2px solid var(--linha); border-radius: var(--raio); padding: 24px 26px; font-size: 30px; line-height: 1.25; background: rgba(255,255,255,.04); }
+.caixa small { display: block; font-family: var(--f-dado); font-size: 20px; letter-spacing: .1em; text-transform: uppercase; color: var(--acento); margin-bottom: 8px; }
+.seta { font-family: var(--f-dado); font-size: 44px; color: var(--destaque); text-align: center; }
+
+.cta { display: inline-flex; align-items: center; gap: 20px; align-self: flex-start; background: var(--destaque); color: var(--abissal); font-family: var(--f-display); font-weight: 750; font-size: 46px; padding: 26px 40px; border-radius: 999px; }
+.marca .cta { color: var(--cardume); background: #FFFFFF; }
+
+/* Perfil e destaques */
+.avatar { width: 1080px; height: 1080px; background: var(--cardume); display: grid; place-items: center; }
+.avatar img { width: 760px; }
+.capa { width: 1080px; height: 1920px; display: grid; place-items: center; align-content: center; gap: 60px; font-family: var(--f-display); font-weight: 760; font-size: 96px; letter-spacing: -.02em; }
+.capa .circulo { width: 520px; height: 520px; border-radius: 50%; display: grid; place-items: center; background: var(--espuma); }
+.capa .circulo img { width: 340px; }
+.capa .circulo .grande { font-family: var(--f-display); font-size: 210px; font-weight: 800; color: var(--cardume); letter-spacing: -.04em; }
+</style>
+</head>
+<body>
+
+<!-- ======================================================= P01 · manifesto -->
+<section class="post escuro" id="p01-manifesto">
+  <div class="topo"><img src="../../identidade-visual/logo-horizontal-negativo.svg" alt="Cardume"><span class="etiqueta">Manifesto</span></div>
+  <div class="miolo">
+    <h1>Seus dados já sabem a resposta.</h1>
+    <p class="sub">Falta alguém fazer a pergunta certa.</p>
+    <p class="suave">Plataformas de dados sob medida para empresas que querem decidir com números — sem projeto infinito e sem conta de cloud surpresa.</p>
+  </div>
+  <div class="deco" style="width:700px; right:-250px; bottom:-230px; opacity:.55"><img src="../../identidade-visual/logo-simbolo-transparente.svg" alt=""></div>
+  <div class="rodape"><b>@cardume.dados</b><span>Cascavel · PR</span></div>
+</section>
+
+<!-- ======================================================= P02 · os 9 agentes -->
+<section class="post claro" id="p02-nove-especialistas">
+  <div class="topo"><img src="../../identidade-visual/logo-horizontal.svg" alt="Cardume"><span class="etiqueta">Como trabalhamos</span></div>
+  <h2>9 especialistas. Um só movimento.</h2>
+  <div class="agentes">
+    <div class="agente"><span class="n">01</span><b>Analista de Negócios</b><span>Transforma perguntas em indicadores</span></div>
+    <div class="agente"><span class="n">02</span><b>Arquiteto de Dados</b><span>Desenha a solução e escolhe onde roda</span></div>
+    <div class="agente"><span class="n">03</span><b>Engenheiro de Dados</b><span>Conecta ERP, planilhas e APIs</span></div>
+    <div class="agente"><span class="n">04</span><b>Analista de Dados</b><span>Painéis que respondem perguntas</span></div>
+    <div class="agente"><span class="n">05</span><b>Cientista de Dados</b><span>Previsão e IA onde dá retorno</span></div>
+    <div class="agente"><span class="n">06</span><b>Cybersecurity</b><span>LGPD e proteção desde o dia 1</span></div>
+    <div class="agente"><span class="n">07</span><b>DevOps</b><span>Infraestrutura sem sustos</span></div>
+    <div class="agente"><span class="n">08</span><b>FinOps</b><span>O menor custo que atende</span></div>
+    <div class="agente"><span class="n">09</span><b>Comercial</b><span>Proposta clara, com retorno</span></div>
+  </div>
+  <div class="rodape"><span style="display:flex;align-items:center;gap:16px"><span class="peixe lider"></span>A decisão final é sempre sua.</span><b>@cardume.dados</b></div>
+</section>
+
+<!-- ======================================================= P03 · carrossel custo de cloud -->
+<section class="post escuro" id="p03a-custo-capa">
+  <div class="topo"><img src="../../identidade-visual/logo-horizontal-negativo.svg" alt="Cardume"><span class="etiqueta">Custo de cloud · 1/4</span></div>
+  <div class="miolo">
+    <h2>A mesma plataforma de dados em 5 lugares.</h2>
+    <p class="sub">A mais cara custou <em>8,7×</em> a mais barata.</p>
+    <p class="suave">Simulamos uma associação de proteção veicular com 8 mil associados: AWS, Google Cloud, Azure, Oracle Cloud e servidor próprio.</p>
+  </div>
+  <div class="rodape"><b>@cardume.dados</b><span>arraste →</span></div>
+</section>
+
+<section class="post claro" id="p03b-custo-barras">
+  <div class="topo"><img src="../../identidade-visual/logo-horizontal.svg" alt="Cardume"><span class="etiqueta">Custo de cloud · 2/4</span></div>
+  <div class="miolo">
+    <h2 style="font-size:72px">Custo total por mês</h2>
+    <p class="suave" style="font-size:30px">Infraestrutura + horas de operação · região Brasil</p>
+    <div class="barras" id="barras"></div>
+    <div class="eixo">Cenário: 80 GB, 3 fontes, 15 usuários de BI, atualização diária, prioridade custo. Preços de referência com câmbio de R$ 5,50; valide antes de contratar.</div>
+  </div>
+  <div class="rodape"><b>@cardume.dados</b><span>arraste →</span></div>
+</section>
+
+<section class="post marca" id="p03c-custo-porque">
+  <div class="topo"><img src="../../identidade-visual/logo-horizontal-negativo.svg" alt="Cardume"><span class="etiqueta" style="color:#fff">Custo de cloud · 3/4</span></div>
+  <div class="miolo">
+    <h2 style="font-size:80px">De onde vem a diferença</h2>
+    <ul class="lista">
+      <li><span class="peixe"></span><span>A camada gratuita da Oracle Cloud cobre servidor e disco de um projeto pequeno.</span></li>
+      <li><span class="peixe"></span><span>Licença de BI por usuário pesa mais que a própria nuvem.</span></li>
+      <li><span class="peixe"></span><span>A região de São Paulo custa até 1,6× a dos EUA em algumas clouds.</span></li>
+      <li><span class="peixe lider"></span><span>Servidor próprio tem energia, backup e horas de manutenção.</span></li>
+    </ul>
+  </div>
+  <div class="rodape"><b>@cardume.dados</b><span>arraste →</span></div>
+</section>
+
+<section class="post escuro" id="p03d-custo-cta">
+  <div class="topo"><img src="../../identidade-visual/logo-horizontal-negativo.svg" alt="Cardume"><span class="etiqueta">Custo de cloud · 4/4</span></div>
+  <div class="miolo">
+    <h2>A nuvem mais barata nem sempre é a certa.</h2>
+    <p class="suave">Se o seu time já vive no Microsoft 365, no Google ou na AWS, isso também entra na conta. Nosso FinOps compara as 5 opções com os seus números.</p>
+    <span class="cta">Peça a sua simulação <span class="mono">→</span></span>
+  </div>
+  <div class="deco" style="width:620px; right:-140px; bottom:-110px; opacity:.45"><img src="../../identidade-visual/logo-simbolo-transparente.svg" alt=""></div>
+  <div class="rodape"><b>@cardume.dados</b><span>link na bio</span></div>
+</section>
+
+<!-- ======================================================= P04 · 3 sinais -->
+<section class="post claro" id="p04-tres-sinais">
+  <div class="topo"><img src="../../identidade-visual/logo-horizontal.svg" alt="Cardume"><span class="etiqueta">Diagnóstico rápido</span></div>
+  <div class="miolo">
+    <h2>3 sinais de que sua empresa precisa de uma plataforma de dados</h2>
+    <div class="sinais">
+      <div class="sinal"><span class="numero">1</span><span>O fechamento do mês leva mais de 5 dias.</span></div>
+      <div class="sinal"><span class="numero">2</span><span>Cada área tem um número diferente para a mesma coisa.</span></div>
+      <div class="sinal"><span class="numero">3</span><span>Alguém passa a semana copiando planilha.</span></div>
+    </div>
+  </div>
+  <div class="rodape"><span>Marcou 2 de 3? Vale uma conversa.</span><b>@cardume.dados</b></div>
+</section>
+
+<!-- ======================================================= P05 · agro -->
+<section class="post marca" id="p05-agro">
+  <div class="topo"><img src="../../identidade-visual/logo-horizontal-negativo.svg" alt="Cardume"><span class="etiqueta" style="color:#fff">Agro</span></div>
+  <div class="miolo">
+    <h2>Cooperativa com 20 unidades. Um número só.</h2>
+    <p>Recebimento, preço pago e inadimplência dos cooperados no mesmo painel, atualizado antes da reunião das 7h.</p>
+    <div class="chips">
+      <span class="chip">recebimento por safra</span>
+      <span class="chip">preço pago × CEPEA</span>
+      <span class="chip">ocupação dos silos</span>
+      <span class="chip">inadimplência por cooperado</span>
+      <span class="chip">margem por unidade</span>
+    </div>
+  </div>
+  <div class="deco" style="width:480px; right:-210px; top:130px; opacity:.24"><img src="../../identidade-visual/logo-simbolo-transparente.svg" alt="" style="filter:brightness(0) invert(1)"></div>
+  <div class="rodape"><b>@cardume.dados</b><span>Protheus · planilhas · balança · clima</span></div>
+</section>
+
+<!-- ======================================================= P06 · transporte -->
+<section class="post claro" id="p06-custo-por-km">
+  <div class="topo"><img src="../../identidade-visual/logo-horizontal.svg" alt="Cardume"><span class="etiqueta">Transporte</span></div>
+  <div class="miolo">
+    <h2>Custo por km: o indicador que paga o projeto.</h2>
+    <div class="formula">
+      custo por km <span class="op">=</span><br>
+      ( combustível <span class="op">+</span> manutenção <span class="op">+</span> pneus<br>
+      <span class="op">+</span> salários <span class="op">+</span> seguro <span class="op">+</span> depreciação )<br>
+      <span class="op">÷</span> km rodados
+    </div>
+    <p>Rastreador, ERP e a planilha da oficina no mesmo lugar mostram a margem real por <em>veículo</em>, <em>motorista</em> e <em>cliente</em>.</p>
+  </div>
+  <div class="rodape"><b>@cardume.dados</b><span>salve para usar depois</span></div>
+</section>
+
+<!-- ======================================================= P07 · proteção veicular -->
+<section class="post escuro" id="p07-protecao-veicular">
+  <div class="topo"><img src="../../identidade-visual/logo-horizontal-negativo.svg" alt="Cardume"><span class="etiqueta">Proteção veicular</span></div>
+  <div class="miolo">
+    <h2>Inadimplência não se resolve no fim do mês.</h2>
+    <p class="suave">Veja por safra de adesão, região e consultor, e aja na primeira parcela atrasada.</p>
+    <ul class="lista">
+      <li><span class="peixe"></span><span>Sinistralidade por perfil de veículo</span></li>
+      <li><span class="peixe"></span><span>Cancelamentos por safra de adesão</span></li>
+      <li><span class="peixe"></span><span>Carteira em % da tabela FIPE</span></li>
+      <li><span class="peixe lider"></span><span>Alerta no WhatsApp quando o risco sobe</span></li>
+    </ul>
+  </div>
+  <div class="rodape"><b>@cardume.dados</b><span>associações · cooperativas · corretoras</span></div>
+</section>
+
+<!-- ======================================================= P08 · IA e LGPD -->
+<section class="post claro" id="p08-ia-sem-vazar">
+  <div class="topo"><img src="../../identidade-visual/logo-horizontal.svg" alt="Cardume"><span class="etiqueta">IA + LGPD</span></div>
+  <div class="miolo">
+    <h2>IA na sua empresa sem mandar seus dados para fora.</h2>
+    <div class="fluxo">
+      <div class="rota"><div class="caixa"><small>Dado sensível</small>CPF, saúde, financeiro</div><span class="seta">→</span><div class="caixa"><small>Modelo local</small>no seu servidor, sem internet</div></div>
+      <div class="rota"><div class="caixa"><small>Análise complexa</small>dados anonimizados</div><span class="seta">→</span><div class="caixa"><small>IA por API</small>contrato sem uso para treino</div></div>
+    </div>
+    <p>E as regras da LGPD entram no projeto desde a primeira reunião.</p>
+  </div>
+  <div class="rodape"><b>@cardume.dados</b><span>segurança por padrão</span></div>
+</section>
+
+<!-- ======================================================= P09 · CTA -->
+<section class="post escuro" id="p09-diagnostico">
+  <div class="topo"><img src="../../identidade-visual/logo-horizontal-negativo.svg" alt="Cardume"><span class="etiqueta">Vagas abertas em novembro</span></div>
+  <div class="miolo">
+    <h1>Diagnóstico de dados gratuito.</h1>
+    <p class="sub">20 minutos. Você sai sabendo:</p>
+    <ul class="lista">
+      <li><span class="peixe"></span><span>onde estão os seus dados hoje</span></li>
+      <li><span class="peixe"></span><span>quais perguntas dá para responder já</span></li>
+      <li><span class="peixe lider"></span><span>quanto custaria na AWS, Google, Azure, Oracle ou no seu servidor</span></li>
+    </ul>
+    <span class="cta">Link na bio <span class="mono">→</span></span>
+  </div>
+  <div class="rodape"><b>@cardume.dados</b><span>Cascavel · PR · todo o Brasil</span></div>
+</section>
+
+<!-- ======================================================= perfil e destaques -->
+<section class="avatar" id="perfil-avatar"><img src="../../identidade-visual/logo-simbolo-branco.svg" alt=""></section>
+
+<section class="capa escuro" id="destaque-sobre"><div class="circulo"><img src="../../identidade-visual/logo-simbolo-transparente.svg" alt=""></div></section>
+<section class="capa escuro" id="destaque-custos"><div class="circulo"><span class="grande">R$</span></div></section>
+<section class="capa escuro" id="destaque-agentes"><div class="circulo"><span class="grande">9×</span></div></section>
+<section class="capa escuro" id="destaque-diagnostico"><div class="circulo"><span class="grande">?</span></div></section>
+
+<script>
+// Barras desenhadas em escala a partir dos números da calculadora (cenário A, docs/05).
+const custos = [
+  ["Oracle Cloud", 253], ["Servidor próprio", 731], ["Google Cloud", 802], ["AWS", 1257], ["Azure", 2205],
+];
+const max = Math.max(...custos.map((c) => c[1]));
+const larguraUtil = 470; // px reservados para a barra (o rótulo usa o resto)
+const fmt = (v) => "R$ " + v.toLocaleString("pt-BR");
+document.getElementById("barras").innerHTML = custos.map(([nome, v], i) => `
+  <div class="barra${i === 0 ? " menor" : ""}">
+    <span class="nome">${nome}</span>
+    <span class="trilho"><span class="valor-barra" style="width:${Math.round((v / max) * larguraUtil)}px"></span><span class="rotulo">${fmt(v)}</span></span>
+  </div>`).join("");
+</script>
+</body>
+</html>

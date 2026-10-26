@@ -1,6 +1,6 @@
 """Gera as versões estáticas do questionário a partir do YAML.
 
-    python scripts/construir_questionario.py
+    python scripts/construir_questionario.py [saida-fragmento.html]
 
 Saídas:
   questionario/questionario.json   estrutura achatada (o app e os agentes leem)
@@ -35,7 +35,16 @@ def main() -> None:
         json.dumps(dados, ensure_ascii=False, indent=1), encoding="utf-8"
     )
     modelo = (RAIZ / "servidor" / "src" / "plataforma" / "web" / "questionario.html").read_text(encoding="utf-8")
-    (RAIZ / "questionario" / "questionario.html").write_text(embutir(modelo, dados), encoding="utf-8")
+    fragmento = embutir(modelo, dados)
+    # Documento completo (com doctype) para abrir direto no navegador/celular.
+    (RAIZ / "questionario" / "questionario.html").write_text(
+        '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
+        f"</head><body>{fragmento}</body></html>\n",
+        encoding="utf-8",
+    )
+    if len(sys.argv) > 1:  # fragmento sem esqueleto, para publicar como artefato
+        Path(sys.argv[1]).write_text(fragmento, encoding="utf-8")
     print(json.dumps(q.estatisticas(), ensure_ascii=False))
 
 

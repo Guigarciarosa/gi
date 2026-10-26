@@ -1,0 +1,33 @@
+/* Tokens da marca Cardume — use em posts, propostas, apresentações e no app.
+   Fontes locais (OFL) em ./fontes; em páginas web, o Google Fonts também serve. */
+@import url("fontes/fontes.css");
+
+:root {
+  /* Cores */
+  --abissal: #0B2238;        /* fundo escuro, texto principal no claro */
+  --mar: #163A5C;            /* superfícies sobre o abissal */
+  --cardume: #0F7C7A;        /* cor da marca */
+  --cardume-claro: #3CC6BE;  /* cardume sobre fundos escuros */
+  --espuma: #F2F6F6;         /* fundo claro (verde-água quase branco) */
+  --espuma-2: #DCF0ED;       /* realce suave, chips, seleção */
+  --coral: #E4572E;          /* destaque único: decisão, CTA, o peixe-líder */
+  --coral-claro: #FF8A63;    /* coral sobre fundos escuros */
+  --nevoa: #4A6070;          /* texto secundário no claro */
+  --nevoa-clara: #A9BFCB;    /* texto secundário no escuro */
+
+  /* Tipografia */
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-texto: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-dado: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  /* Escala para posts 1080×1350 */
+  --t-mega: 128px;
+  --t-titulo: 92px;
+  --t-subtitulo: 54px;
+  --t-corpo: 36px;
+  --t-legenda: 26px;
+  --t-etiqueta: 22px;
+
+  --margem-post: 88px;
+  --raio: 18px;
+}
