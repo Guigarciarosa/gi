@@ -22,7 +22,7 @@ flowchart LR
 | Etapa | Quem | Ferramenta | Saída |
 |---|---|---|---|
 | Planejar o mês | Você + Comercial | `instagram/calendario-30-dias.md` | 12–16 posts planejados |
-| Produzir arte | Você (ou Claude) | Templates HTML + `scripts/renderizar_posts.py` | PNG 1080×1350 |
+| Produzir arte | Você (ou Claude) | Templates HTML + `scripts/renderizar_posts.mjs` | PNG 1080×1350 |
 | Publicar | Você (ou agendador) | Instagram / Postiz | Post no ar |
 | Responder DMs e comentários | Você | Instagram | Lead com nome e WhatsApp |
 | Registrar lead | n8n | Webhook → planilha/CRM | Lead no funil |

@@ -369,7 +369,8 @@ def estimar(
     ranking = sorted(opcoes, key=lambda o: o["nota"], reverse=True)
 
     premissas = [
-        f"Porte {perfil.porte}: volume médio em 12 meses de {perfil.volume_medio_12m:,.0f} GB (crescimento {perfil.crescimento_mes:.0%}/mês), "
+        f"Porte {perfil.porte}: volume médio em 12 meses de {perfil.volume_medio_12m:,.0f} GB ".replace(",", ".")
+        + f"(crescimento {perfil.crescimento_mes:.0%}/mês), "
         f"{perfil.usuarios_bi} usuários de BI, {perfil.fontes} fontes, {perfil.atualizacoes_dia:g} atualizações/dia.",
         f"Consultas estimadas: {perfil.consulta_tb_mes:.2f} TB varridos/mês na camada gold.",
         f"Câmbio US$ 1 = R$ {cambio:.2f}" + (f", IOF {iof:.1%} (cartão internacional)." if iof else ", faturamento em reais (sem IOF; impostos locais variam)."),
