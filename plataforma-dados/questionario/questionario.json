@@ -2,7 +2,7 @@
  "meta": {
   "versao": "1.0.0",
   "titulo": "Discovery de Plataforma de Dados",
-  "descricao": "Mapeamento completo do negócio, dos dados, da infraestrutura e dos objetivos do cliente. As respostas alimentam os 9 agentes especialistas, que desenham a arquitetura, estimam custos nas 4 clouds (AWS, GCP, Azure, OCI) e em on-premise, e montam a proposta comercial.\n",
+  "descricao": "Mapeamento completo do negócio, dos dados, da infraestrutura e dos objetivos do cliente. As respostas alimentam os 11 agentes especialistas, que desenham a arquitetura, estimam custos nas 4 clouds (AWS, GCP, Azure, OCI) e em on-premise, e montam a proposta comercial.\n",
   "tempo_estimado_min": 35
  },
  "secoes": [
@@ -400,6 +400,9 @@
   "dados.ext.quais=scraping": {
    "complexidade": 1
   },
+  "dados.bd.administracao=ninguem": {
+   "risco": 1
+  },
   "dados.volume_total=1_10tb": {
    "complexidade": 1
   },
@@ -501,6 +504,51 @@
   "infra.cloud.iac=nao": {
    "risco": 1
   },
+  "infra.plataforma_dados=databricks": {
+   "complexidade": 1
+  },
+  "infra.plataforma_dados=snowflake": {
+   "complexidade": 1
+  },
+  "infra.plataforma_dados=bigquery": {
+   "gcp": 2
+  },
+  "infra.plataforma_dados=redshift": {
+   "aws": 2
+  },
+  "infra.plataforma_dados=fabric_synapse": {
+   "azure": 2
+  },
+  "infra.plataforma_dados=oracle_adw": {
+   "oci": 2
+  },
+  "infra.databricks.cloud=aws": {
+   "aws": 2
+  },
+  "infra.databricks.cloud=azure": {
+   "azure": 2
+  },
+  "infra.databricks.cloud=gcp": {
+   "gcp": 2
+  },
+  "infra.databricks.git=nao": {
+   "risco": 1
+  },
+  "infra.snowflake.cloud=aws_sp": {
+   "aws": 2
+  },
+  "infra.snowflake.cloud=aws_outra": {
+   "aws": 1
+  },
+  "infra.snowflake.cloud=azure": {
+   "azure": 2
+  },
+  "infra.snowflake.cloud=gcp": {
+   "gcp": 2
+  },
+  "infra.snowflake.edicao=business_critical": {
+   "risco": 1
+  },
   "infra.microsoft365.powerbi": {
    "azure": 1
   },
@@ -584,6 +632,25 @@
   },
   "cons.alertas=teams": {
    "azure": 1
+  },
+  "cons.apps=portal_clientes": {
+   "complexidade": 1,
+   "risco": 1
+  },
+  "cons.apps=app_campo": {
+   "complexidade": 1
+  },
+  "cons.apps=formularios": {
+   "automacao": 1
+  },
+  "cons.apps=aprovacoes": {
+   "automacao": 1
+  },
+  "cons.apps=embedded": {
+   "complexidade": 1
+  },
+  "cons.apps.portal_login=sso_cliente": {
+   "complexidade": 1
   },
   "cons.nl.canal=whatsapp": {
    "ia": 1,
@@ -2668,7 +2735,8 @@
    "agentes": [
     "arquiteto",
     "analista",
-    "cyber"
+    "cyber",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [
@@ -2699,7 +2767,8 @@
    "obrigatoria": false,
    "agentes": [
     "arquiteto",
-    "finops"
+    "finops",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [
@@ -3880,7 +3949,8 @@
    "obrigatoria": false,
    "agentes": [
     "arquiteto",
-    "devops"
+    "devops",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [
@@ -4292,7 +4362,8 @@
    "agentes": [
     "arquiteto",
     "engenheiro",
-    "cyber"
+    "cyber",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [
@@ -4331,7 +4402,8 @@
    "obrigatoria": false,
    "agentes": [
     "engenheiro",
-    "cyber"
+    "cyber",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [
@@ -4369,7 +4441,8 @@
    "profundidade": 2,
    "obrigatoria": false,
    "agentes": [
-    "engenheiro"
+    "engenheiro",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [
@@ -4478,7 +4551,8 @@
    "obrigatoria": false,
    "agentes": [
     "engenheiro",
-    "arquiteto"
+    "arquiteto",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [
@@ -4533,7 +4607,8 @@
    "obrigatoria": false,
    "agentes": [
     "engenheiro",
-    "arquiteto"
+    "arquiteto",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [
@@ -4564,7 +4639,8 @@
    "obrigatoria": false,
    "agentes": [
     "engenheiro",
-    "finops"
+    "finops",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [
@@ -4621,7 +4697,8 @@
    "agentes": [
     "engenheiro",
     "negocios",
-    "cyber"
+    "cyber",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [
@@ -5006,6 +5083,149 @@
    "opcoes": []
   },
   {
+   "id": "dados.bd.administracao",
+   "texto": "Quem cuida dos bancos de dados hoje (backup, atualização, desempenho)?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "dba",
+    "cyber",
+    "devops",
+    "comercial"
+   ],
+   "mostrar_se": {
+    "pergunta": "dados.fontes",
+    "em": [
+     "erp",
+     "bancos"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "dba_interno",
+     "rotulo": "DBA ou analista dedicado"
+    },
+    {
+     "valor": "ti_geral",
+     "rotulo": "A TI, junto com outras tarefas"
+    },
+    {
+     "valor": "fornecedor_erp",
+     "rotulo": "O fornecedor do ERP / sistema"
+    },
+    {
+     "valor": "terceiro",
+     "rotulo": "Empresa terceirizada"
+    },
+    {
+     "valor": "ninguem",
+     "rotulo": "Ninguém especificamente"
+    }
+   ]
+  },
+  {
+   "id": "dados.bd.versao",
+   "texto": "Versão e edição dos bancos, se souber (ex.: SQL Server 2019 Standard, Oracle 19c SE2, PostgreSQL 15)",
+   "tipo": "texto",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "dba",
+    "finops",
+    "cyber"
+   ],
+   "mostrar_se": {
+    "pergunta": "dados.fontes",
+    "em": [
+     "erp",
+     "bancos"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "dados.bd.replica",
+   "texto": "Existe uma cópia de leitura do banco (réplica) para relatórios, sem pesar no sistema?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "dba",
+    "engenheiro",
+    "arquiteto"
+   ],
+   "mostrar_se": {
+    "pergunta": "dados.fontes",
+    "em": [
+     "erp",
+     "bancos"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "dados.bd.janela",
+   "texto": "Em que horário o sistema pode receber consultas pesadas?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "dba",
+    "engenheiro",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.bd.replica",
+     "nao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "madrugada",
+     "rotulo": "Só de madrugada"
+    },
+    {
+     "valor": "fora_expediente",
+     "rotulo": "Fora do horário comercial"
+    },
+    {
+     "valor": "qualquer",
+     "rotulo": "A qualquer hora, o servidor aguenta"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
    "id": "dados.volume_total",
    "texto": "Volume total de dados (estimativa)",
    "tipo": "unica",
@@ -5015,7 +5235,8 @@
    "agentes": [
     "arquiteto",
     "engenheiro",
-    "finops"
+    "finops",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -5100,7 +5321,8 @@
    "obrigatoria": false,
    "agentes": [
     "arquiteto",
-    "finops"
+    "finops",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -5246,7 +5468,8 @@
    "agentes": [
     "engenheiro",
     "finops",
-    "cientista"
+    "cientista",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -5530,7 +5753,8 @@
    "obrigatoria": false,
    "agentes": [
     "devops",
-    "arquiteto"
+    "arquiteto",
+    "dba"
    ],
    "mostrar_se": {
     "pergunta": "infra.atual",
@@ -5552,7 +5776,8 @@
    "profundidade": 0,
    "obrigatoria": false,
    "agentes": [
-    "devops"
+    "devops",
+    "dba"
    ],
    "mostrar_se": {
     "pergunta": "infra.atual",
@@ -5600,7 +5825,8 @@
    "obrigatoria": false,
    "agentes": [
     "arquiteto",
-    "finops"
+    "finops",
+    "dba"
    ],
    "mostrar_se": {
     "pergunta": "infra.atual",
@@ -6000,6 +6226,314 @@
    ]
   },
   {
+   "id": "infra.plataforma_dados",
+   "texto": "Já usa alguma plataforma de dados na nuvem?",
+   "tipo": "multipla",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto",
+    "finops",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "nenhuma",
+     "rotulo": "Nenhuma"
+    },
+    {
+     "valor": "databricks",
+     "rotulo": "Databricks"
+    },
+    {
+     "valor": "snowflake",
+     "rotulo": "Snowflake"
+    },
+    {
+     "valor": "bigquery",
+     "rotulo": "Google BigQuery"
+    },
+    {
+     "valor": "redshift",
+     "rotulo": "Amazon Redshift"
+    },
+    {
+     "valor": "fabric_synapse",
+     "rotulo": "Microsoft Fabric / Synapse"
+    },
+    {
+     "valor": "oracle_adw",
+     "rotulo": "Oracle Autonomous Data Warehouse"
+    },
+    {
+     "valor": "outra",
+     "rotulo": "Outra (ClickHouse Cloud, MotherDuck, Firebolt...)"
+    }
+   ]
+  },
+  {
+   "id": "infra.databricks.cloud",
+   "texto": "Em qual cloud roda o Databricks?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "databricks"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "aws",
+     "rotulo": "AWS"
+    },
+    {
+     "valor": "azure",
+     "rotulo": "Azure"
+    },
+    {
+     "valor": "gcp",
+     "rotulo": "Google Cloud"
+    }
+   ]
+  },
+  {
+   "id": "infra.databricks.git",
+   "texto": "Notebooks e jobs estão versionados no Git?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "databricks"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "bundles",
+     "rotulo": "Sim, com Asset Bundles e CI/CD"
+    },
+    {
+     "valor": "git_folders",
+     "rotulo": "Sim, só com Git folders"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não, editados direto no workspace"
+    }
+   ]
+  },
+  {
+   "id": "infra.databricks.unity",
+   "texto": "Usa Unity Catalog?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "cyber",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "databricks"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "infra.databricks.gasto",
+   "texto": "Gasto mensal com Databricks (R$ ou DBUs)",
+   "tipo": "texto",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "databricks"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "infra.snowflake.cloud",
+   "texto": "Em qual cloud e região está a conta Snowflake?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "snowflake"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "aws_sp",
+     "rotulo": "AWS São Paulo"
+    },
+    {
+     "valor": "aws_outra",
+     "rotulo": "AWS em outra região"
+    },
+    {
+     "valor": "azure",
+     "rotulo": "Azure"
+    },
+    {
+     "valor": "gcp",
+     "rotulo": "Google Cloud"
+    }
+   ]
+  },
+  {
+   "id": "infra.snowflake.edicao",
+   "texto": "Edição do Snowflake",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops",
+    "cyber",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "snowflake"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "standard",
+     "rotulo": "Standard"
+    },
+    {
+     "valor": "enterprise",
+     "rotulo": "Enterprise"
+    },
+    {
+     "valor": "business_critical",
+     "rotulo": "Business Critical"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "infra.snowflake.git",
+   "texto": "Scripts e modelos estão versionados no Git (dbt, schemachange, integração Git do Snowflake)?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "snowflake"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "infra.snowflake.gasto",
+   "texto": "Gasto mensal com Snowflake (R$ ou créditos)",
+   "tipo": "texto",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "snowflake"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
    "id": "infra.microsoft365",
    "texto": "Usa Microsoft 365 / Entra ID (Azure AD)?",
    "tipo": "unica",
@@ -6289,7 +6823,8 @@
    "agentes": [
     "arquiteto",
     "devops",
-    "finops"
+    "finops",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -6320,7 +6855,8 @@
    "agentes": [
     "arquiteto",
     "devops",
-    "cyber"
+    "cyber",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -6514,7 +7050,8 @@
    "agentes": [
     "analista",
     "cyber",
-    "arquiteto"
+    "arquiteto",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -6557,7 +7094,8 @@
    "agentes": [
     "arquiteto",
     "finops",
-    "cyber"
+    "cyber",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [
@@ -6579,7 +7117,8 @@
    "obrigatoria": false,
    "agentes": [
     "analista",
-    "comercial"
+    "comercial",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [
@@ -6611,7 +7150,8 @@
    "agentes": [
     "analista",
     "cyber",
-    "arquiteto"
+    "arquiteto",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -6680,7 +7220,8 @@
    "agentes": [
     "arquiteto",
     "engenheiro",
-    "cyber"
+    "cyber",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -6706,7 +7247,8 @@
    "obrigatoria": false,
    "agentes": [
     "arquiteto",
-    "engenheiro"
+    "engenheiro",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [
@@ -6720,6 +7262,174 @@
    "opcoes": []
   },
   {
+   "id": "cons.apps",
+   "texto": "Além dos painéis, precisa de alguma aplicação sob medida?",
+   "tipo": "multipla",
+   "secao": "consumo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "fullstack",
+    "arquiteto",
+    "cyber",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "nenhuma",
+     "rotulo": "Não, painéis bastam"
+    },
+    {
+     "valor": "portal_clientes",
+     "rotulo": "Portal / área do cliente com login"
+    },
+    {
+     "valor": "app_campo",
+     "rotulo": "App para equipe de campo (coleta, visitas, vistorias)"
+    },
+    {
+     "valor": "formularios",
+     "rotulo": "Formulários para substituir planilhas (com validação e histórico)"
+    },
+    {
+     "valor": "aprovacoes",
+     "rotulo": "Fluxos de aprovação (pedidos, descontos, despesas)"
+    },
+    {
+     "valor": "embedded",
+     "rotulo": "Painéis dentro do nosso sistema ou produto (embedded)"
+    }
+   ]
+  },
+  {
+   "id": "cons.apps.portal_login",
+   "texto": "Como os clientes externos entrariam no portal?",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "fullstack",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "cons.apps",
+     "portal_clientes"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "email",
+     "rotulo": "E-mail e senha, com código de verificação"
+    },
+    {
+     "valor": "google_microsoft",
+     "rotulo": "Conta Google ou Microsoft"
+    },
+    {
+     "valor": "sso_cliente",
+     "rotulo": "Login corporativo do próprio cliente (SSO)"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "cons.apps.offline",
+   "texto": "Precisa funcionar sem internet e sincronizar depois?",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "fullstack",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "cons.apps",
+     "app_campo"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "cons.apps.stack",
+   "texto": "Quem vai manter essas aplicações depois?",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "fullstack",
+    "devops",
+    "comercial"
+   ],
+   "mostrar_se": {
+    "todas": [
+     {
+      "pergunta": "cons.apps",
+      "preenchida": true
+     },
+     {
+      "nao": {
+       "pergunta": "cons.apps",
+       "em": [
+        "nenhuma"
+       ]
+      }
+     }
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "consultoria",
+     "rotulo": "Vocês, no pacote gerenciado"
+    },
+    {
+     "valor": "time_js",
+     "rotulo": "Nosso time, em JavaScript/TypeScript"
+    },
+    {
+     "valor": "time_python",
+     "rotulo": "Nosso time, em Python"
+    },
+    {
+     "valor": "time_dotnet_java",
+     "rotulo": "Nosso time, em .NET ou Java"
+    },
+    {
+     "valor": "lowcode",
+     "rotulo": "Preferimos low-code (Power Apps, AppSheet, Appsmith)"
+    }
+   ]
+  },
+  {
    "id": "cons.perguntas_linguagem",
    "texto": "Gostaria de fazer perguntas aos dados em linguagem natural (\"quanto vendemos ontem em Cascavel?\")?",
    "tipo": "unica",
@@ -6729,7 +7439,8 @@
    "agentes": [
     "cientista",
     "analista",
-    "arquiteto"
+    "arquiteto",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -6755,7 +7466,8 @@
    "obrigatoria": false,
    "agentes": [
     "cientista",
-    "engenheiro"
+    "engenheiro",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [
@@ -7169,7 +7881,8 @@
     "engenheiro",
     "devops",
     "negocios",
-    "comercial"
+    "comercial",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -7531,7 +8244,8 @@
    "obrigatoria": false,
    "agentes": [
     "cyber",
-    "arquiteto"
+    "arquiteto",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -7624,7 +8338,8 @@
    "obrigatoria": false,
    "agentes": [
     "cyber",
-    "devops"
+    "devops",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -7696,7 +8411,8 @@
    "obrigatoria": false,
    "agentes": [
     "cyber",
-    "arquiteto"
+    "arquiteto",
+    "dba"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -7938,7 +8654,9 @@
     "cyber",
     "devops",
     "finops",
-    "comercial"
+    "comercial",
+    "dba",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [],
@@ -7976,7 +8694,8 @@
    "agentes": [
     "arquiteto",
     "comercial",
-    "finops"
+    "finops",
+    "fullstack"
    ],
    "mostrar_se": null,
    "pais": [],

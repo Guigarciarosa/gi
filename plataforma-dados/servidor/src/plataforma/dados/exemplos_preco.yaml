@@ -1,0 +1,238 @@
+# Exemplos de precificação usados em docs/11-precificacao.md (gerado por
+# scripts/gerar_exemplos_preco.py) e nos testes. Horas tiradas das tabelas de
+# estimativa das skills. `infra` usa a calculadora de custos de cloud.
+
+exemplos:
+  - id: transportadora
+    titulo: "Transportadora (porte P): custo por km e margem por cliente"
+    contexto: "40 caminhões, TOTVS Protheus em SQL Server, rastreador com API e planilha da oficina."
+    complexidade: media
+    porte: P
+    hospedagem: "ZimaOS da consultoria (PostgreSQL + Metabase); infraestrutura dentro da taxa de plataforma"
+    valor_anual: 120000
+    valor_texto: "2% de economia sobre R$ 6 milhões/ano de custo da frota"
+    itens:
+      - ["Discovery e mapa de KPIs", 10, negocios]
+      - ["Arquitetura e decisão de hospedagem", 6, arquiteto]
+      - ["Acesso ao Protheus: usuário de leitura, janela, VPN", 6, dba]
+      - ["Fonte Protheus: faturamento e contas a pagar", 40, engenheiro]
+      - ["API do rastreador", 12, engenheiro]
+      - ["Planilha da oficina com contrato", 6, engenheiro]
+      - ["Modelos dbt: viagens, custos, margem", 24, engenheiro]
+      - ["Ambiente base: orquestrador, CI, cofre, backup", 16, devops]
+      - ["3 painéis e treinamento", 22, analista]
+      - ["Controles de acesso e LGPD", 4, cyber]
+
+  - id: protecao_veicular
+    titulo: "Associação de proteção veicular (porte P): inadimplência e sinistralidade"
+    contexto: "8 mil associados, sistema próprio em MySQL, duas planilhas e alertas por WhatsApp."
+    complexidade: media
+    porte: P
+    hospedagem: "OCI (Always Free) com Metabase"
+    infra: {provedor: oci, volume_gb: 30, usuarios_bi: 8, fontes: 3, ferramenta_bi: metabase_superset}
+    valor_anual: 150000
+    valor_texto: "1 ponto a menos de inadimplência sobre R$ 15 milhões/ano de mensalidades"
+    itens:
+      - ["Discovery e KPIs", 8, negocios]
+      - ["Arquitetura", 4, arquiteto]
+      - ["Banco MySQL: réplica e usuário de leitura", 6, dba]
+      - ["Fonte do sistema: associados, boletos, sinistros", 24, engenheiro]
+      - ["2 planilhas com contrato", 12, engenheiro]
+      - ["Modelos dbt: carteira, inadimplência, sinistralidade", 36, engenheiro]
+      - ["Alertas no WhatsApp (n8n)", 8, engenheiro]
+      - ["Ambiente base", 12, devops]
+      - ["3 painéis e treinamento", 18, analista]
+      - ["Dados pessoais e LGPD", 6, cyber]
+
+  - id: cooperativa
+    titulo: "Cooperativa agroindustrial (porte M): recebimento, preço e estoque em um painel"
+    contexto: "20 unidades, Protheus em Oracle, balança em SQL Server local, cotações CEPEA, Microsoft 365."
+    complexidade: media
+    porte: M
+    hospedagem: "Azure com Power BI"
+    infra: {provedor: azure, volume_gb: 300, usuarios_bi: 60, fontes: 4, ferramenta_bi: powerbi, atualizacoes_dia: 4}
+    valor_anual: 400000
+    valor_texto: "1% de ganho na compra de grãos e na gestão de estoque"
+    itens:
+      - ["Discovery com 4 áreas e KPIs", 16, negocios]
+      - ["Arquitetura e ADRs", 12, arquiteto]
+      - ["Banco Oracle do Protheus: janela, usuário, licença", 16, dba]
+      - ["Protheus: recebimento e vendas, financeiro, estoque", 72, engenheiro]
+      - ["Balança (SQL Server local)", 16, engenheiro]
+      - ["Cotações CEPEA e câmbio (APIs)", 8, engenheiro]
+      - ["Modelos dbt: 5 fatos", 60, engenheiro]
+      - ["Ambiente e CI no Azure", 32, devops]
+      - ["Camada semântica e 6 painéis Power BI", 48, analista]
+      - ["Segurança e LGPD", 8, cyber]
+      - ["Custos e reserva de capacidade", 6, finops]
+
+  - id: varejo
+    titulo: "Varejo com e-commerce (porte P): vendas por canal e margem"
+    contexto: "Loja VTEX, Mercado Livre e Bling; diretoria quer margem por canal e produto."
+    complexidade: baixa
+    porte: P
+    hospedagem: "Google Cloud: BigQuery + Looker Studio"
+    infra: {provedor: gcp, volume_gb: 60, usuarios_bi: 15, fontes: 4, ferramenta_bi: looker_studio, atualizacoes_dia: 4}
+    valor_anual: 90000
+    valor_texto: "1 ponto de margem sobre R$ 9 milhões/ano de vendas online"
+    itens:
+      - ["Discovery e KPIs", 10, negocios]
+      - ["Arquitetura", 6, arquiteto]
+      - ["API da VTEX", 8, engenheiro]
+      - ["API do Mercado Livre", 12, engenheiro]
+      - ["API do Bling", 8, engenheiro]
+      - ["Google Analytics 4 (exportação)", 4, engenheiro]
+      - ["Modelos dbt: 4 fatos", 40, engenheiro]
+      - ["Ambiente no Google Cloud", 16, devops]
+      - ["4 painéis no Looker Studio", 24, analista]
+      - ["Custos do BigQuery (partições, limites)", 4, finops]
+      - ["LGPD", 4, cyber]
+
+  - id: industria
+    titulo: "Indústria (porte M): OEE e custo por produto"
+    contexto: "TOTVS Datasul (Progress) e MES em SQL Server; servidores próprios na fábrica."
+    complexidade: alta
+    porte: M
+    hospedagem: "Servidor do cliente (on-premise) com Power BI"
+    infra: {provedor: onprem, volume_gb: 500, usuarios_bi: 40, fontes: 2, ferramenta_bi: powerbi}
+    valor_anual: 360000
+    valor_texto: "3 pontos de OEE numa fábrica de R$ 40 milhões/ano"
+    itens:
+      - ["Discovery e KPIs industriais", 16, negocios]
+      - ["Arquitetura", 12, arquiteto]
+      - ["Progress (largura SQL, ODBC) e Change Tracking no MES", 24, dba]
+      - ["Datasul: vendas, produção, estoque", 108, engenheiro]
+      - ["MES em SQL Server (Change Tracking)", 24, engenheiro]
+      - ["Modelos dbt: 5 fatos, incluindo OEE", 70, engenheiro]
+      - ["Ambiente e CI on-premise", 32, devops]
+      - ["5 painéis e treinamento", 40, analista]
+      - ["Segurança", 8, cyber]
+
+  - id: clinica
+    titulo: "Clínica e laboratório (porte P): faturamento por convênio e glosas"
+    contexto: "Sistema regional em Firebird; dados de saúde."
+    complexidade: media
+    porte: P
+    hospedagem: "ZimaOS da consultoria; leitura a partir do backup diário restaurado"
+    valor_anual: 80000
+    valor_texto: "redução de glosas de convênio"
+    itens:
+      - ["Discovery e KPIs", 8, negocios]
+      - ["Arquitetura", 4, arquiteto]
+      - ["Firebird: restaurar o backup diário para leitura", 10, dba]
+      - ["Fonte Firebird: atendimentos e faturamento", 32, engenheiro]
+      - ["Modelos dbt: 3 fatos", 30, engenheiro]
+      - ["Ambiente base", 12, devops]
+      - ["3 painéis", 18, analista]
+      - ["Dados de saúde (LGPD art. 11): controles e DPA", 16, cyber]
+
+  - id: saas
+    titulo: "Software house (porte G): analytics dentro do produto (embedded) e API"
+    contexto: "SaaS B2B com 150 clientes, PostgreSQL do produto; quer vender um módulo de indicadores."
+    complexidade: alta
+    porte: G
+    hospedagem: "AWS com Metabase embutido"
+    infra: {provedor: aws, volume_gb: 800, usuarios_bi: 300, fontes: 2, ferramenta_bi: metabase_superset, atualizacoes_dia: 24}
+    valor_anual: 300000
+    valor_texto: "novo módulo vendido a 150 clientes por R$ 170/mês"
+    itens:
+      - ["Discovery e definição do módulo", 12, negocios]
+      - ["Arquitetura multi-tenant", 16, arquiteto]
+      - ["CDC do PostgreSQL do produto", 12, dba]
+      - ["CDC e eventos de uso", 48, engenheiro]
+      - ["Modelos dbt: 6 fatos", 72, engenheiro]
+      - ["Projeto base do app: login, CI, deploy", 24, fullstack]
+      - ["Multi-tenant com RLS e testes de isolamento", 16, fullstack]
+      - ["8 painéis embutidos com RLS", 64, fullstack]
+      - ["API de dados (10 endpoints)", 40, fullstack]
+      - ["Ambiente e CI", 32, devops]
+      - ["8 painéis", 48, analista]
+      - ["Segurança da aplicação", 16, cyber]
+
+  - id: dba_saude
+    titulo: "DBA avulso: saúde do banco SQL Server do ERP"
+    contexto: "ERP lento no fechamento, backup nunca testado; o cliente quer diagnóstico e plano."
+    complexidade: baixa
+    porte: P
+    mensalidade: {horas_sustentacao: 4, horas_evolucao: 2}
+    hospedagem: "Servidor do cliente"
+    itens:
+      - ["Inventário e avaliação de saúde", 8, dba]
+      - ["Backup e teste de restauração documentado", 8, dba]
+      - ["2 rodadas de diagnóstico e tuning", 32, dba]
+      - ["Monitoramento e alertas", 8, dba]
+      - ["Relatório e plano de ação", 4, dba]
+      - ["Revisão de acessos", 4, cyber]
+
+  - id: migracao
+    titulo: "Migração de MySQL 5.7 (sem suporte) para PostgreSQL gerenciado"
+    contexto: "Sistema próprio de 15 anos; a aplicação precisa de ajustes."
+    complexidade: alta
+    hospedagem: "Serviço gerenciado (RDS, Cloud SQL, Azure ou OCI) dimensionado pelo DBA"
+    itens:
+      - ["Arquitetura e escolha do serviço", 6, arquiteto]
+      - ["Inventário e plano de corte", 12, dba]
+      - ["Conversão de schema e dados (pgloader)", 60, dba]
+      - ["Validação e ensaio do corte", 24, dba]
+      - ["Ajustes na aplicação", 32, fullstack]
+      - ["Banco gerenciado como código (IaC)", 16, devops]
+
+  - id: databricks
+    titulo: "Cliente com Databricks (porte G): Git, CI/CD, Unity Catalog e custos"
+    contexto: "30 notebooks editados direto no workspace, sem governança; gasto de R$ 50 mil/mês em DBUs."
+    complexidade: media
+    porte: G
+    hospedagem: "Databricks existente do cliente (AWS ou Azure)"
+    valor_anual: 180000
+    valor_texto: "30% de redução de DBUs sobre R$ 50 mil/mês"
+    itens:
+      - ["Arquitetura e governança", 16, arquiteto]
+      - ["Unity Catalog: catálogos, grupos, external locations", 16, plataforma]
+      - ["Asset Bundles e CI/CD com service principal", 16, plataforma]
+      - ["Migrar 30 notebooks para Git e bundle", 24, plataforma]
+      - ["4 pipelines (Auto Loader / Lakeflow)", 48, plataforma]
+      - ["Rodada de otimização de custos", 12, plataforma]
+      - ["Rede e infraestrutura", 8, devops]
+      - ["Máscaras e acessos (LGPD)", 8, cyber]
+
+  - id: snowflake
+    titulo: "Implantação de Snowflake com dbt e Git (porte M)"
+    contexto: "Distribuidora que escolheu Snowflake; 5 fontes, painéis no Power BI."
+    complexidade: media
+    porte: M
+    hospedagem: "Snowflake na AWS São Paulo (créditos estimados com o FinOps)"
+    itens:
+      - ["Arquitetura", 8, arquiteto]
+      - ["Conta: warehouses, papéis, monitores, rede", 16, plataforma]
+      - ["Ingestão de 5 fontes", 40, plataforma]
+      - ["Projeto dbt e CI com par de chaves", 24, plataforma]
+      - ["Integração Git e migrações", 12, plataforma]
+      - ["Modelos dbt: 4 fatos", 48, engenheiro]
+      - ["4 painéis", 24, analista]
+      - ["Máscaras e acessos", 6, cyber]
+      - ["Revisão de custos", 8, plataforma]
+
+  - id: rag
+    titulo: "Assistente de IA com os documentos da empresa, rodando local"
+    contexto: "Cooperativa quer perguntar em português sobre normas, contratos e manuais sem mandar dados para fora."
+    complexidade: media
+    porte: P
+    hospedagem: "ZimaOS (GPU) ou servidor do cliente"
+    valor_anual: 60000
+    valor_texto: "horas economizadas em consultas a normas e contratos"
+    itens:
+      - ["Casos de uso e conjunto de avaliação", 8, negocios]
+      - ["Ingestão de documentos (PDF, manuais)", 16, engenheiro]
+      - ["RAG local: embeddings, Qdrant, avaliação", 40, cientista]
+      - ["Chat web com login", 32, fullstack]
+      - ["Implantação no servidor", 12, devops]
+      - ["LGPD e controle de acesso", 8, cyber]
+
+banco_horas: [20, 40, 80]
+
+carteira:
+  titulo: "Uma carteira possível no fim do ano 1"
+  gerenciados: [P, P, P, P, M, M]
+  projeto_tipico: transportadora
+  projetos_por_mes: 0.5
+  horas_produtivas_mes: 120

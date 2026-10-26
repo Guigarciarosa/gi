@@ -19,6 +19,7 @@ COPY questionario questionario
 COPY agentes agentes
 COPY skills skills
 COPY docs docs
+COPY conhecimento conhecimento
 
 RUN useradd --system --uid 10001 plataforma && mkdir -p /data && chown plataforma /data
 USER plataforma

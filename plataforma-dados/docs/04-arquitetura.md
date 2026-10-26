@@ -45,11 +45,13 @@ flowchart TB
 | `questionario.py` | Carrega o YAML, calcula visibilidade, normaliza respostas, soma sinais, gera resumos por agente |
 | `custos.py` + `dados/precos.yaml` | Calculadora determinística AWS/GCP/Azure/OCI/on-premise, ranking e premissas |
 | `vetorial.py` | Embeddings (Ollama ou hashing), Qdrant (REST) ou memória, fragmentação, isolamento por cliente |
-| `agentes.py` | Registro dos 9 agentes: ordem, dependências, consultas à memória |
+| `agentes.py` | Registro dos 11 agentes: ordem, dependências, consultas à memória, arquivos de conhecimento e consultas pelos bancos, ERP e plataforma do cliente |
+| `precificacao.py` + `dados/precificacao.yaml` | Calculadora de preços da consultoria: projeto, mensalidade, diagnóstico e banco de horas, com Simples Nacional |
+| `coleta.py` | Baixa a documentação oficial citada em `conhecimento/` e `skills/` (respeita robots.txt) e converte em Markdown para a memória |
 | `orquestrador.py` | Monta contexto de cada agente, roda o pipeline, salva e indexa entregáveis, gera a proposta |
 | `llm.py` | Backends: Ollama local, Claude via API, ou nenhum (o cliente MCP raciocina) |
 | `store.py` | SQLite: clientes, discovery, entregáveis, execuções |
-| `server.py` | 23 ferramentas MCP, 3 prompts, recursos, rotas web e API REST, autenticação por token |
+| `server.py` | 26 ferramentas MCP, 3 prompts, recursos, rotas web e API REST, autenticação por token |
 | `web/questionario.html` | App do questionário (o servidor injeta o JSON) |
 
 ### Ferramentas MCP
@@ -59,8 +61,8 @@ flowchart TB
 | Questionário | `questionario_estrutura`, `discovery_proximas`, `discovery_responder`, `discovery_importar`, `discovery_resumo` |
 | Clientes | `cliente_listar`, `cliente_criar` |
 | Agentes | `agente_listar`, `agente_perfil`, `agente_contexto`, `entregavel_salvar`, `entregavel_listar`, `entregavel_obter`, `pipeline_executar`, `pipeline_status` |
-| Custos | `custos_estimar`, `precos_azure_consultar`, `precos_oci_consultar` |
-| Memória | `memoria_buscar`, `memoria_indexar`, `memoria_reindexar_base` |
+| Custos e preços | `custos_estimar`, `preco_estimar`, `precos_azure_consultar`, `precos_oci_consultar` |
+| Memória e conhecimento | `memoria_buscar`, `memoria_indexar`, `memoria_reindexar_base`, `conhecimento_fontes`, `conhecimento_baixar` |
 | Proposta | `proposta_gerar` |
 
 Prompts: `discovery_conversado`, `atuar_como_agente`, `rodar_time_completo`.

@@ -1,8 +1,8 @@
 # 02 — Questionário ramificado
 
 ## Números
-- **11 seções**, **214 perguntas**, **709 opções**.
-- **135 perguntas condicionais**: só aparecem por causa de uma escolha anterior.
+- **11 seções**, **231 perguntas**, **763 opções**.
+- **150 perguntas condicionais**: só aparecem por causa de uma escolha anterior.
 - Até **3 níveis** (pergunta → subpergunta → sub-subpergunta).
 - Um cliente típico vê de 70 a 110 perguntas, em 25–40 minutos.
 

@@ -1,6 +1,6 @@
 ---
 name: engenheiro-dados
-description: Planeja e implementa ingestão, transformação e qualidade de dados — conectores para ERPs brasileiros (TOTVS Protheus, RM, Datasul, Sankhya, Senior, SAP, Omie, Bling), CDC, NF-e XML, planilhas, APIs, IoT/GPS — com dlt, dbt, Dagster/Airflow e os serviços equivalentes de AWS, GCP, Azure e OCI. Use ao montar pipelines, estimar esforço de engenharia ou desenhar integrações e automações.
+description: Planeja e implementa ingestão, transformação e qualidade de dados — conectores para ERPs brasileiros (TOTVS Protheus, RM, Datasul, Sankhya, Senior, SAP, Omie, Bling), CDC, NF-e XML, planilhas, APIs, IoT/GPS — com dlt, dbt, Dagster/Airflow e os serviços equivalentes de AWS, GCP, Azure e OCI. Especialista em Databricks (Unity Catalog, Delta, Lakeflow, Asset Bundles) e Snowflake (warehouses, Dynamic Tables, integração Git, schemachange), com Git e CI/CD. Use ao montar pipelines, estimar esforço de engenharia ou desenhar integrações e automações.
 ---
 
 # Skill — Engenheiro de Dados
@@ -11,8 +11,23 @@ description: Planeja e implementa ingestão, transformação e qualidade de dado
 - **Orquestração**: Dagster (assets + schedules + sensors); Airflow quando o cliente já usa ou exige.
 - **Qualidade**: testes dbt + `dbt source freshness`; Soda Core ou Great Expectations para contratos de fontes; Elementary para observabilidade dos modelos.
 - **Automação operacional**: n8n (webhooks, WhatsApp, e-mail, planilhas) acionado pelo orquestrador.
+- **Versionamento**: tudo em Git com pre-commit, revisão e CI (`references/git-para-dados.md`).
+
+## Especialidades: Databricks e Snowflake (com Git)
+| | Databricks | Snowflake |
+|---|---|---|
+| Quando faz sentido | Spark, ML, muitos arquivos, streaming, cliente já usa | warehouse sem operação, cargas isoladas, compartilhamento de dados, cliente já usa |
+| Governança | Unity Catalog (catálogo.schema.tabela, grants, máscaras, linhagem) | RBAC por papéis, máscaras e políticas de linha (Enterprise+) |
+| Ingestão | Auto Loader, Lakeflow Connect, COPY INTO | COPY INTO, Snowpipe, Openflow, parceiros |
+| Transformação | Delta + MERGE, Lakeflow Declarative Pipelines, dbt-databricks | SQL, Dynamic Tables, Streams + Tasks, dbt-snowflake |
+| Git e deploy | Git folders + **Asset Bundles** (`databricks bundle deploy -t prd`) | dbt + CI com par de chaves; `CREATE GIT REPOSITORY`; schemachange/Terraform |
+| Identidade do CI | service principal (OAuth) | usuário `TYPE = SERVICE` com par de chaves |
+| Custo | DBU × preço + VMs (clássico); políticas, auto-terminate, spot | créditos por segundo; `AUTO_SUSPEND`, resource monitors |
+| Referência | `references/databricks.md` | `references/snowflake.md` |
+Para porte P, nenhum dos dois costuma compensar: DuckDB/PostgreSQL ou BigQuery saem mais baratos. A transformação em dbt deixa a troca de motor possível no futuro.
 
 ## Conectores por sistema
+Antes de conectar, siga o método de leitura do DBA (réplica, backup restaurado, janela ou CDC) e a documentação de cada banco em `conhecimento/bancos-de-dados/`.
 
 ### TOTVS Protheus (SQL Server / Oracle / PostgreSQL)
 - Tabelas: `SA1` clientes, `SA2` fornecedores, `SB1` produtos, `SB2` saldos de estoque, `SC5`/`SC6` pedidos de venda, `SC7` pedidos de compra, `SF2`/`SD2` notas de saída, `SF1`/`SD1` notas de entrada, `SE1` contas a receber, `SE2` contas a pagar, `SE5` movimentação bancária, `CT2` lançamentos contábeis, `SRA` funcionários.
@@ -74,6 +89,9 @@ description: Planeja e implementa ingestão, transformação e qualidade de dado
 | Planilha com contrato | 3 | 6 | 12 |
 | Automação n8n (por fluxo) | 3 | 8 | 16 |
 | Ambiente base (orquestrador, CI, cofre, observabilidade) | 16 | 32 | 64 |
+| Repositório Git do cliente com pre-commit e CI do dbt | 4 | 8 | 16 |
+| Plataforma Databricks ou Snowflake como código (governança, CI/CD, teto de custo) | 16 | 32 | 64 |
+| Migrar notebooks/scripts soltos para Git + deploy automatizado | 8 | 24 | 60 |
 
 ## Por cloud
 | Necessidade | AWS | GCP | Azure | OCI |

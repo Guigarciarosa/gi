@@ -6,23 +6,27 @@ description: Monta e precifica propostas de projetos e serviços de dados (diagn
 # Skill — Comercial
 
 ## Portfólio em pacotes (escada de valor)
-| Pacote | O que é | Duração | Referência de preço* |
+Valores da calculadora (`preco_estimar`, tabela em `servidor/src/plataforma/dados/precificacao.yaml`); exemplos completos em `docs/11-precificacao.md`.
+
+| Pacote | O que é | Duração | Referência de preço (com impostos) |
 |---|---|---|---|
-| **Diagnóstico de Dados** | Discovery guiado + relatório dos 9 agentes + proposta | 1–2 semanas | R$ 2.500–8.000 (abatido do MVP se fechar) |
-| **MVP de Plataforma** | 1–2 fontes, 1 pergunta de negócio, 2–3 painéis, ambiente produtivo | 30–60 dias | R$ 15.000–60.000 |
-| **Plataforma Gerenciada** | Operação, monitoramento, ajustes e novas métricas (horas inclusas) | mensal | R$ 1.500–12.000/mês + infraestrutura |
-| **Evolução / Squad** | Novas fontes, IA, automações por sprint | por sprint/hora | R$ 150–300/h |
-| **IA Aplicada** | Assistente RAG, previsão, automação com agentes | 4–8 semanas | R$ 12.000–50.000 |
-*Valores de partida para o mercado brasileiro de PMEs; ajuste à sua realidade, região e posicionamento. Revise a cada 6 meses.
+| **Diagnóstico de Dados** | Discovery guiado + relatório dos agentes + proposta | 1–2 semanas | R$ 3.000 (P) · R$ 5.200 (M) · R$ 8.200 (G), abatido do MVP se fechar |
+| **MVP de Plataforma** | 1–3 fontes, 1 pergunta de negócio, 3–6 painéis, ambiente produtivo | 30–60 dias | R$ 30–40 mil (P) · R$ 70–110 mil (M/G) |
+| **Plataforma Gerenciada** | Sustentação + horas de evolução + taxa de plataforma | mensal | R$ 2.350 (P) · R$ 4.650 (M) · R$ 10.050 (G) + infraestrutura paga direto |
+| **Banco de horas / evolução** | Novas fontes, painéis, apps, automações | mensal | R$ 3.700 (20 h) · R$ 7.100 (40 h) · R$ 13.400 (80 h); hora avulsa R$ 190 |
+| **Serviços especializados** | DBA (saúde, tuning, backup), migração de SGBD, Databricks/Snowflake com Git | 3–8 semanas | R$ 17–55 mil |
+| **IA Aplicada** | Assistente RAG local, previsão, automação com agentes | 4–8 semanas | a partir de ~R$ 31 mil |
 
 A mensalidade gerenciada é a base do negócio: receita recorrente que paga o servidor e financia a escala.
 
 ## Precificação
-1. **Custo**: horas estimadas × custo/hora interno (pró-labore + impostos + ferramentas) .
-2. **Preço por esforço**: custo × (1 + margem de 40–60%) + gestão (15%) + risco (10–20%).
-3. **Checagem por valor**: preço do projeto ≤ 30–40% do valor gerado no 1º ano → aprovação fácil.
-4. **Checagem por orçamento**: se `orc.projeto` for menor, reduza escopo (nunca a margem abaixo do custo).
-5. Impostos: considere o regime (Simples Nacional anexo III/V, Lucro Presumido) no preço final.
+1. **Horas por perfil** vindas das estimativas dos agentes.
+2. **Taxa**: R$ 170/h líquida × multiplicador do perfil (arquiteto 1,25; DBA e Cyber 1,15; Databricks/Snowflake 1,3; analista 0,9).
+3. **Gestão** de 15% sobre as horas técnicas e **reserva de risco** de 10/15/25% (complexidade baixa/média/alta).
+4. **Impostos por dentro** (Simples Nacional anexo III com Fator R ≥ 28%; a alíquota efetiva sobe com o faturamento).
+5. **Checagem por valor**: preço ≤ 30–40% do valor gerado no 1º ano; se passar, reduza o escopo da primeira fase.
+6. **Checagem por orçamento**: se `orc.projeto` for menor, reduza escopo (nunca o preço abaixo do custo interno de R$ 100/h).
+Use sempre `preco_estimar`: ele devolve tabela, parcelas (40/30/30), preço à vista (−5%), margem e premissas.
 
 ## ROI (fórmulas)
 - Horas economizadas/ano = `aut.horas_manuais` × 52 × % automatizável (premissa 50–70%).

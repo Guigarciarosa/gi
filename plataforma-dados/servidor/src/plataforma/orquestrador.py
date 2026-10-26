@@ -1,7 +1,7 @@
 """Orquestração: do discovery à proposta.
 
-    respostas -> Analista de Negócios -> Arquiteto -> Engenheiro -> Analista
-              -> Cientista -> Cyber -> DevOps -> FinOps -> Comercial -> proposta
+    respostas -> Analista de Negócios -> Arquiteto -> DBA -> Engenheiro -> Analista
+              -> Cientista -> Full Stack -> Cyber -> DevOps -> FinOps -> Comercial -> proposta
 
 Cada agente recebe: o objetivo e as perguntas de negócio do cliente, as
 respostas marcadas para ele, os sinais, a estimativa de custos (quando usa),
@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Any
 
 from . import agentes as ag
-from . import custos, llm as llm_mod
+from . import custos, llm as llm_mod, precificacao
 from .config import Config
 from .questionario import Questionario, preenchida
 from .store import Store
@@ -58,6 +58,23 @@ class Plataforma:
 
     def precos(self) -> dict[str, Any]:
         return custos.carregar_precos(Path(__file__).parent / "dados" / "precos.yaml")
+
+    def tabela_precos(self) -> dict[str, Any]:
+        return precificacao.carregar(Path(__file__).parent / "dados" / "precificacao.yaml")
+
+    def resumo_precos(self) -> str:
+        cfg = self.tabela_precos()
+        aliq = precificacao.aliquota(cfg)
+        taxas = ", ".join(f"{p} R$ {precificacao.taxa_perfil(cfg, p)}" for p in cfg["multiplicador_perfil"])
+        mensal = ", ".join(f"{p} R$ {precificacao.precificar_mensalidade(p, cfg)['mensalidade']:,.0f}".replace(",", ".") for p in precificacao.PORTES)
+        diag = ", ".join(f"{p} R$ {precificacao.precificar_diagnostico(p, cfg)['preco']:,.0f}".replace(",", ".") for p in precificacao.PORTES)
+        return (
+            f"Taxa líquida por hora: {taxas}. Gestão {cfg['gestao']:.0%}; risco baixa/média/alta "
+            f"{'/'.join(f'{v:.0%}' for v in cfg['risco'].values())}; impostos {aliq:.2%} (por dentro).\n"
+            f"Mensalidade gerenciada: {mensal}. Diagnóstico pago: {diag}.\n"
+            "Calcule o preço do projeto com a ferramenta preco_estimar (some as horas estimadas pelos agentes, por perfil); "
+            "exemplos completos em docs/11-precificacao.md."
+        )
 
     # ------------------------------------------------------------- discovery
     def salvar_discovery(self, empresa: str, respostas: dict[str, Any], slug: str | None = None) -> dict[str, Any]:
@@ -137,6 +154,8 @@ class Plataforma:
                 + est["tabela_markdown"] + "\n\nPremissas:\n" + "\n".join(f"- {p}" for p in est["premissas"])
                 + f"\n\nRecomendação da calculadora: **{est['recomendacao']}**; mais barato: **{est['mais_barato']}**."
             )
+        if a.id == "comercial":
+            partes.append("## Tabela de preços da consultoria (calculadora)\n" + self.resumo_precos())
         anteriores = {e["agente"]: e for e in self.store.entregaveis(slug)}
         blocos = []
         for dep in a.depende_de:
@@ -147,7 +166,7 @@ class Plataforma:
             partes.append("## Entregáveis dos agentes anteriores\n" + "\n\n".join(blocos))
         trechos = []
         try:
-            for consulta in a.consultas_rag:
+            for consulta in (*a.consultas_rag, *ag.consultas_do_cliente(a, r)):
                 for res in self.memoria.buscar(consulta, "conhecimento", limite=limite_rag // 2):
                     trechos.append(f"- ({res.metadados.get('origem')}) {ag.cortar(res.texto, 700)}")
             for res in self.memoria.buscar("lições aprendidas " + str(r.get("neg.segmento", "")), "projetos", limite=2):

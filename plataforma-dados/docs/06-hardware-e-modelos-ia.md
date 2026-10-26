@@ -39,9 +39,9 @@ Ver tabela em `docs/04-arquitetura.md`. Resumo: núcleo (MCP + Qdrant + Ollama) 
 pipelines de alguns clientes porte P.
 
 ## Custo do Claude por cliente (modo API)
-Um pipeline completo (9 agentes) com Claude Opus 5.5 consome algo como 100–200 mil
+Um pipeline completo (11 agentes) com Claude Opus 5.5 consome algo como 120–250 mil
 tokens de entrada e 30–80 mil de saída (o raciocínio adaptativo conta como saída):
-**≈ US$ 1,50 a 5,00 por cliente**. O papel + skill de cada agente fica em cache entre
+**≈ US$ 2 a 6 por cliente**. O papel + skill de cada agente fica em cache entre
 clientes, o que reduz a entrada. No modo assistido, o uso entra na sua assinatura do Claude.
 
 ## Roadmap de hardware (acompanha a receita)

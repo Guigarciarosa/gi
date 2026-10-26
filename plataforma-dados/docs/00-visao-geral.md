@@ -12,8 +12,8 @@ entendimento do negócio, desenho de arquitetura, estimativa de custo e proposta
 ## A solução
 Uma plataforma que padroniza e acelera esse trabalho sem perder a personalização:
 
-1. **Discovery estruturado**: um questionário de 214 perguntas em 11 seções, das quais o cliente só vê as que fazem sentido — cada escolha abre ou fecha ramos (135 perguntas condicionais, até 3 níveis de profundidade). Leva de 25 a 40 minutos.
-2. **Time de nove agentes** com papéis, métodos e formatos de entrega definidos, que trabalham em sequência e leem o trabalho uns dos outros.
+1. **Discovery estruturado**: um questionário de 231 perguntas em 11 seções, das quais o cliente só vê as que fazem sentido — cada escolha abre ou fecha ramos (150 perguntas condicionais, até 3 níveis de profundidade). Leva de 25 a 40 minutos.
+2. **Time de onze agentes** com papéis, métodos e formatos de entrega definidos, que trabalham em sequência e leem o trabalho uns dos outros.
 3. **Decisão de infraestrutura com números**: a calculadora compara AWS, GCP, Azure, OCI e on-premise (custo mensal, TCO com operação, câmbio e IOF) e o FinOps valida os preços nas APIs públicas.
 4. **Memória que melhora com o tempo**: documentação, respostas, entregáveis e lições de projetos anteriores ficam num banco vetorial e alimentam os próximos clientes.
 5. **Infraestrutura própria e barata**: tudo roda no servidor ZimaOS com GPU de 6 GB e 16 GB de RAM; a qualidade alta vem do Claude quando necessário.

@@ -8,7 +8,7 @@ automações) e o que sai de cada etapa.
 flowchart LR
   P1[1 · Atração<br/>Instagram/LinkedIn] --> P2[2 · Qualificação<br/>diagnóstico gratuito]
   P2 --> P3[3 · Discovery<br/>questionário]
-  P3 --> P4[4 · Desenho<br/>9 agentes]
+  P3 --> P4[4 · Desenho<br/>11 agentes]
   P4 --> P5[5 · Proposta e<br/>negociação]
   P5 --> P6[6 · Implantação<br/>MVP]
   P6 --> P7[7 · Operação<br/>plataforma gerenciada]
@@ -57,6 +57,7 @@ sequenceDiagram
   participant M as Servidor MCP
   participant N as Negócios
   participant A as Arquiteto
+  participant D as DBA
   participant E as Engenheiro
   participant F as FinOps
   participant C as Comercial
@@ -65,9 +66,11 @@ sequenceDiagram
   N-->>M: Mapa de negócio
   M->>A: contexto + Mapa + custos_estimar
   A-->>M: Arquitetura + ADRs
-  M->>E: contexto + Arquitetura
+  M->>D: contexto + Arquitetura + docs dos bancos do cliente
+  D-->>M: Inventário de bancos e método de leitura
+  M->>E: contexto + Arquitetura + DBA
   E-->>M: Plano de engenharia
-  Note over M: Analista, Cientista, Cyber e DevOps no mesmo padrão
+  Note over M: Analista, Cientista, Full Stack, Cyber e DevOps no mesmo padrão
   M->>F: contexto + recursos + custos_estimar
   F-->>M: Custos e otimizações
   alt TCO recomendado > 25% acima do mais barato sem justificativa
@@ -90,7 +93,7 @@ sequenceDiagram
 ## 6. Implantação do MVP (30–60 dias)
 | Semana | Atividade | Responsável |
 |---|---|---|
-| 1 | Acessos (usuário de leitura, VPN/túnel), repositório, ambiente base (IaC) | DevOps + Cyber |
+| 1 | Acessos (usuário de leitura, VPN/túnel), repositório, ambiente base (IaC) | DBA + DevOps + Cyber |
 | 2–3 | Ingestão da 1ª fonte, bronze/silver, testes | Engenheiro |
 | 3–4 | Marts da gold, camada semântica | Engenheiro + Analista |
 | 4–5 | Painéis do MVP, validação de números com os donos | Analista + cliente |
@@ -102,15 +105,16 @@ Critério de aceite: as perguntas de negócio do MVP respondidas com números va
 |---|---|---|---|
 | Monitorar pipelines e frescor | contínuo | DevOps | Alertas Dagster/n8n → WhatsApp |
 | Tratar falhas | sob demanda | Engenheiro | Runbook |
-| Backup e teste de restauração | diário / mensal | DevOps | restic + verificação |
+| Saúde dos bancos (espaço, bloqueios, consultas lentas) | semanal | DBA | Alertas do Prometheus/Grafana |
+| Backup e teste de restauração | diário / mensal | DevOps + DBA | restic + verificação |
 | Atualizações de segurança | mensal | DevOps + Cyber | Janela combinada |
 | Reunião de resultados | mensal | Você + cliente | Painel de uso + KPIs |
-| Pequenas evoluções | horas do pacote | Engenheiro/Analista | — |
+| Pequenas evoluções | horas do pacote | Engenheiro/Analista/Full Stack | — |
 
 ## 8. Evolução
 Novas fontes, painéis, IA e automações entram por ordem de mudança ou banco de
-horas; cada uma passa pelo agente relevante (ex.: nova fonte → Engenheiro → Cyber →
-FinOps se mudar custo).
+horas; cada uma passa pelo agente relevante (ex.: nova fonte → DBA → Engenheiro → Cyber →
+FinOps se mudar custo; novo portal ou formulário → Full Stack → Cyber).
 
 ## 9. FinOps mensal
 1. Exportar custos (FOCUS) da cloud do cliente ou rateio do ZimaOS.
@@ -134,17 +138,19 @@ flowchart LR
 3. Pedir depoimento/indicação (vira conteúdo do Instagram, com autorização).
 
 ## Matriz RACI (R = executa, A = aprova, C = consultado, I = informado)
-| Processo | Você | Cliente | Negócios | Arquiteto | Engenheiro | Analista | Cientista | Cyber | DevOps | FinOps | Comercial |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| Discovery | A | R | C | C | | | | | | | I |
-| Mapa de negócio | A | C | R | I | I | I | I | | | | I |
-| Arquitetura | A | I | C | R | C | | | C | C | C | |
-| Plano de engenharia | A | C | | C | R | I | I | C | I | | I |
-| Painéis | A | C | C | | C | R | | C | | I | |
-| IA | A | C | C | C | C | C | R | C | | C | I |
-| Segurança/LGPD | A | C | | C | C | | C | R | C | | I |
-| Infra e operação | A | I | | C | C | | | C | R | C | I |
-| Custos | A | I | | C | | | | | C | R | C |
-| Proposta | A | I | C | C | C | C | C | C | C | C | R |
-| Implantação | A | C | | C | R | R | | C | R | I | I |
-| Operação | A | I | | | R | R | | C | R | C | |
+| Processo | Você | Cliente | Negócios | Arquiteto | DBA | Engenheiro | Analista | Cientista | Full Stack | Cyber | DevOps | FinOps | Comercial |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Discovery | A | R | C | C | C | | | | | | | | I |
+| Mapa de negócio | A | C | R | I | | I | I | I | I | | | | I |
+| Arquitetura | A | I | C | R | C | C | | | C | C | C | C | |
+| Bancos e acesso às fontes | A | C | | C | R | C | | | | C | C | I | |
+| Plano de engenharia | A | C | | C | C | R | I | I | I | C | I | | I |
+| Painéis | A | C | C | | | C | R | | C | C | | I | |
+| IA | A | C | C | C | | C | C | R | C | C | | C | I |
+| Aplicações e portais | A | C | C | C | C | C | C | C | R | C | C | C | I |
+| Segurança/LGPD | A | C | | C | C | C | | C | C | R | C | | I |
+| Infra e operação | A | I | | C | C | C | | | C | C | R | C | I |
+| Custos | A | I | | C | C | | | | | | C | R | C |
+| Proposta | A | I | C | C | C | C | C | C | C | C | C | C | R |
+| Implantação | A | C | | C | R | R | R | | R | C | R | I | I |
+| Operação | A | I | | | R | R | R | | R | C | R | C | |

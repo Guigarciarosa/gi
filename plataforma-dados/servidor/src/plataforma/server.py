@@ -28,6 +28,7 @@ from mcp.server.transport_security import TransportSecuritySettings
 
 from . import __version__
 from . import agentes as ag
+from . import coleta, precificacao
 from .config import carregar
 from .llm import ErroLLM
 from .orquestrador import Plataforma, slugificar
@@ -50,10 +51,11 @@ INSTRUCOES = f"""Servidor da plataforma de dados {CFG.marca}. Fluxo de trabalho:
 2. Discovery: discovery_proximas devolve as próximas perguntas visíveis (a árvore se ramifica
    conforme as respostas); discovery_responder grava cada resposta. Para respostas vindas do
    app web, use discovery_importar.
-3. Agentes (ordem: negocios, arquiteto, engenheiro, analista, cientista, cyber, devops, finops,
-   comercial). Para atuar como um agente: agente_contexto -> raciocine -> entregavel_salvar.
+3. Agentes (ordem: {', '.join(ag.ORDEM_PIPELINE)}).
+   Para atuar como um agente: agente_contexto -> raciocine -> entregavel_salvar.
    Ou pipeline_executar para o servidor rodar todos com o LLM configurado.
-4. custos_estimar faz as contas de AWS/GCP/Azure/OCI/on-premise; nunca invente preços.
+4. custos_estimar faz as contas de AWS/GCP/Azure/OCI/on-premise e preco_estimar o preço da consultoria;
+   nunca invente preços.
 5. proposta_gerar consolida tudo.
 Memória: memoria_buscar / memoria_indexar (coleções conhecimento, clientes, projetos, marca)."""
 
@@ -187,7 +189,7 @@ def discovery_resumo(slug: str, agente: str | None = None) -> dict[str, Any]:
 
 @mcp.tool()
 def agente_listar() -> list[dict[str, Any]]:
-    """Os 9 agentes, na ordem do pipeline, com entregável e dependências."""
+    """Os agentes, na ordem do pipeline, com entregável e dependências."""
     return [
         {"id": a.id, "nome": a.nome, "ordem": a.ordem, "entrega": a.entrega, "depende_de": list(a.depende_de), "usa_custos": a.usa_custos}
         for a in sorted(ag.AGENTES, key=lambda x: x.ordem)
@@ -274,6 +276,44 @@ def custos_estimar(
 
 
 @mcp.tool()
+def preco_estimar(
+    tipo: str = "projeto",
+    itens: list[dict[str, Any]] | None = None,
+    porte: str = "P",
+    complexidade: str = "media",
+    horas_mes: float | None = None,
+    perfil: str = "engenheiro",
+    infra_brl: float = 0.0,
+    infra_pela_consultoria: bool = False,
+    valor_anual: float | None = None,
+    receita_12m: float | None = None,
+    anexo: str | None = None,
+) -> dict[str, Any]:
+    """Preço da consultoria pela tabela de precificacao.yaml (nunca invente preço).
+    tipo: 'projeto' (itens = [{descricao, horas, perfil}], complexidade baixa|media|alta, valor_anual opcional
+    para payback), 'mensalidade' (porte P|M|G, infra_brl opcional), 'diagnostico' (porte) ou
+    'banco_horas' (horas_mes, perfil). Perfis: negocios, arquiteto, dba, engenheiro, analista, cientista,
+    fullstack, cyber, devops, finops, plataforma (Databricks/Snowflake). receita_12m e anexo (III ou V)
+    mudam a alíquota do Simples Nacional."""
+    cfg = plataforma().tabela_precos()
+    if tipo == "projeto":
+        lista = [precificacao.Item(str(i["descricao"]), float(i["horas"]), str(i.get("perfil", "engenheiro"))) for i in (itens or [])]
+        res = precificacao.precificar_projeto(lista, cfg, complexidade, receita_12m, anexo, valor_anual)
+        res["tabela_markdown"] = precificacao.tabela_projeto(res)
+        return res
+    if tipo == "mensalidade":
+        return precificacao.precificar_mensalidade(porte, cfg, infra_brl=infra_brl, infra_pela_consultoria=infra_pela_consultoria,
+                                                   receita_12m=receita_12m, anexo=anexo)
+    if tipo == "diagnostico":
+        return precificacao.precificar_diagnostico(porte, cfg, receita_12m, anexo)
+    if tipo == "banco_horas":
+        if not horas_mes:
+            raise ValueError("Informe horas_mes para o banco de horas.")
+        return precificacao.precificar_banco_horas(horas_mes, cfg, perfil, receita_12m, anexo)
+    raise ValueError("tipo deve ser projeto, mensalidade, diagnostico ou banco_horas.")
+
+
+@mcp.tool()
 def precos_azure_consultar(servico: str, regiao: str = "brazilsouth", termo_sku: str | None = None, limite: int = 20) -> list[dict[str, Any]]:
     """Preços atuais do Azure (Retail Prices API, pública). `servico` = serviceName
     (ex.: 'Virtual Machines', 'Storage', 'Azure Synapse Analytics', 'Power BI')."""
@@ -327,9 +367,44 @@ def memoria_indexar(texto: str, colecao: str, origem: str, cliente: str | None =
 
 @mcp.tool()
 def memoria_reindexar_base() -> dict[str, Any]:
-    """Reindexa docs/, agentes/ e skills/ na coleção 'conhecimento'. Rode após editar a documentação."""
-    total = plataforma().memoria.indexar_pasta(CFG.raiz, ["docs", "agentes", "skills"])
+    """Reindexa docs/, agentes/, skills/ e conhecimento/ (mais a documentação oficial baixada
+    com conhecimento_baixar) na coleção 'conhecimento'. Rode após editar a documentação."""
+    total = plataforma().memoria.indexar_pasta(CFG.raiz, ["docs", "agentes", "skills", "conhecimento"])
+    if (CFG.dados / "conhecimento-oficial").exists():
+        total.update(plataforma().memoria.indexar_pasta(CFG.dados, ["conhecimento-oficial"]))
     return {"arquivos": len(total), "trechos": sum(total.values())}
+
+
+@mcp.tool()
+def conhecimento_fontes() -> list[dict[str, Any]]:
+    """Fontes de documentação oficial que os agentes podem aprender (links da seção
+    "Documentação oficial" de cada arquivo de conhecimento/ e skills/)."""
+    baixadas = CFG.dados / "conhecimento-oficial"
+    return [
+        {"fonte": nome, "links": urls, "paginas_baixadas": len(list((baixadas / nome).glob("*.md"))) if (baixadas / nome).exists() else 0}
+        for nome, urls in coleta.links_oficiais(CFG.raiz).items()
+    ]
+
+
+@mcp.tool()
+def conhecimento_baixar(fonte: str, max_paginas: int = 15, indexar: bool = True) -> dict[str, Any]:
+    """Baixa a documentação oficial de uma fonte (ex.: 'postgresql', 'sql-server', 'databricks'),
+    seguindo links do mesmo site e da mesma pasta até `max_paginas` (máx. 60), grava em
+    /data/conhecimento-oficial/<fonte> e indexa na coleção 'conhecimento'. É assim que os
+    agentes aprendem com as fontes oficiais. Respeita o robots.txt."""
+    fontes = coleta.links_oficiais(CFG.raiz)
+    if fonte not in fontes:
+        raise ValueError(f"Fonte desconhecida: {fonte}. Use conhecimento_fontes para ver as opções.")
+    destino = CFG.dados / "conhecimento-oficial"
+    res = coleta.baixar_fonte(fonte, fontes[fonte], destino, max_paginas=max(1, min(max_paginas, 60)))
+    trechos = 0
+    if indexar:
+        for arq in res.arquivos:
+            p = Path(arq)
+            trechos += plataforma().memoria.indexar(
+                "conhecimento", f"conhecimento-oficial/{fonte}/{p.name}", p.read_text(encoding="utf-8"),
+                {"tipo": "oficial", "fonte": fonte})
+    return {"fonte": fonte, "paginas": len(res.arquivos), "trechos_indexados": trechos, "erros": res.erros[:20]}
 
 
 @mcp.tool()
@@ -384,7 +459,7 @@ def atuar_como_agente(agente: str, slug: str) -> str:
 
 @mcp.prompt()
 def rodar_time_completo(slug: str) -> str:
-    """Roda os 9 agentes em sequência dentro desta conversa."""
+    """Roda todos os agentes em sequência dentro desta conversa."""
     ordem = ", ".join(ag.ORDEM_PIPELINE)
     return (
         f"Você vai atuar, em sequência, como cada agente da plataforma para o cliente `{slug}`: {ordem}. "

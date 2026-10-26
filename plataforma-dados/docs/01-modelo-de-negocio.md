@@ -13,34 +13,35 @@ Analista de Negócios.
 | **Canais** | Instagram (conteúdo educativo + diagnóstico gratuito), LinkedIn, indicação de contadores e revendas de ERP, palestras em associações comerciais e cooperativas, site com o questionário. |
 | **Relacionamento** | Diagnóstico gratuito de 20 minutos → Diagnóstico pago → MVP → Plataforma gerenciada com reunião mensal de resultados. |
 | **Fontes de receita** | Diagnóstico (avulso), projetos de MVP, **mensalidade da plataforma gerenciada (recorrente)**, evolução por hora/sprint, projetos de IA aplicada. |
-| **Recursos-chave** | Conhecimento sênior de engenharia de dados (AWS, Spark, Databricks, Lakehouse), servidor ZimaOS com GPU, plataforma MCP com os 9 agentes, base de conhecimento vetorial, marca e conteúdo. |
+| **Recursos-chave** | Conhecimento sênior de engenharia de dados (AWS, Spark, Databricks, Lakehouse), servidor ZimaOS com GPU, plataforma MCP com os 11 agentes, base de conhecimento de SGBDs e memória vetorial, marca e conteúdo. |
 | **Atividades-chave** | Discovery, desenho e implantação, operação e suporte, produção de conteúdo, gestão de custos dos clientes. |
 | **Parcerias** | Programas de parceiros das clouds (AWS, Google, Microsoft, Oracle), Anthropic (Claude), contadores, revendas TOTVS/Sankhya, desenvolvedores freelancers. |
 | **Estrutura de custos** | Energia e internet do servidor, assinatura/API do Claude, domínio e e-mail, ferramentas, impostos (Simples Nacional), horas de terceiros, marketing. |
 
 ## Ofertas e preços de partida
-Detalhe em `skills/comercial/SKILL.md`. Resumo:
+Calculados pela tabela da consultoria (`docs/11-precificacao.md`, com 12 exemplos completos). Resumo:
 
-| Oferta | Preço de partida | Objetivo |
+| Oferta | Preço (com impostos) | Objetivo |
 |---|---|---|
-| Diagnóstico de Dados | R$ 2.500–8.000 | Porta de entrada paga; abatido do MVP |
-| MVP de Plataforma | R$ 15.000–60.000 | Primeira pergunta de negócio respondida em 30–60 dias |
-| Plataforma Gerenciada | R$ 1.500–12.000/mês | Receita recorrente; inclui horas de evolução |
-| Evolução / Squad | R$ 150–300/h | Novas fontes, painéis, automações |
-| IA Aplicada | R$ 12.000–50.000 | RAG, previsão, agentes |
+| Diagnóstico de Dados | R$ 3.000 (P) a R$ 8.200 (G) | Porta de entrada paga; abatido do MVP |
+| MVP de Plataforma | R$ 30–40 mil (P), R$ 70–110 mil (M/G) | Primeira pergunta de negócio respondida em 30–60 dias |
+| Plataforma Gerenciada | R$ 2.350 (P), R$ 4.650 (M), R$ 10.050 (G) por mês | Receita recorrente; inclui horas de evolução |
+| Banco de horas | R$ 3.700 (20 h/mês) a R$ 13.400 (80 h/mês) | Novas fontes, painéis, apps, automações |
+| Serviços especializados | R$ 17–55 mil | DBA, migração de SGBD, Databricks/Snowflake com Git |
+| IA Aplicada | a partir de ~R$ 31 mil | RAG, previsão, agentes |
 
-## Economia unitária (exemplo de cliente gerenciado porte P no ZimaOS)
+## Economia unitária (cliente gerenciado porte P no ZimaOS)
 | Item | Valor/mês |
 |---|---|
-| Mensalidade cobrada | R$ 2.500 |
-| Horas de operação e evolução (6 h × R$ 100 de custo interno) | R$ 600 |
-| Parcela do servidor (energia, link, backup, amortização) ÷ 8 clientes | R$ 60 |
-| API do Claude (agentes, assistente) | R$ 40 |
-| Impostos (Simples, ~11%) | R$ 275 |
-| **Margem de contribuição** | **R$ 1.525 (61%)** |
+| Mensalidade cobrada (10 h + taxa de plataforma) | R$ 2.350 |
+| Horas de sustentação e evolução (10 h × R$ 100 de custo interno) | R$ 1.000 |
+| Servidor, backup externo, monitoramento e API do Claude (rateio) | R$ 200 |
+| Impostos (Simples anexo III, ~8,1%) | R$ 190 |
+| **Margem de contribuição** | **R$ 960 (41%)** |
 
-Com 8 clientes gerenciados nesse perfil: ~R$ 12 mil/mês de margem, suficiente para
-financiar a fase 2 do roadmap (`docs/09-roadmap-escala.md`).
+Com 8 clientes gerenciados nesse perfil: ~R$ 7,7 mil/mês de margem recorrente, além
+dos projetos, suficiente para financiar a fase 2 do roadmap (`docs/09-roadmap-escala.md`).
+A carteira de exemplo do `docs/11` mostra quando passa a faltar hora e entram freelancers.
 
 ## Posicionamento
 - **Contra a consultoria grande**: preço e velocidade; o mesmo nível técnico com um time de agentes.

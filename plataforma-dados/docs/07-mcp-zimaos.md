@@ -35,9 +35,14 @@ MCP:           http://192.168.x.x:8787/mcp   (Authorization: Bearer <MCP_TOKEN>)
 ## 4. Indexar a base de conhecimento
 Pelo cliente MCP: ferramenta `memoria_reindexar_base`. Ou no terminal:
 ```bash
-docker compose exec plataforma python -c "from plataforma.server import plataforma, CFG; print(plataforma().memoria.indexar_pasta(CFG.raiz, ['docs','agentes','skills']))"
+docker compose exec plataforma python -c "from plataforma.server import memoria_reindexar_base; print(memoria_reindexar_base())"
 ```
-Rode de novo sempre que editar `docs/`, `agentes/` ou `skills/`.
+Rode de novo sempre que editar `docs/`, `agentes/`, `skills/` ou `conhecimento/`.
+
+Para os agentes aprenderem com a documentação oficial dos bancos e plataformas, peça
+ao Claude: "liste as fontes com `conhecimento_fontes` e baixe `postgresql`, `sql-server`,
+`databricks` e `snowflake` com `conhecimento_baixar`". As páginas ficam em
+`/DATA/AppData/plataforma/servidor/conhecimento-oficial/` e entram na memória na hora.
 
 ## 5. Conectar o Claude
 

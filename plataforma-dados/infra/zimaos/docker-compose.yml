@@ -46,6 +46,7 @@ services:
       - ../../skills:/app/skills:ro
       - ../../questionario:/app/questionario:ro
       - ../../docs:/app/docs:ro
+      - ../../conhecimento:/app/conhecimento:ro
     depends_on:
       qdrant: {condition: service_started}
       ollama: {condition: service_started}

@@ -1,0 +1,82 @@
+# =============================================================================
+#  TABELA DE PREÇOS DA CONSULTORIA (R$)
+# =============================================================================
+#  Valores de partida para PMEs no Brasil. Ajuste à sua realidade (região,
+#  posicionamento, concorrência) e revise a cada 6 meses. A ferramenta MCP
+#  preco_estimar e o docs/11-precificacao.md usam este arquivo.
+# =============================================================================
+
+data_referencia: "2026-10"
+
+# Quanto custa a sua hora produtiva: pró-labore + encargos + ferramentas + parte do
+# servidor, dividido pelas horas que você consegue faturar no mês (~120).
+custo_hora_interno: 100
+
+# Valor líquido por hora (antes dos impostos da nota fiscal).
+taxa_hora: 170
+
+# A especialidade pesa no preço da hora.
+multiplicador_perfil:
+  negocios: 1.0
+  arquiteto: 1.25
+  dba: 1.15
+  engenheiro: 1.0
+  analista: 0.9
+  cientista: 1.2
+  fullstack: 1.0
+  cyber: 1.15
+  devops: 1.05
+  finops: 1.0
+  plataforma: 1.3        # Databricks e Snowflake
+
+gestao: 0.15             # gestão do projeto sobre as horas técnicas
+risco:                   # reserva sobre (técnico + gestão), conforme a incerteza
+  baixa: 0.10
+  media: 0.15
+  alta: 0.25
+arredondar_para: 100
+
+impostos:
+  regime: simples        # simples | outro (então use "aliquota")
+  anexo: III             # III quando o Fator R (folha + pró-labore ÷ receita) >= 28%; senão V
+  receita_12m: 300000    # faturamento dos últimos 12 meses (RBT12), define a faixa
+  aliquota: 0.1633       # usada só quando regime != simples (ex.: Lucro Presumido de serviços; confirme)
+
+pagamento:
+  parcelas_projeto:
+    - ["na assinatura", 0.4]
+    - ["na entrega intermediária", 0.3]
+    - ["no aceite", 0.3]
+  desconto_a_vista: 0.05
+
+diagnostico_horas: {P: 16, M: 28, G: 44}
+
+mensalidade:
+  horas_sustentacao: {P: 6, M: 12, G: 28}   # monitorar, corrigir falhas, atualizar
+  horas_evolucao: {P: 4, M: 8, G: 16}       # novas métricas e ajustes inclusos
+  desconto_recorrencia: 0.10               # sobre as horas, pela recorrência
+  taxa_plataforma: {P: 600, M: 1200, G: 2500}  # preço: servidor, monitoramento, backup, agentes, ferramentas
+  custo_ferramentas: {P: 200, M: 400, G: 900}  # custo real disso (para a margem)
+  taxa_gestao_infra: 0.10                   # quando a consultoria paga a cloud e repassa
+
+banco_horas:
+  descontos: {20: 0.0, 40: 0.05, 80: 0.10}  # horas/mês contratadas → desconto
+
+# Simples Nacional (LC 123/2006, com redação da LC 155/2016): faixa de RBT12,
+# alíquota nominal e parcela a deduzir. Alíquota efetiva = (RBT12 × nominal − dedução) ÷ RBT12.
+# Confirme com o seu contador (a reforma tributária entra em transição a partir de 2026).
+simples_nacional:
+  III:
+    - [180000, 0.06, 0]
+    - [360000, 0.112, 9360]
+    - [720000, 0.135, 17640]
+    - [1800000, 0.16, 35640]
+    - [3600000, 0.21, 125640]
+    - [4800000, 0.33, 648000]
+  V:
+    - [180000, 0.155, 0]
+    - [360000, 0.18, 4500]
+    - [720000, 0.195, 9900]
+    - [1800000, 0.205, 17100]
+    - [3600000, 0.23, 62100]
+    - [4800000, 0.305, 540000]

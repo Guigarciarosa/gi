@@ -32,7 +32,7 @@ meta:
   titulo: "Discovery de Plataforma de Dados"
   descricao: >
     Mapeamento completo do negócio, dos dados, da infraestrutura e dos objetivos
-    do cliente. As respostas alimentam os 9 agentes especialistas, que desenham
+    do cliente. As respostas alimentam os 11 agentes especialistas, que desenham
     a arquitetura, estimam custos nas 4 clouds (AWS, GCP, Azure, OCI) e em
     on-premise, e montam a proposta comercial.
   tempo_estimado_min: 35
@@ -468,9 +468,9 @@ secoes:
               - id: neg.saas.embedded
                 texto: "Quer oferecer analytics dentro do produto para os seus clientes (embedded)?"
                 tipo: sim_nao
-                agentes: [arquiteto, analista, cyber]
+                agentes: [arquiteto, analista, cyber, fullstack]
                 se_sim:
-                  - {id: neg.saas.embedded.tenants, texto: "Quantos clientes (tenants) acessariam?", tipo: numero, agentes: [arquiteto, finops]}
+                  - {id: neg.saas.embedded.tenants, texto: "Quantos clientes (tenants) acessariam?", tipo: numero, agentes: [arquiteto, finops, fullstack]}
 
           - valor: servicos
             rotulo: "Serviços profissionais"
@@ -791,7 +791,7 @@ secoes:
               - id: mat.time.skills
                 texto: "Competências do time"
                 tipo: multipla
-                agentes: [arquiteto, devops]
+                agentes: [arquiteto, devops, fullstack]
                 opcoes:
                   - {valor: sql, rotulo: "SQL"}
                   - {valor: python, rotulo: "Python"}
@@ -884,7 +884,7 @@ secoes:
               - id: dados.erp.hospedagem
                 texto: "Onde o ERP roda?"
                 tipo: unica
-                agentes: [arquiteto, engenheiro, cyber]
+                agentes: [arquiteto, engenheiro, cyber, dba]
                 opcoes:
                   - {valor: servidor_local, rotulo: "Servidor na empresa", sinais: {onprem: 1}}
                   - {valor: saas, rotulo: "Na nuvem do fornecedor (SaaS)"}
@@ -893,7 +893,7 @@ secoes:
               - id: dados.erp.acesso
                 texto: "Como conseguimos ler os dados do ERP?"
                 tipo: unica
-                agentes: [engenheiro, cyber]
+                agentes: [engenheiro, cyber, dba]
                 opcoes:
                   - valor: banco
                     rotulo: "Acesso direto ao banco (leitura)"
@@ -901,7 +901,7 @@ secoes:
                       - id: dados.erp.banco
                         texto: "Banco do ERP"
                         tipo: unica
-                        agentes: [engenheiro]
+                        agentes: [engenheiro, dba]
                         opcoes:
                           - {valor: sqlserver, rotulo: "SQL Server", sinais: {azure: 1}}
                           - {valor: oracle, rotulo: "Oracle", sinais: {oci: 1}}
@@ -936,7 +936,7 @@ secoes:
               - id: dados.bd.tipos
                 texto: "Quais bancos?"
                 tipo: multipla
-                agentes: [engenheiro, arquiteto]
+                agentes: [engenheiro, arquiteto, dba]
                 opcoes:
                   - {valor: sqlserver, rotulo: "SQL Server", sinais: {azure: 1}}
                   - {valor: oracle, rotulo: "Oracle", sinais: {oci: 1}}
@@ -949,9 +949,9 @@ secoes:
               - id: dados.bd.cdc
                 texto: "Precisa capturar alterações em tempo real (CDC)?"
                 tipo: sim_nao
-                agentes: [engenheiro, arquiteto]
+                agentes: [engenheiro, arquiteto, dba]
                 se_sim:
-                  - {id: dados.bd.cdc.tabelas, texto: "Quantas tabelas aproximadamente?", tipo: numero, agentes: [engenheiro, finops]}
+                  - {id: dados.bd.cdc.tabelas, texto: "Quantas tabelas aproximadamente?", tipo: numero, agentes: [engenheiro, finops, dba]}
           - valor: planilhas
             rotulo: "Planilhas"
             subperguntas:
@@ -966,7 +966,7 @@ secoes:
               - id: dados.planilhas.oficiais
                 texto: "Alguma planilha é fonte oficial de número da diretoria?"
                 tipo: sim_nao
-                agentes: [engenheiro, negocios, cyber]
+                agentes: [engenheiro, negocios, cyber, fullstack]
                 se_sim:
                   - {id: dados.planilhas.oficiais.quais, texto: "Quais e quem mantém?", tipo: texto_longo, agentes: [engenheiro, negocios]}
           - valor: ecommerce
@@ -1055,11 +1055,45 @@ secoes:
             subperguntas:
               - {id: dados.fontes.outra, texto: "Descreva", tipo: texto_longo, agentes: [engenheiro]}
 
+      - id: dados.bd.administracao
+        texto: "Quem cuida dos bancos de dados hoje (backup, atualização, desempenho)?"
+        tipo: unica
+        mostrar_se: {pergunta: dados.fontes, em: [erp, bancos]}
+        agentes: [dba, cyber, devops, comercial]
+        opcoes:
+          - {valor: dba_interno, rotulo: "DBA ou analista dedicado"}
+          - {valor: ti_geral, rotulo: "A TI, junto com outras tarefas"}
+          - {valor: fornecedor_erp, rotulo: "O fornecedor do ERP / sistema"}
+          - {valor: terceiro, rotulo: "Empresa terceirizada"}
+          - {valor: ninguem, rotulo: "Ninguém especificamente", sinais: {risco: 1}}
+
+      - id: dados.bd.versao
+        texto: "Versão e edição dos bancos, se souber (ex.: SQL Server 2019 Standard, Oracle 19c SE2, PostgreSQL 15)"
+        tipo: texto
+        mostrar_se: {pergunta: dados.fontes, em: [erp, bancos]}
+        agentes: [dba, finops, cyber]
+
+      - id: dados.bd.replica
+        texto: "Existe uma cópia de leitura do banco (réplica) para relatórios, sem pesar no sistema?"
+        tipo: sim_nao
+        mostrar_se: {pergunta: dados.fontes, em: [erp, bancos]}
+        agentes: [dba, engenheiro, arquiteto]
+        se_nao:
+          - id: dados.bd.janela
+            texto: "Em que horário o sistema pode receber consultas pesadas?"
+            tipo: unica
+            agentes: [dba, engenheiro, devops]
+            opcoes:
+              - {valor: madrugada, rotulo: "Só de madrugada"}
+              - {valor: fora_expediente, rotulo: "Fora do horário comercial"}
+              - {valor: qualquer, rotulo: "A qualquer hora, o servidor aguenta"}
+              - {valor: nao_sei, rotulo: "Não sei"}
+
       - id: dados.volume_total
         texto: "Volume total de dados (estimativa)"
         tipo: unica
         obrigatoria: true
-        agentes: [arquiteto, engenheiro, finops]
+        agentes: [arquiteto, engenheiro, finops, dba]
         opcoes:
           - {valor: ate_10gb, rotulo: "Até 10 GB"}
           - {valor: 10_100gb, rotulo: "10 GB a 100 GB"}
@@ -1083,7 +1117,7 @@ secoes:
       - id: dados.crescimento
         texto: "Crescimento mensal dos dados"
         tipo: unica
-        agentes: [arquiteto, finops]
+        agentes: [arquiteto, finops, dba]
         opcoes:
           - {valor: baixo, rotulo: "Baixo (< 5% ao mês)"}
           - {valor: medio, rotulo: "Médio (5% a 15%)"}
@@ -1118,7 +1152,7 @@ secoes:
       - id: dados.historico
         texto: "Quanto histórico precisa ser carregado?"
         tipo: unica
-        agentes: [engenheiro, finops, cientista]
+        agentes: [engenheiro, finops, cientista, dba]
         opcoes:
           - {valor: "1", rotulo: "1 ano"}
           - {valor: "2_5", rotulo: "2 a 5 anos"}
@@ -1202,13 +1236,13 @@ secoes:
         texto: "Quantos servidores físicos / VMs?"
         tipo: numero
         mostrar_se: {pergunta: infra.atual, em: [on_premise, hibrido]}
-        agentes: [devops, arquiteto]
+        agentes: [devops, arquiteto, dba]
 
       - id: infra.onprem.virtualizacao
         texto: "Virtualização"
         tipo: unica
         mostrar_se: {pergunta: infra.atual, em: [on_premise, hibrido]}
-        agentes: [devops]
+        agentes: [devops, dba]
         opcoes:
           - {valor: vmware, rotulo: "VMware", sinais: {complexidade: 1}}
           - {valor: hyperv, rotulo: "Hyper-V", sinais: {azure: 1}}
@@ -1221,7 +1255,7 @@ secoes:
         texto: "Há capacidade ociosa nos servidores (CPU, RAM, disco)?"
         tipo: sim_nao
         mostrar_se: {pergunta: infra.atual, em: [on_premise, hibrido]}
-        agentes: [arquiteto, finops]
+        agentes: [arquiteto, finops, dba]
         se_sim:
           - {id: infra.onprem.ociosa.detalhe, texto: "Quanto aproximadamente (vCPUs, GB de RAM, TB de disco)?", tipo: texto, agentes: [arquiteto, finops], sinais: {onprem: 1}}
         se_nao: []
@@ -1280,6 +1314,64 @@ secoes:
           - {valor: sim, rotulo: "Sim"}
           - {valor: parcial, rotulo: "Parcialmente"}
           - {valor: nao, rotulo: "Não, tudo pelo console", sinais: {risco: 1}}
+
+      - id: infra.plataforma_dados
+        texto: "Já usa alguma plataforma de dados na nuvem?"
+        tipo: multipla
+        agentes: [engenheiro, arquiteto, finops, dba]
+        opcoes:
+          - {valor: nenhuma, rotulo: "Nenhuma"}
+          - valor: databricks
+            rotulo: "Databricks"
+            sinais: {complexidade: 1}
+            subperguntas:
+              - id: infra.databricks.cloud
+                texto: "Em qual cloud roda o Databricks?"
+                tipo: unica
+                agentes: [engenheiro, arquiteto, finops]
+                opcoes:
+                  - {valor: aws, rotulo: "AWS", sinais: {aws: 2}}
+                  - {valor: azure, rotulo: "Azure", sinais: {azure: 2}}
+                  - {valor: gcp, rotulo: "Google Cloud", sinais: {gcp: 2}}
+              - id: infra.databricks.git
+                texto: "Notebooks e jobs estão versionados no Git?"
+                tipo: unica
+                agentes: [engenheiro, devops]
+                opcoes:
+                  - {valor: bundles, rotulo: "Sim, com Asset Bundles e CI/CD"}
+                  - {valor: git_folders, rotulo: "Sim, só com Git folders"}
+                  - {valor: nao, rotulo: "Não, editados direto no workspace", sinais: {risco: 1}}
+              - {id: infra.databricks.unity, texto: "Usa Unity Catalog?", tipo: sim_nao, agentes: [engenheiro, cyber, dba]}
+              - {id: infra.databricks.gasto, texto: "Gasto mensal com Databricks (R$ ou DBUs)", tipo: texto, agentes: [finops]}
+          - valor: snowflake
+            rotulo: "Snowflake"
+            sinais: {complexidade: 1}
+            subperguntas:
+              - id: infra.snowflake.cloud
+                texto: "Em qual cloud e região está a conta Snowflake?"
+                tipo: unica
+                agentes: [engenheiro, arquiteto, finops]
+                opcoes:
+                  - {valor: aws_sp, rotulo: "AWS São Paulo", sinais: {aws: 2}}
+                  - {valor: aws_outra, rotulo: "AWS em outra região", sinais: {aws: 1}}
+                  - {valor: azure, rotulo: "Azure", sinais: {azure: 2}}
+                  - {valor: gcp, rotulo: "Google Cloud", sinais: {gcp: 2}}
+              - id: infra.snowflake.edicao
+                texto: "Edição do Snowflake"
+                tipo: unica
+                agentes: [finops, cyber, dba]
+                opcoes:
+                  - {valor: standard, rotulo: "Standard"}
+                  - {valor: enterprise, rotulo: "Enterprise"}
+                  - {valor: business_critical, rotulo: "Business Critical", sinais: {risco: 1}}
+                  - {valor: nao_sei, rotulo: "Não sei"}
+              - {id: infra.snowflake.git, texto: "Scripts e modelos estão versionados no Git (dbt, schemachange, integração Git do Snowflake)?", tipo: sim_nao, agentes: [engenheiro, devops]}
+              - {id: infra.snowflake.gasto, texto: "Gasto mensal com Snowflake (R$ ou créditos)", tipo: texto, agentes: [finops]}
+          - {valor: bigquery, rotulo: "Google BigQuery", sinais: {gcp: 2}}
+          - {valor: redshift, rotulo: "Amazon Redshift", sinais: {aws: 2}}
+          - {valor: fabric_synapse, rotulo: "Microsoft Fabric / Synapse", sinais: {azure: 2}}
+          - {valor: oracle_adw, rotulo: "Oracle Autonomous Data Warehouse", sinais: {oci: 2}}
+          - {valor: outra, rotulo: "Outra (ClickHouse Cloud, MotherDuck, Firebolt...)"}
 
       - id: infra.microsoft365
         texto: "Usa Microsoft 365 / Entra ID (Azure AD)?"
@@ -1351,7 +1443,7 @@ secoes:
       - id: infra.disponibilidade
         texto: "Se a plataforma cair, quanto tempo a empresa aguenta sem ela? (RTO)"
         tipo: unica
-        agentes: [arquiteto, devops, finops]
+        agentes: [arquiteto, devops, finops, dba]
         opcoes:
           - {valor: dias, rotulo: "Alguns dias"}
           - {valor: horas, rotulo: "Algumas horas"}
@@ -1360,7 +1452,7 @@ secoes:
       - id: infra.perda_dados
         texto: "Quanto dado pode ser perdido em um desastre? (RPO)"
         tipo: unica
-        agentes: [arquiteto, devops, cyber]
+        agentes: [arquiteto, devops, cyber, dba]
         opcoes:
           - {valor: "24h", rotulo: "Até 1 dia"}
           - {valor: "1h", rotulo: "Até 1 hora", sinais: {complexidade: 1}}
@@ -1422,7 +1514,7 @@ secoes:
       - id: cons.perfis
         texto: "Quem são os consumidores?"
         tipo: multipla
-        agentes: [analista, cyber, arquiteto]
+        agentes: [analista, cyber, arquiteto, fullstack]
         opcoes:
           - {valor: diretoria, rotulo: "Diretoria"}
           - {valor: gestores, rotulo: "Gestores de área"}
@@ -1432,14 +1524,14 @@ secoes:
             rotulo: "Clientes externos (portal / embedded)"
             sinais: {risco: 1, complexidade: 1}
             subperguntas:
-              - {id: cons.externos.qtd, texto: "Quantos clientes externos acessariam?", tipo: numero, agentes: [arquiteto, finops, cyber]}
-              - {id: cons.externos.marca, texto: "Precisa ser com a marca do cliente (white-label)?", tipo: sim_nao, agentes: [analista, comercial]}
+              - {id: cons.externos.qtd, texto: "Quantos clientes externos acessariam?", tipo: numero, agentes: [arquiteto, finops, cyber, fullstack]}
+              - {id: cons.externos.marca, texto: "Precisa ser com a marca do cliente (white-label)?", tipo: sim_nao, agentes: [analista, comercial, fullstack]}
           - {valor: parceiros, rotulo: "Parceiros / franqueados / representantes", sinais: {risco: 1}}
 
       - id: cons.seguranca_linha
         texto: "Cada usuário deve ver só os dados da sua unidade / carteira (segurança em nível de linha)?"
         tipo: sim_nao
-        agentes: [analista, cyber, arquiteto]
+        agentes: [analista, cyber, arquiteto, fullstack]
 
       - id: cons.alertas
         texto: "Canais para alertas automáticos"
@@ -1456,19 +1548,59 @@ secoes:
       - id: cons.api
         texto: "Precisa disponibilizar dados para outros sistemas ou parceiros (API / arquivo)?"
         tipo: sim_nao
-        agentes: [arquiteto, engenheiro, cyber]
+        agentes: [arquiteto, engenheiro, cyber, fullstack]
         se_sim:
-          - {id: cons.api.detalhe, texto: "Para quem e com que frequência?", tipo: texto, agentes: [arquiteto, engenheiro]}
+          - {id: cons.api.detalhe, texto: "Para quem e com que frequência?", tipo: texto, agentes: [arquiteto, engenheiro, fullstack]}
+
+      - id: cons.apps
+        texto: "Além dos painéis, precisa de alguma aplicação sob medida?"
+        tipo: multipla
+        agentes: [fullstack, arquiteto, cyber, comercial]
+        opcoes:
+          - {valor: nenhuma, rotulo: "Não, painéis bastam"}
+          - valor: portal_clientes
+            rotulo: "Portal / área do cliente com login"
+            sinais: {complexidade: 1, risco: 1}
+            subperguntas:
+              - id: cons.apps.portal_login
+                texto: "Como os clientes externos entrariam no portal?"
+                tipo: unica
+                agentes: [fullstack, cyber]
+                opcoes:
+                  - {valor: email, rotulo: "E-mail e senha, com código de verificação"}
+                  - {valor: google_microsoft, rotulo: "Conta Google ou Microsoft"}
+                  - {valor: sso_cliente, rotulo: "Login corporativo do próprio cliente (SSO)", sinais: {complexidade: 1}}
+                  - {valor: nao_sei, rotulo: "Não sei"}
+          - valor: app_campo
+            rotulo: "App para equipe de campo (coleta, visitas, vistorias)"
+            sinais: {complexidade: 1}
+            subperguntas:
+              - {id: cons.apps.offline, texto: "Precisa funcionar sem internet e sincronizar depois?", tipo: sim_nao, agentes: [fullstack, arquiteto]}
+          - {valor: formularios, rotulo: "Formulários para substituir planilhas (com validação e histórico)", sinais: {automacao: 1}}
+          - {valor: aprovacoes, rotulo: "Fluxos de aprovação (pedidos, descontos, despesas)", sinais: {automacao: 1}}
+          - {valor: embedded, rotulo: "Painéis dentro do nosso sistema ou produto (embedded)", sinais: {complexidade: 1}}
+
+      - id: cons.apps.stack
+        texto: "Quem vai manter essas aplicações depois?"
+        tipo: unica
+        mostrar_se: {todas: [{pergunta: cons.apps, preenchida: true}, {nao: {pergunta: cons.apps, em: [nenhuma]}}]}
+        agentes: [fullstack, devops, comercial]
+        opcoes:
+          - {valor: consultoria, rotulo: "Vocês, no pacote gerenciado"}
+          - {valor: time_js, rotulo: "Nosso time, em JavaScript/TypeScript"}
+          - {valor: time_python, rotulo: "Nosso time, em Python"}
+          - {valor: time_dotnet_java, rotulo: "Nosso time, em .NET ou Java"}
+          - {valor: lowcode, rotulo: "Preferimos low-code (Power Apps, AppSheet, Appsmith)"}
 
       - id: cons.perguntas_linguagem
         texto: "Gostaria de fazer perguntas aos dados em linguagem natural (\"quanto vendemos ontem em Cascavel?\")?"
         tipo: sim_nao
-        agentes: [cientista, analista, arquiteto]
+        agentes: [cientista, analista, arquiteto, fullstack]
         se_sim:
           - id: cons.nl.canal
             texto: "Por onde?"
             tipo: multipla
-            agentes: [cientista, engenheiro]
+            agentes: [cientista, engenheiro, fullstack]
             opcoes:
               - {valor: whatsapp, rotulo: "WhatsApp", sinais: {ia: 1, automacao: 1}}
               - {valor: teams_slack, rotulo: "Teams / Slack", sinais: {ia: 1}}
@@ -1575,7 +1707,7 @@ secoes:
       - id: aut.processos
         texto: "O que gostaria de automatizar?"
         tipo: multipla
-        agentes: [engenheiro, devops, negocios, comercial]
+        agentes: [engenheiro, devops, negocios, comercial, fullstack]
         opcoes:
           - {valor: relatorios, rotulo: "Geração e envio de relatórios", sinais: {automacao: 1}}
           - {valor: integracao, rotulo: "Integração entre sistemas (ERP ↔ CRM ↔ e-commerce)", sinais: {automacao: 1}}
@@ -1671,7 +1803,7 @@ secoes:
       - id: seg.identidade
         texto: "Login corporativo (SSO)"
         tipo: unica
-        agentes: [cyber, arquiteto]
+        agentes: [cyber, arquiteto, fullstack]
         opcoes:
           - {valor: entra, rotulo: "Microsoft Entra ID", sinais: {azure: 1}}
           - {valor: google, rotulo: "Google Workspace", sinais: {gcp: 1}}
@@ -1689,7 +1821,7 @@ secoes:
       - id: seg.backup
         texto: "Backup hoje"
         tipo: unica
-        agentes: [cyber, devops]
+        agentes: [cyber, devops, dba]
         opcoes:
           - {valor: nao, rotulo: "Não há backup confiável", sinais: {risco: 2}}
           - {valor: local, rotulo: "Só local (mesmo prédio)", sinais: {risco: 1}}
@@ -1710,7 +1842,7 @@ secoes:
       - id: seg.auditoria
         texto: "Precisa de trilha de auditoria (quem acessou qual dado e quando)?"
         tipo: sim_nao
-        agentes: [cyber, arquiteto]
+        agentes: [cyber, arquiteto, dba]
 
   # ---------------------------------------------------------------------------
   - id: orcamento
@@ -1788,7 +1920,7 @@ secoes:
         texto: "Qual o objetivo principal da plataforma? (escreva livremente)"
         tipo: texto_longo
         obrigatoria: true
-        agentes: [negocios, arquiteto, engenheiro, analista, cientista, cyber, devops, finops, comercial]
+        agentes: [negocios, arquiteto, engenheiro, analista, cientista, cyber, devops, finops, comercial, dba, fullstack]
 
       - id: obj.perguntas
         texto: "Quais 3 a 5 perguntas de negócio ela precisa responder? (uma por linha — ex.: \"Qual a margem real por cliente e por produto?\")"
@@ -1800,7 +1932,7 @@ secoes:
         texto: "O que espera receber?"
         tipo: multipla
         obrigatoria: true
-        agentes: [arquiteto, comercial, finops]
+        agentes: [arquiteto, comercial, finops, fullstack]
         opcoes:
           - {valor: dashboards, rotulo: "Dashboards executivos e operacionais"}
           - {valor: dw, rotulo: "Data warehouse / lakehouse central"}

@@ -4,7 +4,7 @@ A regra: **cada etapa é paga pela anterior**. Nada de comprar infraestrutura an
 
 | Fase | Meta de negócio | Infraestrutura | Plataforma | Marketing |
 |---|---|---|---|---|
-| **0 — Fundação** (mês 0–1) | Primeiro diagnóstico pago | ZimaOS 16 GB + GPU 6 GB; modo assistido com Claude | Questionário, 9 agentes, calculadora, MCP (esta entrega) | Identidade visual, Instagram com 9 posts de grid, LinkedIn alinhado |
+| **0 — Fundação** (mês 0–1) | Primeiro diagnóstico pago | ZimaOS 16 GB + GPU 6 GB; modo assistido com Claude | Questionário, 11 agentes, base de conhecimento, calculadoras de custo e de preço, MCP (esta entrega) | Identidade visual, Instagram com 9 posts de grid, LinkedIn alinhado |
 | **1 — Primeiros clientes** (mês 1–4) | 2–3 MVPs, 2 clientes gerenciados | +16 GB RAM; perfil `dados` (Postgres + Metabase) no ZimaOS | Templates de projeto por segmento (agro, transporte, proteção veicular); lições na memória | 3 posts/semana; 1 caso real por mês; parcerias com 2 contadores |
 | **2 — Recorrência** (mês 4–9) | MRR de R$ 10–15 mil; 5–8 clientes | Nobreak, SSD, backup 3-2-1; Cloudflare Tunnel; Uptime Kuma | Pipeline automático com `LLM_BACKEND=anthropic` para FinOps/Comercial; painel interno de clientes; n8n para alertas | Reels curtos de "antes e depois"; webinar mensal |
 | **3 — Escala técnica** (mês 9–15) | MRR de R$ 25–40 mil; primeiro cliente porte M | GPU 12–16 GB; clientes M/G na cloud escolhida (conta por cliente, IaC padronizada) | Agentes locais com modelos 8–14B; módulos OpenTofu por cloud prontos; portal do cliente | Cases por segmento; presença em eventos do agro e do transporte |
