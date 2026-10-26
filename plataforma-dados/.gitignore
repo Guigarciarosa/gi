@@ -1,7 +1,8 @@
 __pycache__/
 *.pyc
 .venv/
+.pytest_cache/
 .env
-dados/
+/dados/
 *.db
 dist/
