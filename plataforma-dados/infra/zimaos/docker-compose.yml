@@ -1,0 +1,171 @@
+# =============================================================================
+#  Plataforma de Dados com Agentes — ZimaOS (ou qualquer Linux com Docker)
+# =============================================================================
+#  Núcleo (sempre ligado):  plataforma (MCP + questionário), qdrant, ollama
+#  Perfis opcionais (ligue com --profile):
+#    dados      PostgreSQL + Metabase  (stack analítica para clientes porte P)
+#    automacao  n8n                    (alertas WhatsApp/Telegram, integrações)
+#    acesso     cloudflared            (questionário público sem abrir portas)
+#    monitor    uptime-kuma            (disponibilidade e alertas)
+#
+#  Uso:
+#    cp .env.example .env && nano .env
+#    docker compose up -d --build
+#    docker compose --profile dados --profile automacao up -d
+#
+#  RAM aproximada (16 GB no total): núcleo ~3–4 GB fora a VRAM do modelo;
+#  +dados ~2,5 GB; +automacao ~0,5 GB; +monitor ~0,2 GB.
+# =============================================================================
+
+name: plataforma
+
+x-padrao: &padrao
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options: {max-size: "10m", max-file: "3"}
+
+services:
+  plataforma:
+    <<: *padrao
+    build:
+      context: ../..
+      dockerfile: servidor/Dockerfile
+    image: plataforma-dados:1.0.0
+    env_file: .env
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      OLLAMA_URL: http://ollama:11434
+      PLATAFORMA_DADOS: /data
+    ports:
+      - "${MCP_PORTA_HOST:-8787}:8787"
+    volumes:
+      - ${DADOS_HOST:-/DATA/AppData/plataforma}/servidor:/data
+      # Edite agentes, skills, questionário e docs sem reconstruir a imagem:
+      - ../../agentes:/app/agentes:ro
+      - ../../skills:/app/skills:ro
+      - ../../questionario:/app/questionario:ro
+      - ../../docs:/app/docs:ro
+    depends_on:
+      qdrant: {condition: service_started}
+      ollama: {condition: service_started}
+    mem_limit: 1g
+
+  qdrant:
+    <<: *padrao
+    image: qdrant/qdrant:v1.19.2
+    environment:
+      QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:-}
+      QDRANT__TELEMETRY_DISABLED: "true"
+    volumes:
+      - ${DADOS_HOST:-/DATA/AppData/plataforma}/qdrant:/qdrant/storage
+    # Sem porta publicada: só a plataforma acessa. Para abrir o painel web
+    # (http://IP:6333/dashboard), descomente:
+    # ports: ["6333:6333"]
+    mem_limit: 1536m
+
+  ollama:
+    <<: *padrao
+    image: ollama/ollama:0.40.3
+    environment:
+      OLLAMA_MAX_LOADED_MODELS: "2"      # 1 modelo de chat + 1 de embedding
+      OLLAMA_NUM_PARALLEL: "1"           # GPU de 6 GB: uma geração por vez
+      OLLAMA_FLASH_ATTENTION: "1"
+      OLLAMA_KV_CACHE_TYPE: q8_0         # metade da VRAM do cache de contexto
+      OLLAMA_KEEP_ALIVE: 15m
+    volumes:
+      - ${DADOS_HOST:-/DATA/AppData/plataforma}/ollama:/root/.ollama
+    # Sem GPU NVIDIA (ou sem driver), remova o bloco `deploy` e o Ollama usa a CPU.
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    mem_limit: 6g
+
+  # Baixa os modelos na primeira subida e encerra.
+  ollama-modelos:
+    image: ollama/ollama:0.40.3
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        sleep 5 &&
+        ollama pull ${MODELO_EMBEDDING:-bge-m3} &&
+        ollama pull ${MODELO_LOCAL:-qwen3:4b} &&
+        echo "modelos prontos"
+    depends_on: [ollama]
+    restart: "no"
+
+  # ----------------------------------------------------------- perfil: dados
+  postgres:
+    <<: *padrao
+    profiles: [dados]
+    image: postgres:17.10-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-plataforma}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+      POSTGRES_DB: ${POSTGRES_DB:-analytics}
+    volumes:
+      - ${DADOS_HOST:-/DATA/AppData/plataforma}/postgres:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+    shm_size: 256m
+    mem_limit: 2g
+
+  metabase:
+    <<: *padrao
+    profiles: [dados]
+    image: metabase/metabase:v0.64.3.4
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_HOST: postgres
+      MB_DB_PORT: 5432
+      MB_DB_DBNAME: metabase
+      MB_DB_USER: ${POSTGRES_USER:-plataforma}
+      MB_DB_PASS: ${POSTGRES_PASSWORD}
+      JAVA_OPTS: -Xmx1g
+    ports:
+      - "${METABASE_PORTA_HOST:-3000}:3000"
+    depends_on: [postgres]
+    mem_limit: 1536m
+
+  # ------------------------------------------------------- perfil: automacao
+  n8n:
+    <<: *padrao
+    profiles: [automacao]
+    image: n8nio/n8n:2.44.7
+    environment:
+      GENERIC_TIMEZONE: America/Sao_Paulo
+      TZ: America/Sao_Paulo
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:?defina N8N_ENCRYPTION_KEY no .env}
+      N8N_SECURE_COOKIE: "false"         # true quando publicado com HTTPS (túnel)
+      N8N_DIAGNOSTICS_ENABLED: "false"
+    ports:
+      - "${N8N_PORTA_HOST:-5678}:5678"
+    volumes:
+      - ${DADOS_HOST:-/DATA/AppData/plataforma}/n8n:/home/node/.n8n
+    mem_limit: 768m
+
+  # ---------------------------------------------------------- perfil: acesso
+  cloudflared:
+    <<: *padrao
+    profiles: [acesso]
+    image: cloudflare/cloudflared:2026.9.3
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?crie o túnel no painel da Cloudflare e cole o token no .env}
+    mem_limit: 128m
+
+  # --------------------------------------------------------- perfil: monitor
+  uptime-kuma:
+    <<: *padrao
+    profiles: [monitor]
+    image: louislam/uptime-kuma:2.5.6
+    ports:
+      - "${UPTIME_PORTA_HOST:-3001}:3001"
+    volumes:
+      - ${DADOS_HOST:-/DATA/AppData/plataforma}/uptime-kuma:/app/data
+    mem_limit: 256m

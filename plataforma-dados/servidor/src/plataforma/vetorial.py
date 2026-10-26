@@ -140,7 +140,14 @@ class QdrantIndice:
         return r.json() if r.content else {}
 
     def garantir(self, colecao: str, dimensao: int) -> None:
-        if self._req("GET", f"/collections/{colecao}").get("result"):
+        existente = self._req("GET", f"/collections/{colecao}").get("result")
+        if existente:
+            atual = existente.get("config", {}).get("params", {}).get("vectors", {}).get("size")
+            if atual and atual != dimensao:
+                raise RuntimeError(
+                    f"A coleção '{colecao}' tem vetores de {atual} dimensões e o modelo de embedding atual gera {dimensao}. "
+                    "Você trocou MODELO_EMBEDDING: apague as coleções no Qdrant e rode memoria_reindexar_base."
+                )
             return
         self._req(
             "PUT",
