@@ -1,0 +1,1981 @@
+# =============================================================================
+#  QUESTIONÁRIO DE DISCOVERY — PLATAFORMA DE DADOS
+# =============================================================================
+#  Fonte única de verdade do questionário. É lida pelo servidor MCP, pelo app
+#  web (questionario.html) e pelos agentes.
+#
+#  Como funciona a ramificação:
+#   - `subperguntas` dentro de uma OPÇÃO: só aparecem quando aquela opção é
+#     escolhida (árvore: escolher uma alternativa abre outras).
+#   - `mostrar_se` numa PERGUNTA: condição cruzada com qualquer outra resposta,
+#     inclusive de outra seção. Formatos aceitos:
+#         mostrar_se: {pergunta: infra.atual, em: [on_premise, hibrido]}
+#         mostrar_se: {pergunta: dados.volume_total, preenchida: true}
+#         mostrar_se: {qualquer: [ {...}, {...} ]}   # OU
+#         mostrar_se: {todas:    [ {...}, {...} ]}   # E
+#   - `tipo: sim_nao` é um atalho: vira escolha única com as opções sim/não;
+#     `se_sim` e `se_nao` são as subperguntas de cada lado.
+#
+#  Tipos: texto | texto_longo | numero | unica | multipla | escala | sim_nao
+#
+#  `agentes`: quais agentes consomem a resposta (roteamento de contexto).
+#    negocios, arquiteto, engenheiro, analista, cientista, cyber, devops,
+#    finops, comercial
+#
+#  `sinais` (nas opções): pontuações somadas pelo motor de decisão.
+#    aws, gcp, azure, oci, onprem  -> afinidade de hospedagem
+#    complexidade, risco, ia, automacao, tempo_real -> intensidade
+# =============================================================================
+
+meta:
+  versao: "1.0.0"
+  titulo: "Discovery de Plataforma de Dados"
+  descricao: >
+    Mapeamento completo do negócio, dos dados, da infraestrutura e dos objetivos
+    do cliente. As respostas alimentam os 11 agentes especialistas, que desenham
+    a arquitetura, estimam custos nas 4 clouds (AWS, GCP, Azure, OCI) e em
+    on-premise, e montam a proposta comercial.
+  tempo_estimado_min: 35
+
+secoes:
+
+  # ---------------------------------------------------------------------------
+  - id: identificacao
+    titulo: "0. Identificação"
+    descricao: "Quem é o cliente e quem está respondendo."
+    perguntas:
+      - id: id.empresa
+        texto: "Nome da empresa"
+        tipo: texto
+        obrigatoria: true
+        agentes: [comercial, negocios]
+      - id: id.cnpj
+        texto: "CNPJ (opcional — usado para enriquecer com dados públicos da Receita)"
+        tipo: texto
+        agentes: [comercial]
+      - id: id.contato_nome
+        texto: "Seu nome"
+        tipo: texto
+        obrigatoria: true
+        agentes: [comercial]
+      - id: id.contato_cargo
+        texto: "Seu cargo / papel na decisão"
+        tipo: unica
+        agentes: [comercial, negocios]
+        opcoes:
+          - {valor: socio_ceo, rotulo: "Sócio / CEO / Diretor geral"}
+          - {valor: financeiro, rotulo: "CFO / Financeiro / Controladoria"}
+          - {valor: ti, rotulo: "CTO / Gerente de TI"}
+          - {valor: comercial, rotulo: "Diretor / Gerente comercial"}
+          - {valor: operacoes, rotulo: "Operações / Produção / Logística"}
+          - {valor: analista, rotulo: "Analista / Coordenador (influenciador)"}
+          - {valor: outro, rotulo: "Outro"}
+      - id: id.contato_email
+        texto: "E-mail"
+        tipo: texto
+        obrigatoria: true
+        agentes: [comercial]
+      - id: id.contato_whatsapp
+        texto: "WhatsApp"
+        tipo: texto
+        agentes: [comercial]
+      - id: id.cidade_uf
+        texto: "Cidade / UF da sede"
+        tipo: texto
+        agentes: [comercial, arquiteto]
+      - id: id.origem
+        texto: "Como chegou até nós?"
+        tipo: unica
+        agentes: [comercial]
+        opcoes:
+          - {valor: indicacao, rotulo: "Indicação",
+             subperguntas: [{id: id.origem.indicacao, texto: "Quem indicou?", tipo: texto, agentes: [comercial]}]}
+          - {valor: instagram, rotulo: "Instagram"}
+          - {valor: linkedin, rotulo: "LinkedIn"}
+          - {valor: google, rotulo: "Google / site"}
+          - {valor: evento, rotulo: "Evento / palestra"}
+          - {valor: outro, rotulo: "Outro"}
+
+  # ---------------------------------------------------------------------------
+  - id: negocio
+    titulo: "1. Modelo de Negócio"
+    descricao: "Como a empresa funciona, ganha dinheiro e toma decisões."
+    perguntas:
+      - id: neg.descricao
+        texto: "Em poucas linhas: o que a empresa faz e como ganha dinheiro?"
+        tipo: texto_longo
+        obrigatoria: true
+        agentes: [negocios, comercial, arquiteto]
+
+      - id: neg.segmento
+        texto: "Qual o segmento principal?"
+        tipo: unica
+        obrigatoria: true
+        agentes: [negocios, arquiteto, cientista, comercial]
+        opcoes:
+          - valor: varejo
+            rotulo: "Varejo / E-commerce"
+            subperguntas:
+              - id: neg.varejo.canais
+                texto: "Quais canais de venda?"
+                tipo: multipla
+                agentes: [negocios, engenheiro]
+                opcoes:
+                  - {valor: loja_fisica, rotulo: "Loja física",
+                     subperguntas: [{id: neg.varejo.lojas, texto: "Quantas lojas?", tipo: numero, agentes: [negocios, finops]}]}
+                  - valor: ecommerce
+                    rotulo: "E-commerce próprio"
+                    subperguntas:
+                      - id: neg.varejo.plataforma_ecom
+                        texto: "Plataforma do e-commerce"
+                        tipo: unica
+                        agentes: [engenheiro]
+                        opcoes:
+                          - {valor: vtex, rotulo: "VTEX"}
+                          - {valor: shopify, rotulo: "Shopify"}
+                          - {valor: nuvemshop, rotulo: "Nuvemshop"}
+                          - {valor: tray, rotulo: "Tray"}
+                          - {valor: woocommerce, rotulo: "WooCommerce"}
+                          - {valor: magento, rotulo: "Magento / Adobe Commerce"}
+                          - {valor: propria, rotulo: "Plataforma própria"}
+                          - {valor: outra, rotulo: "Outra"}
+                  - valor: marketplace
+                    rotulo: "Marketplaces"
+                    subperguntas:
+                      - id: neg.varejo.marketplaces
+                        texto: "Quais marketplaces?"
+                        tipo: multipla
+                        agentes: [engenheiro, analista]
+                        opcoes:
+                          - {valor: mercado_livre, rotulo: "Mercado Livre"}
+                          - {valor: amazon, rotulo: "Amazon"}
+                          - {valor: shopee, rotulo: "Shopee"}
+                          - {valor: magalu, rotulo: "Magalu"}
+                          - {valor: americanas, rotulo: "Americanas"}
+                          - {valor: tiktok_shop, rotulo: "TikTok Shop"}
+                          - {valor: outro, rotulo: "Outro"}
+                      - id: neg.varejo.hub
+                        texto: "Usa hub de integração (ex.: Bling, Tiny/Olist, ANYMARKET, Plugg.To)?"
+                        tipo: texto
+                        agentes: [engenheiro]
+                  - {valor: whatsapp_social, rotulo: "WhatsApp / social selling"}
+                  - {valor: televendas, rotulo: "Televendas / representantes"}
+              - id: neg.varejo.skus
+                texto: "Quantos SKUs ativos?"
+                tipo: unica
+                agentes: [engenheiro, cientista]
+                opcoes:
+                  - {valor: ate_1k, rotulo: "Até 1 mil"}
+                  - {valor: 1k_10k, rotulo: "1 mil a 10 mil"}
+                  - {valor: 10k_100k, rotulo: "10 mil a 100 mil", sinais: {complexidade: 1}}
+                  - {valor: mais_100k, rotulo: "Mais de 100 mil", sinais: {complexidade: 2}}
+              - id: neg.varejo.estoque
+                texto: "Principal dor com estoque"
+                tipo: multipla
+                agentes: [negocios, cientista]
+                opcoes:
+                  - {valor: ruptura, rotulo: "Ruptura (falta produto)", sinais: {ia: 1}}
+                  - {valor: excesso, rotulo: "Estoque parado / excesso", sinais: {ia: 1}}
+                  - {valor: inventario, rotulo: "Divergência de inventário"}
+                  - {valor: nenhuma, rotulo: "Nenhuma relevante"}
+
+          - valor: industria
+            rotulo: "Indústria"
+            subperguntas:
+              - id: neg.ind.tipo
+                texto: "Tipo de indústria"
+                tipo: unica
+                agentes: [negocios, arquiteto]
+                opcoes:
+                  - {valor: discreta, rotulo: "Manufatura discreta (peças, montagem)"}
+                  - {valor: processo, rotulo: "Processo contínuo (química, papel, plástico)"}
+                  - {valor: alimentos, rotulo: "Alimentos e bebidas"}
+                  - {valor: metal_mecanica, rotulo: "Metal-mecânica"}
+                  - {valor: textil, rotulo: "Têxtil / confecção"}
+                  - {valor: outra, rotulo: "Outra"}
+              - id: neg.ind.chao_fabrica
+                texto: "Há coleta automática de dados do chão de fábrica?"
+                tipo: sim_nao
+                agentes: [engenheiro, arquiteto]
+                se_sim:
+                  - id: neg.ind.fontes_fabrica
+                    texto: "Quais fontes?"
+                    tipo: multipla
+                    agentes: [engenheiro, arquiteto]
+                    opcoes:
+                      - {valor: clp, rotulo: "CLP / PLC", sinais: {tempo_real: 1, onprem: 1}}
+                      - {valor: scada, rotulo: "SCADA / supervisório", sinais: {tempo_real: 1, onprem: 1}}
+                      - {valor: mes, rotulo: "MES"}
+                      - {valor: sensores_iot, rotulo: "Sensores IoT", sinais: {tempo_real: 2}}
+                      - {valor: apontamento, rotulo: "Apontamento manual em sistema"}
+                  - id: neg.ind.protocolo
+                    texto: "Protocolo industrial predominante"
+                    tipo: unica
+                    agentes: [engenheiro]
+                    opcoes:
+                      - {valor: opcua, rotulo: "OPC-UA"}
+                      - {valor: modbus, rotulo: "Modbus"}
+                      - {valor: mqtt, rotulo: "MQTT"}
+                      - {valor: nao_sei, rotulo: "Não sei"}
+                se_nao:
+                  - id: neg.ind.apontamento
+                    texto: "Como a produção é registrada hoje?"
+                    tipo: unica
+                    agentes: [negocios, engenheiro]
+                    opcoes:
+                      - {valor: papel, rotulo: "Papel / planilha", sinais: {automacao: 1}}
+                      - {valor: erp, rotulo: "Direto no ERP"}
+                      - {valor: nao_registra, rotulo: "Não é registrada"}
+              - id: neg.ind.kpis
+                texto: "Quais indicadores industriais importam?"
+                tipo: multipla
+                agentes: [analista, negocios]
+                opcoes:
+                  - {valor: oee, rotulo: "OEE"}
+                  - {valor: refugo, rotulo: "Refugo / retrabalho"}
+                  - {valor: custo_produto, rotulo: "Custo por produto"}
+                  - {valor: manutencao, rotulo: "MTBF / MTTR (manutenção)", sinais: {ia: 1}}
+                  - {valor: sop, rotulo: "S&OP / planejamento de demanda", sinais: {ia: 1}}
+
+          - valor: agro
+            rotulo: "Agronegócio"
+            subperguntas:
+              - id: neg.agro.tipo
+                texto: "Atuação no agro"
+                tipo: multipla
+                agentes: [negocios, arquiteto]
+                opcoes:
+                  - valor: cooperativa
+                    rotulo: "Cooperativa agroindustrial"
+                    subperguntas:
+                      - {id: neg.agro.coop.cooperados, texto: "Número de cooperados", tipo: numero, agentes: [negocios, finops]}
+                      - {id: neg.agro.coop.unidades, texto: "Número de unidades / filiais / entrepostos", tipo: numero, agentes: [arquiteto, finops]}
+                  - {valor: produtor, rotulo: "Produtor rural / fazenda"}
+                  - {valor: agroindustria, rotulo: "Agroindústria / frigorífico", sinais: {complexidade: 1}}
+                  - {valor: revenda_insumos, rotulo: "Revenda de insumos / máquinas"}
+                  - {valor: armazenagem, rotulo: "Armazenagem / trading de grãos"}
+              - id: neg.agro.dados_campo
+                texto: "Dados de campo disponíveis"
+                tipo: multipla
+                agentes: [engenheiro, cientista]
+                opcoes:
+                  - {valor: telemetria_maquinas, rotulo: "Telemetria de máquinas (John Deere Ops Center, CNH, AGCO)", sinais: {tempo_real: 1}}
+                  - {valor: estacoes_clima, rotulo: "Estações meteorológicas"}
+                  - {valor: satelite_drone, rotulo: "Imagens de satélite / drone", sinais: {ia: 2, complexidade: 1}}
+                  - {valor: balanca_classificacao, rotulo: "Balança / classificação de grãos"}
+                  - {valor: rastreabilidade, rotulo: "Rastreabilidade animal / lote"}
+                  - {valor: nenhum, rotulo: "Nenhum estruturado"}
+              - id: neg.agro.cotacoes
+                texto: "Precisa cruzar com cotações e indicadores externos (CEPEA, B3, CBOT, câmbio)?"
+                tipo: sim_nao
+                agentes: [engenheiro, cientista]
+
+          - valor: logistica
+            rotulo: "Logística / Transporte"
+            subperguntas:
+              - id: neg.log.modal
+                texto: "Modais"
+                tipo: multipla
+                agentes: [negocios]
+                opcoes:
+                  - {valor: rodoviario_carga, rotulo: "Rodoviário de carga"}
+                  - {valor: passageiros, rotulo: "Transporte de passageiros"}
+                  - {valor: last_mile, rotulo: "Last mile / entregas urbanas"}
+                  - {valor: armazem, rotulo: "Armazenagem / CD"}
+                  - {valor: multimodal, rotulo: "Multimodal"}
+              - {id: neg.log.frota, texto: "Tamanho da frota (próprios + agregados)", tipo: numero, agentes: [negocios, engenheiro, finops]}
+              - id: neg.log.rastreamento
+                texto: "A frota tem rastreamento / telemetria?"
+                tipo: sim_nao
+                agentes: [engenheiro, arquiteto]
+                se_sim:
+                  - id: neg.log.rastreador
+                    texto: "Provedor de rastreamento"
+                    tipo: multipla
+                    agentes: [engenheiro]
+                    opcoes:
+                      - {valor: sascar, rotulo: "Sascar"}
+                      - {valor: omnilink, rotulo: "Omnilink"}
+                      - {valor: onixsat, rotulo: "Onixsat"}
+                      - {valor: autotrac, rotulo: "Autotrac"}
+                      - {valor: positron, rotulo: "Pósitron"}
+                      - {valor: outro, rotulo: "Outro / próprio"}
+                  - id: neg.log.posicoes
+                    texto: "Frequência de posição GPS"
+                    tipo: unica
+                    agentes: [engenheiro, arquiteto]
+                    opcoes:
+                      - {valor: segundos, rotulo: "A cada poucos segundos", sinais: {tempo_real: 2, complexidade: 1}}
+                      - {valor: minuto, rotulo: "A cada 1–5 minutos", sinais: {tempo_real: 1}}
+                      - {valor: maior, rotulo: "Mais espaçado"}
+              - {id: neg.log.tms, texto: "Sistema TMS / WMS utilizado", tipo: texto, agentes: [engenheiro]}
+              - id: neg.log.dores
+                texto: "Principais dores"
+                tipo: multipla
+                agentes: [negocios, cientista]
+                opcoes:
+                  - {valor: custo_km, rotulo: "Custo por km / por entrega"}
+                  - {valor: roteirizacao, rotulo: "Roteirização", sinais: {ia: 1}}
+                  - {valor: combustivel, rotulo: "Consumo de combustível / fraude"}
+                  - {valor: sla_entrega, rotulo: "SLA de entrega"}
+                  - {valor: sinistro_roubo, rotulo: "Sinistro / roubo de carga", sinais: {ia: 1}}
+
+          - valor: seguros_protecao
+            rotulo: "Seguros / Proteção veicular"
+            subperguntas:
+              - id: neg.seg.tipo
+                texto: "Tipo de operação"
+                tipo: unica
+                agentes: [negocios, cyber]
+                opcoes:
+                  - {valor: seguradora, rotulo: "Seguradora (SUSEP)", sinais: {risco: 1}}
+                  - {valor: corretora, rotulo: "Corretora"}
+                  - {valor: associacao, rotulo: "Associação de proteção veicular"}
+                  - {valor: cooperativa, rotulo: "Cooperativa de proteção"}
+                  - {valor: insurtech, rotulo: "Insurtech"}
+              - {id: neg.seg.carteira, texto: "Tamanho da carteira (apólices / associados ativos)", tipo: numero, agentes: [negocios, finops, engenheiro]}
+              - id: neg.seg.produtos
+                texto: "Produtos"
+                tipo: multipla
+                agentes: [negocios]
+                opcoes:
+                  - {valor: auto, rotulo: "Auto / moto"}
+                  - {valor: caminhao_carga, rotulo: "Caminhão / carga / reboque"}
+                  - {valor: vida, rotulo: "Vida"}
+                  - {valor: residencial, rotulo: "Residencial / patrimonial"}
+                  - {valor: rastreamento, rotulo: "Rastreamento / assistência 24h"}
+              - id: neg.seg.dores
+                texto: "Principais dores"
+                tipo: multipla
+                agentes: [negocios, cientista, analista]
+                opcoes:
+                  - {valor: inadimplencia, rotulo: "Inadimplência", sinais: {ia: 1}}
+                  - {valor: sinistralidade, rotulo: "Sinistralidade alta", sinais: {ia: 1}}
+                  - {valor: fraude, rotulo: "Fraude em sinistro", sinais: {ia: 2}}
+                  - {valor: churn, rotulo: "Cancelamentos / churn", sinais: {ia: 1}}
+                  - {valor: precificacao, rotulo: "Precificação (FIPE, perfil de risco)", sinais: {ia: 1}}
+                  - {valor: regulatorio, rotulo: "Relatórios regulatórios", sinais: {risco: 1}}
+              - id: neg.seg.fipe
+                texto: "Usa tabela FIPE ou bases externas de veículos na precificação?"
+                tipo: sim_nao
+                agentes: [engenheiro, cientista]
+
+          - valor: financeiro
+            rotulo: "Serviços financeiros"
+            subperguntas:
+              - id: neg.fin.tipo
+                texto: "Tipo"
+                tipo: unica
+                agentes: [negocios, cyber]
+                opcoes:
+                  - {valor: banco_fintech, rotulo: "Banco / fintech", sinais: {risco: 2}}
+                  - {valor: coop_credito, rotulo: "Cooperativa de crédito", sinais: {risco: 2}}
+                  - {valor: fidc_factoring, rotulo: "FIDC / factoring / securitizadora", sinais: {risco: 1}}
+                  - {valor: pagamentos, rotulo: "Meios de pagamento", sinais: {risco: 2, tempo_real: 1}}
+                  - {valor: contabil_bpo, rotulo: "Contabilidade / BPO financeiro"}
+              - id: neg.fin.bacen
+                texto: "É regulada pelo Banco Central (Res. CMN 4.893 / BCB 85 — segurança cibernética e nuvem)?"
+                tipo: sim_nao
+                agentes: [cyber, arquiteto, devops]
+                se_sim:
+                  - {id: neg.fin.bacen.comunicacao, texto: "Já comunicou ao BACEN a contratação de serviços de nuvem relevantes?", tipo: sim_nao, agentes: [cyber]}
+              - id: neg.fin.casos
+                texto: "Casos de uso prioritários"
+                tipo: multipla
+                agentes: [cientista, negocios]
+                opcoes:
+                  - {valor: score_credito, rotulo: "Score de crédito", sinais: {ia: 2}}
+                  - {valor: pld_aml, rotulo: "PLD / AML", sinais: {ia: 1, risco: 1}}
+                  - {valor: fraude, rotulo: "Detecção de fraude", sinais: {ia: 2, tempo_real: 1}}
+                  - {valor: cobranca, rotulo: "Régua de cobrança", sinais: {automacao: 1}}
+                  - {valor: open_finance, rotulo: "Open Finance"}
+
+          - valor: saude
+            rotulo: "Saúde"
+            subperguntas:
+              - id: neg.saude.tipo
+                texto: "Tipo"
+                tipo: unica
+                agentes: [negocios, cyber]
+                opcoes:
+                  - {valor: clinica, rotulo: "Clínica / consultório"}
+                  - {valor: hospital, rotulo: "Hospital", sinais: {complexidade: 1}}
+                  - {valor: laboratorio, rotulo: "Laboratório / imagem"}
+                  - {valor: operadora, rotulo: "Operadora de plano (ANS)", sinais: {risco: 1}}
+                  - {valor: farmacia, rotulo: "Farmácia / distribuidora"}
+                  - {valor: healthtech, rotulo: "Healthtech"}
+              - {id: neg.saude.sistemas, texto: "Sistemas de gestão (ex.: Tasy, MV, Soul, iClinic, próprio)", tipo: texto, agentes: [engenheiro]}
+              - id: neg.saude.prontuario
+                texto: "A plataforma vai tocar dados de prontuário / clínicos?"
+                tipo: sim_nao
+                agentes: [cyber, arquiteto]
+                se_sim:
+                  - id: neg.saude.prontuario.aviso
+                    texto: "Dados de saúde são sensíveis (LGPD art. 11). Há base legal e consentimento mapeados?"
+                    tipo: unica
+                    agentes: [cyber]
+                    opcoes:
+                      - {valor: sim, rotulo: "Sim, mapeado pelo DPO"}
+                      - {valor: parcial, rotulo: "Parcialmente", sinais: {risco: 1}}
+                      - {valor: nao, rotulo: "Não", sinais: {risco: 2}}
+
+          - valor: educacao
+            rotulo: "Educação"
+            subperguntas:
+              - id: neg.edu.tipo
+                texto: "Tipo"
+                tipo: unica
+                agentes: [negocios]
+                opcoes:
+                  - {valor: escola, rotulo: "Escola (básico)", sinais: {risco: 1}}
+                  - {valor: superior, rotulo: "Ensino superior"}
+                  - {valor: edtech, rotulo: "Edtech / cursos online"}
+                  - {valor: livres, rotulo: "Cursos livres / idiomas"}
+              - {id: neg.edu.alunos, texto: "Número de alunos ativos", tipo: numero, agentes: [negocios, finops]}
+              - {id: neg.edu.lms, texto: "Plataforma acadêmica / LMS (ex.: TOTVS RM, Moodle, Canvas, Hotmart, própria)", tipo: texto, agentes: [engenheiro]}
+              - id: neg.edu.dores
+                texto: "Dores"
+                tipo: multipla
+                agentes: [negocios, cientista]
+                opcoes:
+                  - {valor: evasao, rotulo: "Evasão", sinais: {ia: 1}}
+                  - {valor: captacao, rotulo: "Captação / funil de matrícula"}
+                  - {valor: inadimplencia, rotulo: "Inadimplência", sinais: {ia: 1}}
+                  - {valor: desempenho, rotulo: "Desempenho acadêmico"}
+
+          - valor: saas_tecnologia
+            rotulo: "SaaS / Tecnologia"
+            subperguntas:
+              - id: neg.saas.modelo
+                texto: "Modelo"
+                tipo: unica
+                agentes: [negocios, arquiteto]
+                opcoes:
+                  - {valor: saas_b2b, rotulo: "SaaS B2B"}
+                  - {valor: app_b2c, rotulo: "App B2C", sinais: {complexidade: 1}}
+                  - {valor: software_house, rotulo: "Software house / fábrica"}
+                  - {valor: provedor_internet, rotulo: "Provedor de internet (ISP)"}
+              - id: neg.saas.metricas
+                texto: "Métricas de produto já medidas"
+                tipo: multipla
+                agentes: [analista, negocios]
+                opcoes:
+                  - {valor: mrr, rotulo: "MRR / ARR"}
+                  - {valor: churn, rotulo: "Churn / NRR"}
+                  - {valor: cac_ltv, rotulo: "CAC / LTV"}
+                  - {valor: uso, rotulo: "Uso do produto (DAU/MAU, eventos)", sinais: {complexidade: 1}}
+                  - {valor: nenhuma, rotulo: "Nenhuma"}
+              - id: neg.saas.embedded
+                texto: "Quer oferecer analytics dentro do produto para os seus clientes (embedded)?"
+                tipo: sim_nao
+                agentes: [arquiteto, analista, cyber, fullstack]
+                se_sim:
+                  - {id: neg.saas.embedded.tenants, texto: "Quantos clientes (tenants) acessariam?", tipo: numero, agentes: [arquiteto, finops, fullstack]}
+
+          - valor: servicos
+            rotulo: "Serviços profissionais"
+            subperguntas:
+              - id: neg.serv.tipo
+                texto: "Tipo"
+                tipo: unica
+                agentes: [negocios]
+                opcoes:
+                  - {valor: contabilidade, rotulo: "Contabilidade"}
+                  - {valor: advocacia, rotulo: "Advocacia", sinais: {risco: 1}}
+                  - {valor: consultoria, rotulo: "Consultoria"}
+                  - {valor: agencia, rotulo: "Agência de marketing"}
+                  - {valor: engenharia, rotulo: "Engenharia / arquitetura"}
+                  - {valor: outro, rotulo: "Outro"}
+              - id: neg.serv.horas
+                texto: "Cobra por hora / projeto e precisa medir rentabilidade por cliente?"
+                tipo: sim_nao
+                agentes: [analista, negocios]
+
+          - valor: setor_publico
+            rotulo: "Setor público"
+            subperguntas:
+              - id: neg.pub.esfera
+                texto: "Esfera"
+                tipo: unica
+                agentes: [negocios, comercial, cyber]
+                opcoes:
+                  - {valor: municipal, rotulo: "Municipal"}
+                  - {valor: estadual, rotulo: "Estadual"}
+                  - {valor: federal, rotulo: "Federal", sinais: {risco: 1}}
+                  - {valor: autarquia, rotulo: "Autarquia / consórcio / estatal"}
+              - id: neg.pub.contratacao
+                texto: "Forma de contratação"
+                tipo: unica
+                agentes: [comercial]
+                opcoes:
+                  - {valor: licitacao, rotulo: "Licitação (Lei 14.133)"}
+                  - {valor: ata, rotulo: "Adesão a ata de registro de preços"}
+                  - {valor: dispensa, rotulo: "Dispensa"}
+                  - {valor: nao_sei, rotulo: "Não sei"}
+              - id: neg.pub.nuvem
+                texto: "Há exigência de nuvem nacional / soberana?"
+                tipo: sim_nao
+                agentes: [arquiteto, cyber]
+                se_sim:
+                  - {id: neg.pub.nuvem.detalhe, texto: "Detalhe a exigência (ex.: dados em território nacional, provedor estatal)", tipo: texto_longo, agentes: [arquiteto, cyber]}
+
+          - {valor: energia, rotulo: "Energia / Utilities", sinais: {tempo_real: 1}}
+          - {valor: construcao, rotulo: "Construção / Imobiliário"}
+          - {valor: telecom, rotulo: "Telecom"}
+          - valor: outro
+            rotulo: "Outro"
+            subperguntas:
+              - {id: neg.segmento.outro, texto: "Qual?", tipo: texto, obrigatoria: true, agentes: [negocios]}
+
+      - id: neg.publico
+        texto: "Para quem vende?"
+        tipo: unica
+        agentes: [negocios, comercial]
+        opcoes:
+          - {valor: b2b, rotulo: "Empresas (B2B)"}
+          - {valor: b2c, rotulo: "Consumidor final (B2C)", sinais: {risco: 1}}
+          - {valor: b2b2c, rotulo: "Ambos / B2B2C"}
+          - {valor: b2g, rotulo: "Governo (B2G)"}
+
+      - id: neg.modelo_receita
+        texto: "Como a receita é gerada?"
+        tipo: multipla
+        agentes: [negocios, analista, comercial]
+        opcoes:
+          - {valor: venda_produto, rotulo: "Venda de produto"}
+          - valor: recorrencia
+            rotulo: "Assinatura / recorrência / mensalidade"
+            subperguntas:
+              - id: neg.receita.churn_conhecido
+                texto: "Conhece o churn mensal?"
+                tipo: unica
+                agentes: [analista, cientista]
+                opcoes:
+                  - {valor: sim_confiavel, rotulo: "Sim, e confio no número"}
+                  - {valor: sim_duvida, rotulo: "Sim, mas não confio"}
+                  - {valor: nao, rotulo: "Não", sinais: {ia: 1}}
+          - {valor: projeto_servico, rotulo: "Serviço por projeto / hora"}
+          - {valor: comissao, rotulo: "Comissão / intermediação / marketplace"}
+          - {valor: licenca, rotulo: "Licenciamento"}
+          - {valor: publicidade, rotulo: "Publicidade"}
+          - {valor: outro, rotulo: "Outro"}
+
+      - id: neg.faturamento
+        texto: "Faturamento anual"
+        tipo: unica
+        agentes: [comercial, finops]
+        opcoes:
+          - {valor: ate_360k, rotulo: "Até R$ 360 mil (ME)"}
+          - {valor: 360k_4m8, rotulo: "R$ 360 mil a R$ 4,8 milhões (EPP)"}
+          - {valor: 4m8_30m, rotulo: "R$ 4,8 a 30 milhões"}
+          - {valor: 30m_300m, rotulo: "R$ 30 a 300 milhões"}
+          - {valor: mais_300m, rotulo: "Mais de R$ 300 milhões"}
+          - {valor: nao_informar, rotulo: "Prefiro não informar"}
+
+      - id: neg.funcionarios
+        texto: "Número de colaboradores"
+        tipo: unica
+        agentes: [comercial, cyber]
+        opcoes:
+          - {valor: ate_10, rotulo: "Até 10"}
+          - {valor: "11_50", rotulo: "11 a 50"}
+          - {valor: "51_200", rotulo: "51 a 200"}
+          - {valor: "201_1000", rotulo: "201 a 1.000"}
+          - {valor: mais_1000, rotulo: "Mais de 1.000"}
+
+      - id: neg.unidades
+        texto: "Quantas unidades / filiais / CNPJs?"
+        tipo: unica
+        agentes: [arquiteto, negocios]
+        opcoes:
+          - {valor: "1", rotulo: "1"}
+          - valor: "2_5"
+            rotulo: "2 a 5"
+            subperguntas: &consolidacao
+              - id: neg.unidades.consolidacao
+                texto: "Os números das unidades são consolidados hoje? Como?"
+                tipo: unica
+                agentes: [negocios, engenheiro]
+                opcoes:
+                  - {valor: automatico, rotulo: "Automaticamente no ERP / BI"}
+                  - {valor: planilha, rotulo: "Manualmente em planilha", sinais: {automacao: 1}}
+                  - {valor: nao, rotulo: "Não são consolidados", sinais: {automacao: 1}}
+          - {valor: "6_20", rotulo: "6 a 20", subperguntas: *consolidacao}
+          - {valor: mais_20, rotulo: "Mais de 20", subperguntas: *consolidacao, sinais: {complexidade: 1}}
+
+      - id: neg.areas
+        texto: "Quais áreas a plataforma deve atender? (cada uma abre perguntas sobre suas dores)"
+        tipo: multipla
+        obrigatoria: true
+        agentes: [negocios, analista]
+        opcoes:
+          - valor: financeiro
+            rotulo: "Financeiro / Controladoria"
+            subperguntas:
+              - id: neg.area.fin.dores
+                texto: "Dores do financeiro"
+                tipo: multipla
+                agentes: [negocios, analista, cientista]
+                opcoes:
+                  - {valor: fluxo_caixa, rotulo: "Fluxo de caixa sem previsibilidade", sinais: {ia: 1}}
+                  - {valor: conciliacao, rotulo: "Conciliação bancária manual", sinais: {automacao: 2}}
+                  - {valor: dre_lento, rotulo: "DRE / fechamento demora", sinais: {automacao: 1}}
+                  - {valor: inadimplencia, rotulo: "Inadimplência", sinais: {ia: 1}}
+                  - {valor: custo_centro, rotulo: "Custo por centro / produto / cliente sem visibilidade"}
+                  - {valor: orcado_realizado, rotulo: "Orçado x realizado"}
+          - valor: comercial
+            rotulo: "Comercial / Vendas"
+            subperguntas:
+              - id: neg.area.com.dores
+                texto: "Dores do comercial"
+                tipo: multipla
+                agentes: [negocios, analista, cientista]
+                opcoes:
+                  - {valor: funil, rotulo: "Funil sem visibilidade"}
+                  - {valor: metas, rotulo: "Metas e acompanhamento manuais", sinais: {automacao: 1}}
+                  - {valor: previsao, rotulo: "Previsão de vendas", sinais: {ia: 1}}
+                  - {valor: comissao, rotulo: "Cálculo de comissão manual", sinais: {automacao: 1}}
+                  - {valor: carteira, rotulo: "Carteira / positivação de clientes"}
+                  - {valor: mix_margem, rotulo: "Mix e margem por vendedor"}
+          - valor: marketing
+            rotulo: "Marketing"
+            subperguntas:
+              - id: neg.area.mkt.dores
+                texto: "Dores do marketing"
+                tipo: multipla
+                agentes: [negocios, analista, engenheiro]
+                opcoes:
+                  - {valor: atribuicao, rotulo: "Atribuição de canais / ROI de mídia"}
+                  - {valor: cac, rotulo: "CAC por canal"}
+                  - {valor: segmentacao, rotulo: "Segmentação de base", sinais: {ia: 1}}
+                  - {valor: relatorios_midia, rotulo: "Relatórios de mídia manuais", sinais: {automacao: 1}}
+          - valor: operacoes
+            rotulo: "Operações / Produção"
+            subperguntas:
+              - id: neg.area.ops.dores
+                texto: "Dores de operações"
+                tipo: multipla
+                agentes: [negocios, analista]
+                opcoes:
+                  - {valor: produtividade, rotulo: "Produtividade / eficiência"}
+                  - {valor: desperdicio, rotulo: "Desperdício / perdas"}
+                  - {valor: sla, rotulo: "SLA / prazo"}
+                  - {valor: qualidade, rotulo: "Qualidade / não conformidades"}
+          - valor: supply
+            rotulo: "Logística / Supply chain / Compras"
+            subperguntas:
+              - id: neg.area.sup.dores
+                texto: "Dores de supply"
+                tipo: multipla
+                agentes: [negocios, cientista]
+                opcoes:
+                  - {valor: frete, rotulo: "Custo de frete"}
+                  - {valor: ruptura, rotulo: "Ruptura / excesso de estoque", sinais: {ia: 1}}
+                  - {valor: lead_time, rotulo: "Lead time de fornecedor"}
+                  - {valor: compras, rotulo: "Sugestão de compras", sinais: {ia: 1}}
+          - valor: rh
+            rotulo: "RH / Pessoas"
+            subperguntas:
+              - id: neg.area.rh.dores
+                texto: "Dores de RH"
+                tipo: multipla
+                agentes: [negocios, analista, cyber]
+                opcoes:
+                  - {valor: turnover, rotulo: "Turnover", sinais: {ia: 1}}
+                  - {valor: absenteismo, rotulo: "Absenteísmo"}
+                  - {valor: headcount, rotulo: "Headcount e custo de folha"}
+                  - {valor: desempenho, rotulo: "Avaliação de desempenho"}
+          - valor: atendimento
+            rotulo: "Atendimento / CS"
+            subperguntas:
+              - id: neg.area.cs.dores
+                texto: "Dores do atendimento"
+                tipo: multipla
+                agentes: [negocios, cientista]
+                opcoes:
+                  - {valor: nps, rotulo: "NPS / satisfação"}
+                  - {valor: tempo_resposta, rotulo: "Tempo de resposta"}
+                  - {valor: volume, rotulo: "Volume alto de atendimentos repetitivos", sinais: {ia: 2, automacao: 1}}
+                  - {valor: sentimento, rotulo: "Entender motivos de reclamação", sinais: {ia: 1}}
+          - {valor: juridico, rotulo: "Jurídico / Compliance", sinais: {risco: 1}}
+          - {valor: ti, rotulo: "TI"}
+          - valor: diretoria
+            rotulo: "Diretoria / Conselho"
+            subperguntas:
+              - id: neg.area.dir.necessidade
+                texto: "O que a diretoria precisa?"
+                tipo: multipla
+                agentes: [negocios, analista]
+                opcoes:
+                  - {valor: visao_consolidada, rotulo: "Visão consolidada da empresa"}
+                  - {valor: okr, rotulo: "Metas / OKRs"}
+                  - {valor: board, rotulo: "Relatório para conselho / investidores"}
+                  - {valor: simulacao, rotulo: "Simulação de cenários", sinais: {ia: 1}}
+
+      - id: neg.kpis_atuais
+        texto: "Quais indicadores a diretoria acompanha hoje, e de onde vêm os números?"
+        tipo: texto_longo
+        agentes: [negocios, analista]
+
+      - id: neg.decisao_dados
+        texto: "De 1 a 5: o quanto as decisões hoje são baseadas em dados?"
+        tipo: escala
+        min: 1
+        max: 5
+        agentes: [negocios, comercial]
+
+      - id: neg.sazonalidade
+        texto: "O negócio tem sazonalidade forte?"
+        tipo: sim_nao
+        agentes: [cientista, finops, arquiteto]
+        se_sim:
+          - {id: neg.sazonalidade.detalhe, texto: "Quais meses / eventos (safra, Black Friday, volta às aulas...)?", tipo: texto, agentes: [cientista, finops]}
+
+      - id: neg.crescimento
+        texto: "Ritmo de crescimento esperado"
+        tipo: unica
+        agentes: [arquiteto, finops, comercial]
+        opcoes:
+          - {valor: estavel, rotulo: "Estável"}
+          - {valor: ate_20, rotulo: "Até 20% ao ano"}
+          - {valor: "20_50", rotulo: "20% a 50% ao ano", sinais: {complexidade: 1}}
+          - {valor: mais_50, rotulo: "Mais de 50% ao ano", sinais: {complexidade: 2}}
+          - {valor: reestruturacao, rotulo: "Em reestruturação"}
+
+      - id: neg.regulacao
+        texto: "Regulações que se aplicam"
+        tipo: multipla
+        agentes: [cyber, arquiteto]
+        opcoes:
+          - {valor: lgpd, rotulo: "LGPD (praticamente todas)"}
+          - {valor: bacen, rotulo: "BACEN", sinais: {risco: 2}}
+          - {valor: susep, rotulo: "SUSEP", sinais: {risco: 1}}
+          - {valor: ans, rotulo: "ANS", sinais: {risco: 1}}
+          - {valor: anvisa, rotulo: "ANVISA"}
+          - {valor: anatel_aneel, rotulo: "ANATEL / ANEEL"}
+          - {valor: cvm, rotulo: "CVM (companhia aberta)", sinais: {risco: 1}}
+          - {valor: sped, rotulo: "Fiscal (SPED, NF-e)"}
+          - {valor: nao_sei, rotulo: "Não sei"}
+
+      - id: neg.concorrentes
+        texto: "Principais concorrentes e o que fazem melhor com dados (se souber)"
+        tipo: texto_longo
+        agentes: [negocios, comercial]
+
+  # ---------------------------------------------------------------------------
+  - id: maturidade
+    titulo: "2. Maturidade e Pessoas"
+    descricao: "Quem vai usar, construir e operar."
+    perguntas:
+      - id: mat.nivel
+        texto: "Como está a gestão de dados hoje?"
+        tipo: unica
+        obrigatoria: true
+        agentes: [negocios, arquiteto, comercial]
+        opcoes:
+          - {valor: "1", rotulo: "1 — Planilhas e relatórios manuais", sinais: {automacao: 1}}
+          - {valor: "2", rotulo: "2 — Relatórios do ERP e algum BI isolado"}
+          - {valor: "3", rotulo: "3 — BI centralizado com data warehouse"}
+          - {valor: "4", rotulo: "4 — Plataforma de dados com governança", sinais: {complexidade: 1}}
+          - {valor: "5", rotulo: "5 — Data-driven, com IA em produção", sinais: {complexidade: 1, ia: 1}}
+
+      - id: mat.time_dados
+        texto: "Existe time de dados?"
+        tipo: unica
+        agentes: [arquiteto, devops, comercial]
+        opcoes:
+          - {valor: nao, rotulo: "Não"}
+          - valor: uma_pessoa
+            rotulo: "Uma pessoa (analista / BI)"
+            subperguntas: &perfis_time
+              - id: mat.time.skills
+                texto: "Competências do time"
+                tipo: multipla
+                agentes: [arquiteto, devops, fullstack]
+                opcoes:
+                  - {valor: sql, rotulo: "SQL"}
+                  - {valor: python, rotulo: "Python"}
+                  - {valor: powerbi, rotulo: "Power BI / DAX", sinais: {azure: 1}}
+                  - {valor: looker, rotulo: "Looker / Looker Studio", sinais: {gcp: 1}}
+                  - {valor: spark, rotulo: "Spark / Databricks"}
+                  - {valor: dbt, rotulo: "dbt"}
+                  - {valor: airflow, rotulo: "Airflow / orquestração"}
+                  - {valor: aws, rotulo: "AWS", sinais: {aws: 1}}
+                  - {valor: gcp, rotulo: "GCP", sinais: {gcp: 1}}
+                  - {valor: azure, rotulo: "Azure", sinais: {azure: 1}}
+                  - {valor: oci, rotulo: "Oracle Cloud", sinais: {oci: 1}}
+                  - {valor: linux_docker, rotulo: "Linux / Docker", sinais: {onprem: 1}}
+          - {valor: pequeno, rotulo: "Pequeno (2 a 5)", subperguntas: *perfis_time}
+          - {valor: estruturado, rotulo: "Estruturado (6+)", subperguntas: *perfis_time}
+
+      - id: mat.ti
+        texto: "Como é a TI?"
+        tipo: unica
+        agentes: [devops, cyber, arquiteto]
+        opcoes:
+          - {valor: interna, rotulo: "TI interna"}
+          - {valor: terceirizada, rotulo: "TI terceirizada",
+             subperguntas: [{id: mat.ti.fornecedor, texto: "Quem é o fornecedor e qual o escopo?", tipo: texto, agentes: [devops, comercial]}]}
+          - {valor: nenhuma, rotulo: "Não há TI", sinais: {onprem: -1}}
+
+      - id: mat.sponsor
+        texto: "Há um patrocinador executivo do projeto?"
+        tipo: sim_nao
+        agentes: [comercial, negocios]
+        se_sim:
+          - {id: mat.sponsor.quem, texto: "Quem (cargo)?", tipo: texto, agentes: [comercial]}
+        se_nao:
+          - {id: mat.sponsor.risco, texto: "Quem aprovaria o investimento?", tipo: texto, agentes: [comercial]}
+
+      - id: mat.operacao
+        texto: "Depois de implantada, quem opera a plataforma?"
+        tipo: unica
+        obrigatoria: true
+        agentes: [comercial, devops, finops]
+        opcoes:
+          - {valor: interno, rotulo: "Nosso time interno"}
+          - {valor: gerenciado, rotulo: "Vocês (serviço gerenciado mensal)"}
+          - {valor: hibrido, rotulo: "Híbrido: vocês sustentam, nós evoluímos"}
+          - {valor: nao_sei, rotulo: "Ainda não sei"}
+
+      - id: mat.treinamento
+        texto: "Precisa de capacitação do time?"
+        tipo: multipla
+        agentes: [comercial, analista]
+        opcoes:
+          - {valor: usuarios_bi, rotulo: "Usuários de BI"}
+          - {valor: sql, rotulo: "SQL / análise"}
+          - {valor: engenharia, rotulo: "Engenharia de dados"}
+          - {valor: ia, rotulo: "IA generativa no dia a dia"}
+          - {valor: nao, rotulo: "Não"}
+
+  # ---------------------------------------------------------------------------
+  - id: dados
+    titulo: "3. Dados e Fontes"
+    descricao: "De onde vêm os dados, quanto são e com que frequência mudam."
+    perguntas:
+      - id: dados.fontes
+        texto: "Quais fontes de dados existem? (cada uma abre detalhes)"
+        tipo: multipla
+        obrigatoria: true
+        agentes: [engenheiro, arquiteto, finops]
+        opcoes:
+          - valor: erp
+            rotulo: "ERP"
+            subperguntas:
+              - id: dados.erp.sistema
+                texto: "Qual ERP?"
+                tipo: unica
+                agentes: [engenheiro, arquiteto]
+                opcoes:
+                  - {valor: sap, rotulo: "SAP (ECC / S/4HANA / Business One)", sinais: {complexidade: 2, azure: 1, aws: 1}}
+                  - {valor: protheus, rotulo: "TOTVS Protheus"}
+                  - {valor: rm, rotulo: "TOTVS RM"}
+                  - {valor: datasul, rotulo: "TOTVS Datasul", sinais: {complexidade: 1}}
+                  - {valor: senior, rotulo: "Senior"}
+                  - {valor: sankhya, rotulo: "Sankhya"}
+                  - {valor: oracle, rotulo: "Oracle (EBS / JD Edwards / NetSuite)", sinais: {oci: 2}}
+                  - {valor: dynamics, rotulo: "Microsoft Dynamics 365", sinais: {azure: 2}}
+                  - {valor: omie, rotulo: "Omie"}
+                  - {valor: bling_tiny, rotulo: "Bling / Tiny (Olist)"}
+                  - {valor: conta_azul, rotulo: "Conta Azul"}
+                  - {valor: proprio, rotulo: "Sistema próprio"}
+                  - {valor: outro, rotulo: "Outro"}
+              - id: dados.erp.hospedagem
+                texto: "Onde o ERP roda?"
+                tipo: unica
+                agentes: [arquiteto, engenheiro, cyber, dba]
+                opcoes:
+                  - {valor: servidor_local, rotulo: "Servidor na empresa", sinais: {onprem: 1}}
+                  - {valor: saas, rotulo: "Na nuvem do fornecedor (SaaS)"}
+                  - {valor: datacenter, rotulo: "Datacenter / hosting terceiro"}
+                  - {valor: nao_sei, rotulo: "Não sei"}
+              - id: dados.erp.acesso
+                texto: "Como conseguimos ler os dados do ERP?"
+                tipo: unica
+                agentes: [engenheiro, cyber, dba]
+                opcoes:
+                  - valor: banco
+                    rotulo: "Acesso direto ao banco (leitura)"
+                    subperguntas:
+                      - id: dados.erp.banco
+                        texto: "Banco do ERP"
+                        tipo: unica
+                        agentes: [engenheiro, dba]
+                        opcoes:
+                          - {valor: sqlserver, rotulo: "SQL Server", sinais: {azure: 1}}
+                          - {valor: oracle, rotulo: "Oracle", sinais: {oci: 1}}
+                          - {valor: postgres, rotulo: "PostgreSQL"}
+                          - {valor: progress, rotulo: "Progress / OpenEdge", sinais: {complexidade: 1}}
+                          - {valor: firebird, rotulo: "Firebird"}
+                          - {valor: mysql, rotulo: "MySQL / MariaDB"}
+                          - {valor: hana, rotulo: "SAP HANA", sinais: {complexidade: 1}}
+                          - {valor: nao_sei, rotulo: "Não sei"}
+                  - {valor: api, rotulo: "API do fornecedor"}
+                  - {valor: exportacao, rotulo: "Só exportando relatórios (Excel/CSV)", sinais: {automacao: 1, complexidade: 1}}
+                  - {valor: nao_sei, rotulo: "Não sei"}
+          - valor: crm
+            rotulo: "CRM"
+            subperguntas:
+              - id: dados.crm.sistema
+                texto: "Qual CRM?"
+                tipo: unica
+                agentes: [engenheiro]
+                opcoes:
+                  - {valor: salesforce, rotulo: "Salesforce"}
+                  - {valor: hubspot, rotulo: "HubSpot"}
+                  - {valor: rd_crm, rotulo: "RD Station CRM"}
+                  - {valor: pipedrive, rotulo: "Pipedrive"}
+                  - {valor: dynamics_crm, rotulo: "Dynamics 365 Sales", sinais: {azure: 1}}
+                  - {valor: ploomes, rotulo: "Ploomes"}
+                  - {valor: agendor, rotulo: "Agendor"}
+                  - {valor: outro, rotulo: "Outro"}
+          - valor: bancos
+            rotulo: "Bancos de dados de sistemas próprios"
+            subperguntas:
+              - id: dados.bd.tipos
+                texto: "Quais bancos?"
+                tipo: multipla
+                agentes: [engenheiro, arquiteto, dba]
+                opcoes:
+                  - {valor: sqlserver, rotulo: "SQL Server", sinais: {azure: 1}}
+                  - {valor: oracle, rotulo: "Oracle", sinais: {oci: 1}}
+                  - {valor: postgres, rotulo: "PostgreSQL"}
+                  - {valor: mysql, rotulo: "MySQL / MariaDB"}
+                  - {valor: mongodb, rotulo: "MongoDB"}
+                  - {valor: firebird, rotulo: "Firebird"}
+                  - {valor: dynamodb_firestore, rotulo: "DynamoDB / Firestore / Cosmos"}
+                  - {valor: outro, rotulo: "Outro"}
+              - id: dados.bd.cdc
+                texto: "Precisa capturar alterações em tempo real (CDC)?"
+                tipo: sim_nao
+                agentes: [engenheiro, arquiteto, dba]
+                se_sim:
+                  - {id: dados.bd.cdc.tabelas, texto: "Quantas tabelas aproximadamente?", tipo: numero, agentes: [engenheiro, finops, dba]}
+          - valor: planilhas
+            rotulo: "Planilhas"
+            subperguntas:
+              - id: dados.planilhas.onde
+                texto: "Onde ficam?"
+                tipo: multipla
+                agentes: [engenheiro]
+                opcoes:
+                  - {valor: local, rotulo: "Excel em máquinas / rede local", sinais: {automacao: 1}}
+                  - {valor: sharepoint, rotulo: "SharePoint / OneDrive", sinais: {azure: 1}}
+                  - {valor: google_sheets, rotulo: "Google Sheets", sinais: {gcp: 1}}
+              - id: dados.planilhas.oficiais
+                texto: "Alguma planilha é fonte oficial de número da diretoria?"
+                tipo: sim_nao
+                agentes: [engenheiro, negocios, cyber, fullstack]
+                se_sim:
+                  - {id: dados.planilhas.oficiais.quais, texto: "Quais e quem mantém?", tipo: texto_longo, agentes: [engenheiro, negocios]}
+          - valor: ecommerce
+            rotulo: "E-commerce / marketplaces"
+            subperguntas:
+              - {id: dados.ecom.detalhe, texto: "Plataformas e contas (ex.: VTEX + Mercado Livre com 2 contas)", tipo: texto, agentes: [engenheiro]}
+          - valor: marketing
+            rotulo: "Marketing e mídia"
+            subperguntas:
+              - id: dados.mkt.fontes
+                texto: "Quais?"
+                tipo: multipla
+                agentes: [engenheiro, analista]
+                opcoes:
+                  - {valor: ga4, rotulo: "Google Analytics 4", sinais: {gcp: 2}}
+                  - {valor: google_ads, rotulo: "Google Ads", sinais: {gcp: 1}}
+                  - {valor: meta_ads, rotulo: "Meta Ads"}
+                  - {valor: tiktok_ads, rotulo: "TikTok Ads"}
+                  - {valor: linkedin_ads, rotulo: "LinkedIn Ads"}
+                  - {valor: rd_marketing, rotulo: "RD Station Marketing"}
+                  - {valor: instagram, rotulo: "Instagram orgânico"}
+          - valor: iot
+            rotulo: "IoT / telemetria / sensores"
+            sinais: {tempo_real: 1}
+            subperguntas:
+              - {id: dados.iot.dispositivos, texto: "Quantos dispositivos?", tipo: numero, agentes: [engenheiro, arquiteto, finops]}
+              - id: dados.iot.frequencia
+                texto: "Frequência de envio"
+                tipo: unica
+                agentes: [engenheiro, arquiteto, finops]
+                opcoes:
+                  - {valor: segundos, rotulo: "Segundos", sinais: {tempo_real: 2, complexidade: 2}}
+                  - {valor: minutos, rotulo: "Minutos", sinais: {tempo_real: 1}}
+                  - {valor: horas, rotulo: "Horas ou lote diário"}
+              - id: dados.iot.protocolo
+                texto: "Como os dados chegam?"
+                tipo: unica
+                agentes: [engenheiro]
+                opcoes:
+                  - {valor: mqtt, rotulo: "MQTT"}
+                  - {valor: http, rotulo: "HTTP / webhook"}
+                  - {valor: arquivo, rotulo: "Arquivo / API do fornecedor"}
+                  - {valor: nao_sei, rotulo: "Não sei"}
+          - valor: documentos
+            rotulo: "Arquivos e documentos (XML, PDF, imagens)"
+            subperguntas:
+              - id: dados.doc.tipos
+                texto: "Tipos"
+                tipo: multipla
+                agentes: [engenheiro, cientista]
+                opcoes:
+                  - {valor: nfe_xml, rotulo: "XML de NF-e / CT-e / NFS-e"}
+                  - {valor: pdf, rotulo: "PDFs (contratos, boletos, laudos)", sinais: {ia: 1}}
+                  - {valor: imagens, rotulo: "Imagens / fotos (vistoria, produto)", sinais: {ia: 2}}
+                  - {valor: audio, rotulo: "Áudios / ligações", sinais: {ia: 2}}
+                  - {valor: csv, rotulo: "CSV / TXT de sistemas"}
+              - id: dados.doc.volume
+                texto: "Volume mensal de documentos"
+                tipo: unica
+                agentes: [engenheiro, finops]
+                opcoes:
+                  - {valor: ate_1k, rotulo: "Até 1 mil"}
+                  - {valor: 1k_50k, rotulo: "1 mil a 50 mil"}
+                  - {valor: mais_50k, rotulo: "Mais de 50 mil", sinais: {complexidade: 1}}
+          - valor: atendimento
+            rotulo: "Atendimento / WhatsApp / tickets"
+            subperguntas:
+              - {id: dados.atend.ferramenta, texto: "Ferramenta (ex.: Zendesk, Blip, Take, Octadesk, WhatsApp Business API)", tipo: texto, agentes: [engenheiro]}
+          - valor: publicos
+            rotulo: "Dados públicos / externos"
+            subperguntas:
+              - id: dados.ext.quais
+                texto: "Quais?"
+                tipo: multipla
+                agentes: [engenheiro, cientista]
+                opcoes:
+                  - {valor: receita_cnpj, rotulo: "Receita Federal (CNPJ)"}
+                  - {valor: ibge, rotulo: "IBGE / censo"}
+                  - {valor: fipe, rotulo: "Tabela FIPE"}
+                  - {valor: bcb, rotulo: "Banco Central (câmbio, Selic, IPCA)"}
+                  - {valor: clima, rotulo: "Clima (INMET, APIs)"}
+                  - {valor: cepea_b3, rotulo: "CEPEA / B3 / commodities"}
+                  - {valor: scraping, rotulo: "Preços de concorrentes (web scraping)", sinais: {complexidade: 1}}
+          - valor: outra
+            rotulo: "Outra"
+            subperguntas:
+              - {id: dados.fontes.outra, texto: "Descreva", tipo: texto_longo, agentes: [engenheiro]}
+
+      - id: dados.bd.administracao
+        texto: "Quem cuida dos bancos de dados hoje (backup, atualização, desempenho)?"
+        tipo: unica
+        mostrar_se: {pergunta: dados.fontes, em: [erp, bancos]}
+        agentes: [dba, cyber, devops, comercial]
+        opcoes:
+          - {valor: dba_interno, rotulo: "DBA ou analista dedicado"}
+          - {valor: ti_geral, rotulo: "A TI, junto com outras tarefas"}
+          - {valor: fornecedor_erp, rotulo: "O fornecedor do ERP / sistema"}
+          - {valor: terceiro, rotulo: "Empresa terceirizada"}
+          - {valor: ninguem, rotulo: "Ninguém especificamente", sinais: {risco: 1}}
+
+      - id: dados.bd.versao
+        texto: "Versão e edição dos bancos, se souber (ex.: SQL Server 2019 Standard, Oracle 19c SE2, PostgreSQL 15)"
+        tipo: texto
+        mostrar_se: {pergunta: dados.fontes, em: [erp, bancos]}
+        agentes: [dba, finops, cyber]
+
+      - id: dados.bd.replica
+        texto: "Existe uma cópia de leitura do banco (réplica) para relatórios, sem pesar no sistema?"
+        tipo: sim_nao
+        mostrar_se: {pergunta: dados.fontes, em: [erp, bancos]}
+        agentes: [dba, engenheiro, arquiteto]
+        se_nao:
+          - id: dados.bd.janela
+            texto: "Em que horário o sistema pode receber consultas pesadas?"
+            tipo: unica
+            agentes: [dba, engenheiro, devops]
+            opcoes:
+              - {valor: madrugada, rotulo: "Só de madrugada"}
+              - {valor: fora_expediente, rotulo: "Fora do horário comercial"}
+              - {valor: qualquer, rotulo: "A qualquer hora, o servidor aguenta"}
+              - {valor: nao_sei, rotulo: "Não sei"}
+
+      - id: dados.volume_total
+        texto: "Volume total de dados (estimativa)"
+        tipo: unica
+        obrigatoria: true
+        agentes: [arquiteto, engenheiro, finops, dba]
+        opcoes:
+          - {valor: ate_10gb, rotulo: "Até 10 GB"}
+          - {valor: 10_100gb, rotulo: "10 GB a 100 GB"}
+          - {valor: 100gb_1tb, rotulo: "100 GB a 1 TB"}
+          - {valor: 1_10tb, rotulo: "1 TB a 10 TB", sinais: {complexidade: 1}}
+          - {valor: 10_100tb, rotulo: "10 TB a 100 TB", sinais: {complexidade: 2, onprem: -1}}
+          - {valor: mais_100tb, rotulo: "Mais de 100 TB", sinais: {complexidade: 3, onprem: -2}}
+          - valor: nao_sei
+            rotulo: "Não sei"
+            subperguntas:
+              - id: dados.volume.registros
+                texto: "Quantos registros novos por mês na maior tabela (vendas, pedidos, eventos)?"
+                tipo: unica
+                agentes: [arquiteto, finops]
+                opcoes:
+                  - {valor: ate_100k, rotulo: "Até 100 mil"}
+                  - {valor: 100k_1m, rotulo: "100 mil a 1 milhão"}
+                  - {valor: 1m_10m, rotulo: "1 a 10 milhões"}
+                  - {valor: mais_10m, rotulo: "Mais de 10 milhões", sinais: {complexidade: 1}}
+
+      - id: dados.crescimento
+        texto: "Crescimento mensal dos dados"
+        tipo: unica
+        agentes: [arquiteto, finops, dba]
+        opcoes:
+          - {valor: baixo, rotulo: "Baixo (< 5% ao mês)"}
+          - {valor: medio, rotulo: "Médio (5% a 15%)"}
+          - {valor: alto, rotulo: "Alto (> 15%)", sinais: {complexidade: 1}}
+          - {valor: nao_sei, rotulo: "Não sei"}
+
+      - id: dados.latencia
+        texto: "Com que frequência os números precisam estar atualizados?"
+        tipo: unica
+        obrigatoria: true
+        agentes: [arquiteto, engenheiro, finops, devops]
+        opcoes:
+          - {valor: mensal, rotulo: "Mensal"}
+          - {valor: diario, rotulo: "Diário (D-1)"}
+          - {valor: intradiario, rotulo: "Algumas vezes ao dia"}
+          - {valor: horario, rotulo: "De hora em hora", sinais: {complexidade: 1}}
+          - valor: near_real_time
+            rotulo: "Quase tempo real (minutos)"
+            sinais: {tempo_real: 1, complexidade: 1}
+            subperguntas: &tempo_real
+              - {id: dados.rt.motivo, texto: "Que decisão depende desse tempo real? (evita pagar streaming sem necessidade)", tipo: texto_longo, obrigatoria: true, agentes: [arquiteto, finops, negocios]}
+              - id: dados.rt.eventos
+                texto: "Eventos por segundo no pico"
+                tipo: unica
+                agentes: [arquiteto, engenheiro, finops]
+                opcoes:
+                  - {valor: ate_100, rotulo: "Até 100/s"}
+                  - {valor: 100_5k, rotulo: "100 a 5 mil/s", sinais: {complexidade: 1}}
+                  - {valor: mais_5k, rotulo: "Mais de 5 mil/s", sinais: {complexidade: 2, onprem: -1}}
+          - {valor: tempo_real, rotulo: "Tempo real (segundos)", sinais: {tempo_real: 2, complexidade: 2}, subperguntas: *tempo_real}
+
+      - id: dados.historico
+        texto: "Quanto histórico precisa ser carregado?"
+        tipo: unica
+        agentes: [engenheiro, finops, cientista, dba]
+        opcoes:
+          - {valor: "1", rotulo: "1 ano"}
+          - {valor: "2_5", rotulo: "2 a 5 anos"}
+          - {valor: "5_mais", rotulo: "Mais de 5 anos"}
+          - {valor: todo, rotulo: "Todo o histórico"}
+
+      - id: dados.qualidade
+        texto: "De 1 a 5: quanto confia nos dados de hoje?"
+        tipo: escala
+        min: 1
+        max: 5
+        agentes: [engenheiro, analista, negocios]
+
+      - id: dados.qualidade.problemas
+        texto: "Problemas de qualidade conhecidos"
+        tipo: multipla
+        mostrar_se: {pergunta: dados.qualidade, em: ["1", "2", "3"]}
+        agentes: [engenheiro, analista]
+        opcoes:
+          - {valor: duplicidade, rotulo: "Cadastros duplicados"}
+          - {valor: sem_chave, rotulo: "Sem chave comum entre sistemas (cliente/produto)", sinais: {complexidade: 1}}
+          - {valor: divergencia, rotulo: "Áreas com números diferentes para a mesma coisa"}
+          - {valor: faltantes, rotulo: "Campos faltando / preenchimento manual"}
+          - {valor: atraso, rotulo: "Dados chegam atrasados"}
+
+      - id: dados.pessoais
+        texto: "A plataforma vai armazenar dados pessoais?"
+        tipo: sim_nao
+        obrigatoria: true
+        agentes: [cyber, arquiteto]
+        se_sim:
+          - id: dados.pessoais.tipos
+            texto: "Quais tipos?"
+            tipo: multipla
+            agentes: [cyber, arquiteto, engenheiro]
+            opcoes:
+              - {valor: identificacao, rotulo: "Identificação (nome, CPF, RG)"}
+              - {valor: contato, rotulo: "Contato (e-mail, telefone, endereço)"}
+              - {valor: financeiro, rotulo: "Financeiro (renda, crédito, conta)", sinais: {risco: 1}}
+              - {valor: localizacao, rotulo: "Localização / GPS", sinais: {risco: 1}}
+              - {valor: saude, rotulo: "Saúde (sensível)", sinais: {risco: 2}}
+              - {valor: biometria, rotulo: "Biometria / imagem facial (sensível)", sinais: {risco: 2}}
+              - {valor: menores, rotulo: "Dados de crianças e adolescentes", sinais: {risco: 2}}
+          - id: dados.pessoais.titulares
+            texto: "Número de titulares (pessoas) na base"
+            tipo: unica
+            agentes: [cyber, finops]
+            opcoes:
+              - {valor: ate_10k, rotulo: "Até 10 mil"}
+              - {valor: 10k_100k, rotulo: "10 mil a 100 mil"}
+              - {valor: 100k_1m, rotulo: "100 mil a 1 milhão", sinais: {risco: 1}}
+              - {valor: mais_1m, rotulo: "Mais de 1 milhão", sinais: {risco: 2}}
+
+      - id: dados.governanca
+        texto: "Quem é dono dos dados hoje?"
+        tipo: unica
+        agentes: [arquiteto, analista, cyber]
+        opcoes:
+          - {valor: areas, rotulo: "Cada área cuida do seu"}
+          - {valor: ti, rotulo: "A TI"}
+          - {valor: ninguem, rotulo: "Ninguém claramente", sinais: {risco: 1}}
+          - {valor: governanca, rotulo: "Existe governança / data owners definidos"}
+
+  # ---------------------------------------------------------------------------
+  - id: infraestrutura
+    titulo: "4. Infraestrutura"
+    descricao: "Onde as coisas rodam hoje e quais as restrições."
+    perguntas:
+      - id: infra.atual
+        texto: "Onde a TI roda hoje?"
+        tipo: unica
+        obrigatoria: true
+        agentes: [arquiteto, devops, finops]
+        opcoes:
+          - {valor: nada, rotulo: "Nada definido / tudo em SaaS de terceiros"}
+          - {valor: on_premise, rotulo: "Servidores próprios (on-premise)", sinais: {onprem: 1}}
+          - {valor: cloud, rotulo: "Cloud pública"}
+          - {valor: hibrido, rotulo: "Híbrido (on-premise + cloud)"}
+
+      - id: infra.onprem.servidores
+        texto: "Quantos servidores físicos / VMs?"
+        tipo: numero
+        mostrar_se: {pergunta: infra.atual, em: [on_premise, hibrido]}
+        agentes: [devops, arquiteto, dba]
+
+      - id: infra.onprem.virtualizacao
+        texto: "Virtualização"
+        tipo: unica
+        mostrar_se: {pergunta: infra.atual, em: [on_premise, hibrido]}
+        agentes: [devops, dba]
+        opcoes:
+          - {valor: vmware, rotulo: "VMware", sinais: {complexidade: 1}}
+          - {valor: hyperv, rotulo: "Hyper-V", sinais: {azure: 1}}
+          - {valor: proxmox, rotulo: "Proxmox", sinais: {onprem: 1}}
+          - {valor: zimaos_casaos, rotulo: "ZimaOS / CasaOS / NAS", sinais: {onprem: 1}}
+          - {valor: bare_metal, rotulo: "Bare metal"}
+          - {valor: nao_sei, rotulo: "Não sei"}
+
+      - id: infra.onprem.ociosa
+        texto: "Há capacidade ociosa nos servidores (CPU, RAM, disco)?"
+        tipo: sim_nao
+        mostrar_se: {pergunta: infra.atual, em: [on_premise, hibrido]}
+        agentes: [arquiteto, finops, dba]
+        se_sim:
+          - {id: infra.onprem.ociosa.detalhe, texto: "Quanto aproximadamente (vCPUs, GB de RAM, TB de disco)?", tipo: texto, agentes: [arquiteto, finops], sinais: {onprem: 1}}
+        se_nao: []
+
+      - id: infra.onprem.idade
+        texto: "Idade dos servidores"
+        tipo: unica
+        mostrar_se: {pergunta: infra.atual, em: [on_premise, hibrido]}
+        agentes: [finops, devops]
+        opcoes:
+          - {valor: ate_3, rotulo: "Até 3 anos", sinais: {onprem: 1}}
+          - {valor: "3_5", rotulo: "3 a 5 anos"}
+          - {valor: mais_5, rotulo: "Mais de 5 anos (renovação próxima)", sinais: {onprem: -1}}
+
+      - id: infra.cloud.provedores
+        texto: "Quais clouds já usa?"
+        tipo: multipla
+        mostrar_se: {pergunta: infra.atual, em: [cloud, hibrido]}
+        agentes: [arquiteto, devops, finops]
+        opcoes:
+          - valor: aws
+            rotulo: "AWS"
+            sinais: {aws: 3}
+            subperguntas:
+              - {id: infra.cloud.aws.gasto, texto: "Gasto mensal na AWS (R$)", tipo: numero, agentes: [finops]}
+              - {id: infra.cloud.aws.contrato, texto: "Tem créditos, EDP, Savings Plans ou RIs?", tipo: sim_nao, agentes: [finops], se_sim: [{id: infra.cloud.aws.contrato.detalhe, texto: "Detalhe (valor, vencimento)", tipo: texto, agentes: [finops]}]}
+          - valor: gcp
+            rotulo: "Google Cloud"
+            sinais: {gcp: 3}
+            subperguntas:
+              - {id: infra.cloud.gcp.gasto, texto: "Gasto mensal no GCP (R$)", tipo: numero, agentes: [finops]}
+              - {id: infra.cloud.gcp.contrato, texto: "Tem créditos ou CUDs (committed use)?", tipo: sim_nao, agentes: [finops]}
+          - valor: azure
+            rotulo: "Microsoft Azure"
+            sinais: {azure: 3}
+            subperguntas:
+              - {id: infra.cloud.azure.gasto, texto: "Gasto mensal no Azure (R$)", tipo: numero, agentes: [finops]}
+              - {id: infra.cloud.azure.contrato, texto: "Contrata via EA, CSP ou MCA? Tem Azure Hybrid Benefit?", tipo: texto, agentes: [finops]}
+          - valor: oci
+            rotulo: "Oracle Cloud (OCI)"
+            sinais: {oci: 3}
+            subperguntas:
+              - {id: infra.cloud.oci.gasto, texto: "Gasto mensal na OCI (R$)", tipo: numero, agentes: [finops]}
+              - {id: infra.cloud.oci.contrato, texto: "Tem Universal Credits ou BYOL de licenças Oracle?", tipo: sim_nao, agentes: [finops]}
+          - valor: outra
+            rotulo: "Outra (Magalu Cloud, Huawei, DigitalOcean, Hetzner, Locaweb...)"
+            subperguntas:
+              - {id: infra.cloud.outra, texto: "Qual e para quê?", tipo: texto, agentes: [arquiteto, finops]}
+
+      - id: infra.cloud.iac
+        texto: "A infraestrutura de cloud é versionada (Terraform / OpenTofu / CloudFormation / Bicep)?"
+        tipo: unica
+        mostrar_se: {pergunta: infra.atual, em: [cloud, hibrido]}
+        agentes: [devops]
+        opcoes:
+          - {valor: sim, rotulo: "Sim"}
+          - {valor: parcial, rotulo: "Parcialmente"}
+          - {valor: nao, rotulo: "Não, tudo pelo console", sinais: {risco: 1}}
+
+      - id: infra.plataforma_dados
+        texto: "Já usa alguma plataforma de dados na nuvem?"
+        tipo: multipla
+        agentes: [engenheiro, arquiteto, finops, dba]
+        opcoes:
+          - {valor: nenhuma, rotulo: "Nenhuma"}
+          - valor: databricks
+            rotulo: "Databricks"
+            sinais: {complexidade: 1}
+            subperguntas:
+              - id: infra.databricks.cloud
+                texto: "Em qual cloud roda o Databricks?"
+                tipo: unica
+                agentes: [engenheiro, arquiteto, finops]
+                opcoes:
+                  - {valor: aws, rotulo: "AWS", sinais: {aws: 2}}
+                  - {valor: azure, rotulo: "Azure", sinais: {azure: 2}}
+                  - {valor: gcp, rotulo: "Google Cloud", sinais: {gcp: 2}}
+              - id: infra.databricks.git
+                texto: "Notebooks e jobs estão versionados no Git?"
+                tipo: unica
+                agentes: [engenheiro, devops]
+                opcoes:
+                  - {valor: bundles, rotulo: "Sim, com Asset Bundles e CI/CD"}
+                  - {valor: git_folders, rotulo: "Sim, só com Git folders"}
+                  - {valor: nao, rotulo: "Não, editados direto no workspace", sinais: {risco: 1}}
+              - {id: infra.databricks.unity, texto: "Usa Unity Catalog?", tipo: sim_nao, agentes: [engenheiro, cyber, dba]}
+              - {id: infra.databricks.gasto, texto: "Gasto mensal com Databricks (R$ ou DBUs)", tipo: texto, agentes: [finops]}
+          - valor: snowflake
+            rotulo: "Snowflake"
+            sinais: {complexidade: 1}
+            subperguntas:
+              - id: infra.snowflake.cloud
+                texto: "Em qual cloud e região está a conta Snowflake?"
+                tipo: unica
+                agentes: [engenheiro, arquiteto, finops]
+                opcoes:
+                  - {valor: aws_sp, rotulo: "AWS São Paulo", sinais: {aws: 2}}
+                  - {valor: aws_outra, rotulo: "AWS em outra região", sinais: {aws: 1}}
+                  - {valor: azure, rotulo: "Azure", sinais: {azure: 2}}
+                  - {valor: gcp, rotulo: "Google Cloud", sinais: {gcp: 2}}
+              - id: infra.snowflake.edicao
+                texto: "Edição do Snowflake"
+                tipo: unica
+                agentes: [finops, cyber, dba]
+                opcoes:
+                  - {valor: standard, rotulo: "Standard"}
+                  - {valor: enterprise, rotulo: "Enterprise"}
+                  - {valor: business_critical, rotulo: "Business Critical", sinais: {risco: 1}}
+                  - {valor: nao_sei, rotulo: "Não sei"}
+              - {id: infra.snowflake.git, texto: "Scripts e modelos estão versionados no Git (dbt, schemachange, integração Git do Snowflake)?", tipo: sim_nao, agentes: [engenheiro, devops]}
+              - {id: infra.snowflake.gasto, texto: "Gasto mensal com Snowflake (R$ ou créditos)", tipo: texto, agentes: [finops]}
+          - {valor: bigquery, rotulo: "Google BigQuery", sinais: {gcp: 2}}
+          - {valor: redshift, rotulo: "Amazon Redshift", sinais: {aws: 2}}
+          - {valor: fabric_synapse, rotulo: "Microsoft Fabric / Synapse", sinais: {azure: 2}}
+          - {valor: oracle_adw, rotulo: "Oracle Autonomous Data Warehouse", sinais: {oci: 2}}
+          - {valor: outra, rotulo: "Outra (ClickHouse Cloud, MotherDuck, Firebolt...)"}
+
+      - id: infra.microsoft365
+        texto: "Usa Microsoft 365 / Entra ID (Azure AD)?"
+        tipo: sim_nao
+        agentes: [arquiteto, cyber, finops]
+        se_sim:
+          - {id: infra.microsoft365.powerbi, texto: "Já tem licenças Power BI Pro / Premium / Fabric?", tipo: sim_nao, agentes: [analista, finops], sinais: {azure: 1}}
+
+      - id: infra.google_workspace
+        texto: "Usa Google Workspace?"
+        tipo: sim_nao
+        agentes: [arquiteto, cyber, finops]
+
+      - id: infra.link
+        texto: "Link de internet da sede"
+        tipo: unica
+        agentes: [arquiteto, devops]
+        opcoes:
+          - {valor: ate_100, rotulo: "Até 100 Mbps", sinais: {onprem: -1}}
+          - {valor: "100_500", rotulo: "100 a 500 Mbps"}
+          - {valor: 500_1g, rotulo: "500 Mbps a 1 Gbps"}
+          - {valor: mais_1g, rotulo: "Mais de 1 Gbps / dedicado"}
+      - id: infra.link.redundante
+        texto: "Tem link redundante / IP fixo?"
+        tipo: multipla
+        agentes: [devops, arquiteto]
+        opcoes:
+          - {valor: redundante, rotulo: "Link redundante", sinais: {onprem: 1}}
+          - {valor: ip_fixo, rotulo: "IP fixo"}
+          - {valor: nenhum, rotulo: "Nenhum dos dois", sinais: {onprem: -1}}
+
+      - id: infra.preferencia
+        texto: "Preferência de hospedagem da nova plataforma"
+        tipo: unica
+        obrigatoria: true
+        agentes: [arquiteto, finops, devops, comercial]
+        opcoes:
+          - {valor: indiferente, rotulo: "Sem preferência — recomendem"}
+          - {valor: mais_barato, rotulo: "O que for mais barato no total (TCO)"}
+          - valor: cloud
+            rotulo: "Cloud pública"
+            subperguntas:
+              - id: infra.preferencia.cloud
+                texto: "Qual cloud?"
+                tipo: unica
+                agentes: [arquiteto, finops]
+                opcoes:
+                  - {valor: indiferente, rotulo: "Indiferente"}
+                  - {valor: aws, rotulo: "AWS", sinais: {aws: 2}}
+                  - {valor: gcp, rotulo: "Google Cloud", sinais: {gcp: 2}}
+                  - {valor: azure, rotulo: "Azure", sinais: {azure: 2}}
+                  - {valor: oci, rotulo: "Oracle Cloud", sinais: {oci: 2}}
+          - {valor: on_premise, rotulo: "On-premise (servidor próprio)", sinais: {onprem: 3}}
+          - {valor: hibrido, rotulo: "Híbrido", sinais: {onprem: 1}}
+
+      - id: infra.restricoes
+        texto: "Restrições que devemos respeitar"
+        tipo: multipla
+        agentes: [arquiteto, cyber, finops, comercial]
+        opcoes:
+          - {valor: dados_brasil, rotulo: "Dados não podem sair do Brasil"}
+          - {valor: sem_saas, rotulo: "Política proíbe SaaS / dados em terceiros", sinais: {onprem: 2}}
+          - {valor: air_gapped, rotulo: "Ambiente isolado (sem internet)", sinais: {onprem: 3, complexidade: 1}}
+          - {valor: pagamento_brl, rotulo: "Pagamento só em reais com nota fiscal (sem cartão internacional)"}
+          - {valor: cambio, rotulo: "Variação do dólar é um risco relevante", sinais: {onprem: 1}}
+          - {valor: sem_experiencia_cloud, rotulo: "Equipe sem experiência em cloud"}
+          - {valor: nenhuma, rotulo: "Nenhuma"}
+
+      - id: infra.disponibilidade
+        texto: "Se a plataforma cair, quanto tempo a empresa aguenta sem ela? (RTO)"
+        tipo: unica
+        agentes: [arquiteto, devops, finops, dba]
+        opcoes:
+          - {valor: dias, rotulo: "Alguns dias"}
+          - {valor: horas, rotulo: "Algumas horas"}
+          - {valor: minutos, rotulo: "Minutos — é crítica", sinais: {complexidade: 2, onprem: -1}}
+
+      - id: infra.perda_dados
+        texto: "Quanto dado pode ser perdido em um desastre? (RPO)"
+        tipo: unica
+        agentes: [arquiteto, devops, cyber, dba]
+        opcoes:
+          - {valor: "24h", rotulo: "Até 1 dia"}
+          - {valor: "1h", rotulo: "Até 1 hora", sinais: {complexidade: 1}}
+          - {valor: zero, rotulo: "Praticamente zero", sinais: {complexidade: 2}}
+
+      - id: infra.ambientes
+        texto: "Ambientes necessários"
+        tipo: multipla
+        agentes: [devops, finops]
+        opcoes:
+          - {valor: prod, rotulo: "Produção"}
+          - {valor: homolog, rotulo: "Homologação"}
+          - {valor: dev, rotulo: "Desenvolvimento"}
+
+  # ---------------------------------------------------------------------------
+  - id: consumo
+    titulo: "5. Consumo e Analytics"
+    descricao: "Quem consome os dados, como e por onde."
+    perguntas:
+      - id: cons.bi
+        texto: "Ferramenta de BI"
+        tipo: unica
+        agentes: [analista, arquiteto, finops]
+        opcoes:
+          - valor: powerbi
+            rotulo: "Power BI"
+            sinais: {azure: 2}
+            subperguntas:
+              - id: cons.powerbi.licenca
+                texto: "Licenciamento"
+                tipo: unica
+                agentes: [analista, finops]
+                opcoes:
+                  - {valor: free, rotulo: "Free / Desktop"}
+                  - {valor: pro, rotulo: "Pro"}
+                  - {valor: ppu, rotulo: "Premium por usuário"}
+                  - {valor: fabric, rotulo: "Capacidade Fabric / Premium"}
+          - {valor: looker_studio, rotulo: "Looker Studio", sinais: {gcp: 2}}
+          - {valor: looker, rotulo: "Looker", sinais: {gcp: 2}}
+          - {valor: tableau, rotulo: "Tableau"}
+          - {valor: qlik, rotulo: "Qlik"}
+          - {valor: quicksight, rotulo: "Amazon QuickSight", sinais: {aws: 2}}
+          - {valor: metabase_superset, rotulo: "Metabase / Superset", sinais: {onprem: 1}}
+          - {valor: excel, rotulo: "Só Excel"}
+          - {valor: recomendar, rotulo: "Nenhuma — recomendem"}
+
+      - id: cons.usuarios
+        texto: "Quantas pessoas vão consumir os painéis?"
+        tipo: unica
+        obrigatoria: true
+        agentes: [analista, finops, arquiteto]
+        opcoes:
+          - {valor: "1_5", rotulo: "1 a 5"}
+          - {valor: "6_20", rotulo: "6 a 20"}
+          - {valor: "21_100", rotulo: "21 a 100"}
+          - {valor: "101_500", rotulo: "101 a 500", sinais: {complexidade: 1}}
+          - {valor: "mais_500", rotulo: "Mais de 500", sinais: {complexidade: 2}}
+
+      - id: cons.perfis
+        texto: "Quem são os consumidores?"
+        tipo: multipla
+        agentes: [analista, cyber, arquiteto, fullstack]
+        opcoes:
+          - {valor: diretoria, rotulo: "Diretoria"}
+          - {valor: gestores, rotulo: "Gestores de área"}
+          - {valor: analistas, rotulo: "Analistas (self-service)"}
+          - {valor: operacao, rotulo: "Operação / campo (celular)"}
+          - valor: clientes_externos
+            rotulo: "Clientes externos (portal / embedded)"
+            sinais: {risco: 1, complexidade: 1}
+            subperguntas:
+              - {id: cons.externos.qtd, texto: "Quantos clientes externos acessariam?", tipo: numero, agentes: [arquiteto, finops, cyber, fullstack]}
+              - {id: cons.externos.marca, texto: "Precisa ser com a marca do cliente (white-label)?", tipo: sim_nao, agentes: [analista, comercial, fullstack]}
+          - {valor: parceiros, rotulo: "Parceiros / franqueados / representantes", sinais: {risco: 1}}
+
+      - id: cons.seguranca_linha
+        texto: "Cada usuário deve ver só os dados da sua unidade / carteira (segurança em nível de linha)?"
+        tipo: sim_nao
+        agentes: [analista, cyber, arquiteto, fullstack]
+
+      - id: cons.alertas
+        texto: "Canais para alertas automáticos"
+        tipo: multipla
+        agentes: [engenheiro, devops]
+        opcoes:
+          - {valor: email, rotulo: "E-mail"}
+          - {valor: whatsapp, rotulo: "WhatsApp", sinais: {automacao: 1}}
+          - {valor: teams, rotulo: "Microsoft Teams", sinais: {azure: 1}}
+          - {valor: slack, rotulo: "Slack"}
+          - {valor: telegram, rotulo: "Telegram"}
+          - {valor: nenhum, rotulo: "Nenhum"}
+
+      - id: cons.api
+        texto: "Precisa disponibilizar dados para outros sistemas ou parceiros (API / arquivo)?"
+        tipo: sim_nao
+        agentes: [arquiteto, engenheiro, cyber, fullstack]
+        se_sim:
+          - {id: cons.api.detalhe, texto: "Para quem e com que frequência?", tipo: texto, agentes: [arquiteto, engenheiro, fullstack]}
+
+      - id: cons.apps
+        texto: "Além dos painéis, precisa de alguma aplicação sob medida?"
+        tipo: multipla
+        agentes: [fullstack, arquiteto, cyber, comercial]
+        opcoes:
+          - {valor: nenhuma, rotulo: "Não, painéis bastam"}
+          - valor: portal_clientes
+            rotulo: "Portal / área do cliente com login"
+            sinais: {complexidade: 1, risco: 1}
+            subperguntas:
+              - id: cons.apps.portal_login
+                texto: "Como os clientes externos entrariam no portal?"
+                tipo: unica
+                agentes: [fullstack, cyber]
+                opcoes:
+                  - {valor: email, rotulo: "E-mail e senha, com código de verificação"}
+                  - {valor: google_microsoft, rotulo: "Conta Google ou Microsoft"}
+                  - {valor: sso_cliente, rotulo: "Login corporativo do próprio cliente (SSO)", sinais: {complexidade: 1}}
+                  - {valor: nao_sei, rotulo: "Não sei"}
+          - valor: app_campo
+            rotulo: "App para equipe de campo (coleta, visitas, vistorias)"
+            sinais: {complexidade: 1}
+            subperguntas:
+              - {id: cons.apps.offline, texto: "Precisa funcionar sem internet e sincronizar depois?", tipo: sim_nao, agentes: [fullstack, arquiteto]}
+          - {valor: formularios, rotulo: "Formulários para substituir planilhas (com validação e histórico)", sinais: {automacao: 1}}
+          - {valor: aprovacoes, rotulo: "Fluxos de aprovação (pedidos, descontos, despesas)", sinais: {automacao: 1}}
+          - {valor: embedded, rotulo: "Painéis dentro do nosso sistema ou produto (embedded)", sinais: {complexidade: 1}}
+
+      - id: cons.apps.stack
+        texto: "Quem vai manter essas aplicações depois?"
+        tipo: unica
+        mostrar_se: {todas: [{pergunta: cons.apps, preenchida: true}, {nao: {pergunta: cons.apps, em: [nenhuma]}}]}
+        agentes: [fullstack, devops, comercial]
+        opcoes:
+          - {valor: consultoria, rotulo: "Vocês, no pacote gerenciado"}
+          - {valor: time_js, rotulo: "Nosso time, em JavaScript/TypeScript"}
+          - {valor: time_python, rotulo: "Nosso time, em Python"}
+          - {valor: time_dotnet_java, rotulo: "Nosso time, em .NET ou Java"}
+          - {valor: lowcode, rotulo: "Preferimos low-code (Power Apps, AppSheet, Appsmith)"}
+
+      - id: cons.perguntas_linguagem
+        texto: "Gostaria de fazer perguntas aos dados em linguagem natural (\"quanto vendemos ontem em Cascavel?\")?"
+        tipo: sim_nao
+        agentes: [cientista, analista, arquiteto, fullstack]
+        se_sim:
+          - id: cons.nl.canal
+            texto: "Por onde?"
+            tipo: multipla
+            agentes: [cientista, engenheiro, fullstack]
+            opcoes:
+              - {valor: whatsapp, rotulo: "WhatsApp", sinais: {ia: 1, automacao: 1}}
+              - {valor: teams_slack, rotulo: "Teams / Slack", sinais: {ia: 1}}
+              - {valor: web, rotulo: "Portal web", sinais: {ia: 1}}
+
+  # ---------------------------------------------------------------------------
+  - id: ia
+    titulo: "6. Inteligência Artificial e Ciência de Dados"
+    descricao: "Onde IA pode gerar valor e com que restrições."
+    perguntas:
+      - id: ia.interesse
+        texto: "Em que ponto a empresa está com IA?"
+        tipo: unica
+        obrigatoria: true
+        agentes: [cientista, arquiteto, comercial]
+        opcoes:
+          - {valor: nenhum, rotulo: "Sem interesse agora"}
+          - {valor: explorar, rotulo: "Quer explorar possibilidades", sinais: {ia: 1}}
+          - {valor: caso_definido, rotulo: "Já tem um caso de uso definido", sinais: {ia: 2}}
+          - valor: producao
+            rotulo: "Já tem modelos em produção"
+            sinais: {ia: 2, complexidade: 1}
+            subperguntas:
+              - {id: ia.prod.stack, texto: "Stack atual (ferramentas, onde roda, quem mantém)", tipo: texto_longo, agentes: [cientista, devops]}
+              - id: ia.prod.monitoramento
+                texto: "Os modelos são monitorados (drift, performance)?"
+                tipo: sim_nao
+                agentes: [cientista, devops]
+
+      - id: ia.casos
+        texto: "Casos de uso de interesse"
+        tipo: multipla
+        mostrar_se: {pergunta: ia.interesse, em: [explorar, caso_definido, producao]}
+        agentes: [cientista, arquiteto, finops, comercial]
+        opcoes:
+          - {valor: previsao_demanda, rotulo: "Previsão de demanda / vendas", sinais: {ia: 1}}
+          - {valor: churn, rotulo: "Churn / cancelamento", sinais: {ia: 1}}
+          - {valor: precificacao, rotulo: "Precificação", sinais: {ia: 1}}
+          - {valor: fraude_anomalia, rotulo: "Fraude / anomalias", sinais: {ia: 1}}
+          - {valor: credito, rotulo: "Crédito / inadimplência", sinais: {ia: 1}}
+          - {valor: recomendacao, rotulo: "Recomendação de produtos", sinais: {ia: 1}}
+          - {valor: segmentacao, rotulo: "Segmentação de clientes", sinais: {ia: 1}}
+          - {valor: rotas, rotulo: "Otimização de rotas / recursos", sinais: {ia: 1}}
+          - {valor: manutencao, rotulo: "Manutenção preditiva", sinais: {ia: 1}}
+          - {valor: visao, rotulo: "Visão computacional", sinais: {ia: 2, complexidade: 1}}
+          - {valor: ocr, rotulo: "Extração de documentos (OCR / IA)", sinais: {ia: 1}}
+          - valor: rag
+            rotulo: "Assistente com base de conhecimento (RAG)"
+            sinais: {ia: 2}
+            subperguntas:
+              - id: ia.rag.base
+                texto: "Base de conhecimento"
+                tipo: multipla
+                agentes: [cientista, engenheiro]
+                opcoes:
+                  - {valor: documentos, rotulo: "Documentos (PDF, Word, manuais)"}
+                  - {valor: site, rotulo: "Site / FAQ"}
+                  - {valor: tickets, rotulo: "Histórico de atendimento"}
+                  - {valor: banco, rotulo: "Dados do banco (text-to-SQL)", sinais: {complexidade: 1}}
+              - id: ia.rag.publico
+                texto: "Quem vai usar o assistente?"
+                tipo: unica
+                agentes: [cientista, cyber]
+                opcoes:
+                  - {valor: interno, rotulo: "Colaboradores"}
+                  - {valor: clientes, rotulo: "Clientes (externo)", sinais: {risco: 1}}
+          - {valor: agentes, rotulo: "Agentes de IA que executam tarefas", sinais: {ia: 2, automacao: 2}}
+          - {valor: sentimento, rotulo: "Análise de sentimento / texto", sinais: {ia: 1}}
+          - {valor: outro, rotulo: "Outro",
+             subperguntas: [{id: ia.casos.outro, texto: "Descreva", tipo: texto_longo, agentes: [cientista]}]}
+
+      - id: ia.dados_rotulados
+        texto: "Existe histórico com o resultado conhecido (ex.: quem cancelou, quais sinistros eram fraude)?"
+        tipo: unica
+        mostrar_se: {pergunta: ia.interesse, em: [caso_definido, producao, explorar]}
+        agentes: [cientista]
+        opcoes:
+          - {valor: sim, rotulo: "Sim"}
+          - {valor: parcial, rotulo: "Parcialmente"}
+          - {valor: nao, rotulo: "Não", sinais: {complexidade: 1}}
+          - {valor: nao_sei, rotulo: "Não sei"}
+
+      - id: ia.llm_privacidade
+        texto: "Para IA generativa (LLMs): os dados podem ir para APIs externas?"
+        tipo: unica
+        mostrar_se: {pergunta: ia.interesse, em: [explorar, caso_definido, producao]}
+        agentes: [cientista, cyber, arquiteto, finops]
+        opcoes:
+          - {valor: sim, rotulo: "Sim, com contrato que não usa os dados para treino"}
+          - {valor: anonimizado, rotulo: "Só dados anonimizados", sinais: {complexidade: 1}}
+          - {valor: local, rotulo: "Não — precisa rodar 100% local", sinais: {onprem: 2, complexidade: 1}}
+
+      - id: ia.explicabilidade
+        texto: "As decisões do modelo precisam ser explicáveis (auditoria, regulador, cliente)?"
+        tipo: sim_nao
+        mostrar_se: {pergunta: ia.interesse, em: [caso_definido, producao]}
+        agentes: [cientista, cyber]
+
+  # ---------------------------------------------------------------------------
+  - id: automacao
+    titulo: "7. Automação"
+    descricao: "Processos repetitivos que podem sair das mãos das pessoas."
+    perguntas:
+      - id: aut.processos
+        texto: "O que gostaria de automatizar?"
+        tipo: multipla
+        agentes: [engenheiro, devops, negocios, comercial, fullstack]
+        opcoes:
+          - {valor: relatorios, rotulo: "Geração e envio de relatórios", sinais: {automacao: 1}}
+          - {valor: integracao, rotulo: "Integração entre sistemas (ERP ↔ CRM ↔ e-commerce)", sinais: {automacao: 1}}
+          - {valor: alertas, rotulo: "Alertas de exceção (estoque, inadimplência, metas)", sinais: {automacao: 1}}
+          - {valor: conciliacao, rotulo: "Conciliação financeira", sinais: {automacao: 1}}
+          - {valor: cobranca, rotulo: "Cobrança (WhatsApp / e-mail)", sinais: {automacao: 1}}
+          - {valor: atendimento, rotulo: "Atendimento / triagem", sinais: {automacao: 1, ia: 1}}
+          - {valor: documentos, rotulo: "Leitura e lançamento de documentos", sinais: {automacao: 1, ia: 1}}
+          - valor: rpa
+            rotulo: "Tarefas em sistemas sem API (RPA)"
+            sinais: {automacao: 2, complexidade: 1}
+            subperguntas:
+              - {id: aut.rpa.sistemas, texto: "Quais sistemas e tarefas?", tipo: texto_longo, agentes: [engenheiro, devops]}
+          - {valor: aprovacoes, rotulo: "Fluxos de aprovação", sinais: {automacao: 1}}
+          - {valor: nada, rotulo: "Nada por enquanto"}
+
+      - id: aut.ferramentas
+        texto: "Ferramentas de automação em uso"
+        tipo: multipla
+        agentes: [engenheiro, devops]
+        opcoes:
+          - {valor: nenhuma, rotulo: "Nenhuma"}
+          - {valor: n8n, rotulo: "n8n", sinais: {onprem: 1}}
+          - {valor: make_zapier, rotulo: "Make / Zapier"}
+          - {valor: power_automate, rotulo: "Power Automate", sinais: {azure: 1}}
+          - {valor: airflow, rotulo: "Airflow / Dagster / Prefect"}
+          - {valor: scripts, rotulo: "Scripts agendados (cron / Agendador do Windows)"}
+          - {valor: rpa, rotulo: "UiPath / Automation Anywhere"}
+
+      - id: aut.horas_manuais
+        texto: "Horas por semana gastas com tarefas manuais repetitivas (somando todas as pessoas)"
+        tipo: numero
+        mostrar_se: {pergunta: aut.processos, preenchida: true}
+        agentes: [comercial, negocios, finops]
+
+      - id: aut.custo_hora
+        texto: "Custo médio da hora dessas pessoas (R$, opcional — usado no cálculo de ROI)"
+        tipo: numero
+        mostrar_se: {pergunta: aut.horas_manuais, preenchida: true}
+        agentes: [comercial, finops]
+
+      - id: aut.whatsapp
+        texto: "Precisa enviar/receber WhatsApp pela API oficial (Cloud API)?"
+        tipo: sim_nao
+        agentes: [engenheiro, finops, cyber]
+        se_sim:
+          - id: aut.whatsapp.volume
+            texto: "Conversas por mês"
+            tipo: unica
+            agentes: [finops, engenheiro]
+            opcoes:
+              - {valor: ate_1k, rotulo: "Até 1 mil"}
+              - {valor: 1k_10k, rotulo: "1 mil a 10 mil"}
+              - {valor: mais_10k, rotulo: "Mais de 10 mil"}
+
+  # ---------------------------------------------------------------------------
+  - id: seguranca
+    titulo: "8. Segurança e Compliance"
+    descricao: "Proteção dos dados e exigências legais."
+    perguntas:
+      - id: seg.certificacoes
+        texto: "Certificações ou frameworks exigidos"
+        tipo: multipla
+        agentes: [cyber, arquiteto, devops]
+        opcoes:
+          - {valor: nenhuma, rotulo: "Nenhuma formal"}
+          - {valor: iso27001, rotulo: "ISO 27001", sinais: {risco: 1}}
+          - {valor: soc2, rotulo: "SOC 2", sinais: {risco: 1}}
+          - {valor: pci, rotulo: "PCI-DSS (cartões)", sinais: {risco: 2}}
+          - {valor: bacen, rotulo: "BACEN 4.893 / BCB 85", sinais: {risco: 2}}
+          - {valor: cliente_exige, rotulo: "Questionário de segurança dos clientes"}
+
+      - id: seg.dpo
+        texto: "Há encarregado de dados (DPO) nomeado?"
+        tipo: sim_nao
+        agentes: [cyber]
+
+      - id: seg.incidente
+        texto: "Já sofreu incidente de segurança?"
+        tipo: sim_nao
+        agentes: [cyber, devops, comercial]
+        se_sim:
+          - id: seg.incidente.tipo
+            texto: "Tipo"
+            tipo: multipla
+            agentes: [cyber]
+            opcoes:
+              - {valor: ransomware, rotulo: "Ransomware", sinais: {risco: 2}}
+              - {valor: vazamento, rotulo: "Vazamento de dados", sinais: {risco: 2}}
+              - {valor: acesso_indevido, rotulo: "Acesso indevido / conta invadida", sinais: {risco: 1}}
+              - {valor: fraude, rotulo: "Fraude / golpe (e-mail, PIX)", sinais: {risco: 1}}
+
+      - id: seg.identidade
+        texto: "Login corporativo (SSO)"
+        tipo: unica
+        agentes: [cyber, arquiteto, fullstack]
+        opcoes:
+          - {valor: entra, rotulo: "Microsoft Entra ID", sinais: {azure: 1}}
+          - {valor: google, rotulo: "Google Workspace", sinais: {gcp: 1}}
+          - {valor: okta, rotulo: "Okta / outro IdP"}
+          - {valor: ad_local, rotulo: "Active Directory local", sinais: {onprem: 1}}
+          - {valor: nenhum, rotulo: "Nenhum — cada sistema tem sua senha", sinais: {risco: 1}}
+
+      - id: seg.mfa
+        texto: "MFA (autenticação em dois fatores) é obrigatório?"
+        tipo: sim_nao
+        agentes: [cyber]
+        se_nao:
+          - {id: seg.mfa.aviso, texto: "Podemos exigir MFA na plataforma nova?", tipo: sim_nao, agentes: [cyber]}
+
+      - id: seg.backup
+        texto: "Backup hoje"
+        tipo: unica
+        agentes: [cyber, devops, dba]
+        opcoes:
+          - {valor: nao, rotulo: "Não há backup confiável", sinais: {risco: 2}}
+          - {valor: local, rotulo: "Só local (mesmo prédio)", sinais: {risco: 1}}
+          - {valor: offsite, rotulo: "Cópia fora da empresa"}
+          - {valor: "321", rotulo: "Regra 3-2-1 com cópia imutável"}
+
+      - id: seg.acesso_remoto
+        texto: "Como acessam sistemas de fora da empresa?"
+        tipo: unica
+        agentes: [cyber, devops]
+        opcoes:
+          - {valor: vpn, rotulo: "VPN"}
+          - {valor: publico, rotulo: "Sistemas expostos na internet", sinais: {risco: 2}}
+          - {valor: rdp, rotulo: "Acesso remoto (AnyDesk / TeamViewer / RDP)", sinais: {risco: 2}}
+          - {valor: zero_trust, rotulo: "Zero trust (Cloudflare, Tailscale, Entra)"}
+          - {valor: nao_acessam, rotulo: "Não acessam"}
+
+      - id: seg.auditoria
+        texto: "Precisa de trilha de auditoria (quem acessou qual dado e quando)?"
+        tipo: sim_nao
+        agentes: [cyber, arquiteto, dba]
+
+  # ---------------------------------------------------------------------------
+  - id: orcamento
+    titulo: "9. Orçamento, Prazos e Contratação"
+    descricao: "Para propormos algo viável."
+    perguntas:
+      - id: orc.infra_mensal
+        texto: "Orçamento mensal para infraestrutura (cloud, licenças)"
+        tipo: unica
+        obrigatoria: true
+        agentes: [finops, arquiteto, comercial]
+        opcoes:
+          - {valor: ate_500, rotulo: "Até R$ 500", sinais: {onprem: 1}}
+          - {valor: 500_2k, rotulo: "R$ 500 a R$ 2 mil"}
+          - {valor: 2k_5k, rotulo: "R$ 2 mil a R$ 5 mil"}
+          - {valor: 5k_15k, rotulo: "R$ 5 mil a R$ 15 mil"}
+          - {valor: 15k_50k, rotulo: "R$ 15 mil a R$ 50 mil"}
+          - {valor: mais_50k, rotulo: "Mais de R$ 50 mil"}
+          - {valor: nao_definido, rotulo: "Não definido"}
+
+      - id: orc.projeto
+        texto: "Orçamento para o projeto de implantação"
+        tipo: unica
+        agentes: [comercial]
+        opcoes:
+          - {valor: ate_15k, rotulo: "Até R$ 15 mil"}
+          - {valor: 15k_50k, rotulo: "R$ 15 mil a R$ 50 mil"}
+          - {valor: 50k_150k, rotulo: "R$ 50 mil a R$ 150 mil"}
+          - {valor: 150k_500k, rotulo: "R$ 150 mil a R$ 500 mil"}
+          - {valor: mais_500k, rotulo: "Mais de R$ 500 mil"}
+          - {valor: nao_definido, rotulo: "Não definido"}
+
+      - id: orc.modelo
+        texto: "Modelos de contratação aceitáveis"
+        tipo: multipla
+        agentes: [comercial]
+        opcoes:
+          - {valor: projeto_fechado, rotulo: "Projeto fechado"}
+          - {valor: mensalidade, rotulo: "Mensalidade (plataforma como serviço)"}
+          - {valor: banco_horas, rotulo: "Banco de horas"}
+          - {valor: squad, rotulo: "Squad dedicada"}
+          - {valor: sucesso, rotulo: "Fee + % do ganho gerado"}
+
+      - id: orc.prazo
+        texto: "Prazo desejado para a primeira entrega"
+        tipo: unica
+        agentes: [comercial, arquiteto, devops]
+        opcoes:
+          - {valor: urgente, rotulo: "Menos de 1 mês", sinais: {complexidade: 1}}
+          - {valor: "1_3", rotulo: "1 a 3 meses"}
+          - {valor: "3_6", rotulo: "3 a 6 meses"}
+          - {valor: "mais_6", rotulo: "Mais de 6 meses"}
+
+      - id: orc.compra
+        texto: "Como é o processo de compra?"
+        tipo: unica
+        agentes: [comercial]
+        opcoes:
+          - {valor: direto, rotulo: "Decisão direta do sócio / diretor"}
+          - {valor: cotacao, rotulo: "Cotação com 3 fornecedores"}
+          - {valor: comite, rotulo: "Comitê / conselho"}
+          - {valor: licitacao, rotulo: "Licitação"}
+
+      - id: orc.data_decisao
+        texto: "Quando pretende decidir?"
+        tipo: texto
+        agentes: [comercial]
+
+  # ---------------------------------------------------------------------------
+  - id: objetivo
+    titulo: "10. Objetivo da Plataforma"
+    descricao: "A parte mais importante: o que a plataforma precisa resolver."
+    perguntas:
+      - id: obj.objetivo
+        texto: "Qual o objetivo principal da plataforma? (escreva livremente)"
+        tipo: texto_longo
+        obrigatoria: true
+        agentes: [negocios, arquiteto, engenheiro, analista, cientista, cyber, devops, finops, comercial, dba, fullstack]
+
+      - id: obj.perguntas
+        texto: "Quais 3 a 5 perguntas de negócio ela precisa responder? (uma por linha — ex.: \"Qual a margem real por cliente e por produto?\")"
+        tipo: texto_longo
+        obrigatoria: true
+        agentes: [negocios, analista, cientista, arquiteto, engenheiro]
+
+      - id: obj.entregas
+        texto: "O que espera receber?"
+        tipo: multipla
+        obrigatoria: true
+        agentes: [arquiteto, comercial, finops, fullstack]
+        opcoes:
+          - {valor: dashboards, rotulo: "Dashboards executivos e operacionais"}
+          - {valor: dw, rotulo: "Data warehouse / lakehouse central"}
+          - {valor: integracoes, rotulo: "Integrações entre sistemas", sinais: {automacao: 1}}
+          - {valor: automacoes, rotulo: "Automações", sinais: {automacao: 1}}
+          - {valor: modelos_ia, rotulo: "Modelos de IA / agentes", sinais: {ia: 1}}
+          - {valor: portal, rotulo: "Portal / app para clientes", sinais: {complexidade: 1}}
+          - {valor: api, rotulo: "API de dados"}
+          - {valor: governanca, rotulo: "Governança, catálogo e qualidade"}
+
+      - id: obj.sucesso
+        texto: "Como vamos saber, em 90 dias, que deu certo? (KPI de sucesso)"
+        tipo: texto_longo
+        obrigatoria: true
+        agentes: [negocios, comercial, analista]
+
+      - id: obj.prioridade
+        texto: "Se precisar escolher UMA prioridade:"
+        tipo: unica
+        obrigatoria: true
+        agentes: [arquiteto, finops, devops, cyber, comercial]
+        opcoes:
+          - {valor: custo, rotulo: "Menor custo"}
+          - {valor: velocidade, rotulo: "Entrega mais rápida"}
+          - {valor: escala, rotulo: "Escalabilidade futura"}
+          - {valor: seguranca, rotulo: "Segurança e compliance", sinais: {risco: 1}}
+          - {valor: autonomia, rotulo: "Autonomia do nosso time"}
+
+      - id: obj.horizonte
+        texto: "Horizonte do plano"
+        tipo: unica
+        agentes: [arquiteto, comercial]
+        opcoes:
+          - {valor: mvp_30, rotulo: "MVP em 30 dias"}
+          - {valor: fase1_90, rotulo: "Fase 1 em 90 dias"}
+          - {valor: roadmap_12m, rotulo: "Roadmap de 12 meses"}
+
+      - id: obj.riscos
+        texto: "O que poderia fazer este projeto falhar?"
+        tipo: texto_longo
+        agentes: [negocios, comercial, arquiteto]
+
+      - id: obj.observacoes
+        texto: "Algo mais que devemos saber?"
+        tipo: texto_longo
+        agentes: [negocios, comercial]

@@ -1,0 +1,8864 @@
+{
+ "meta": {
+  "versao": "1.0.0",
+  "titulo": "Discovery de Plataforma de Dados",
+  "descricao": "Mapeamento completo do negócio, dos dados, da infraestrutura e dos objetivos do cliente. As respostas alimentam os 11 agentes especialistas, que desenham a arquitetura, estimam custos nas 4 clouds (AWS, GCP, Azure, OCI) e em on-premise, e montam a proposta comercial.\n",
+  "tempo_estimado_min": 35
+ },
+ "secoes": [
+  {
+   "id": "identificacao",
+   "titulo": "0. Identificação",
+   "descricao": "Quem é o cliente e quem está respondendo."
+  },
+  {
+   "id": "negocio",
+   "titulo": "1. Modelo de Negócio",
+   "descricao": "Como a empresa funciona, ganha dinheiro e toma decisões."
+  },
+  {
+   "id": "maturidade",
+   "titulo": "2. Maturidade e Pessoas",
+   "descricao": "Quem vai usar, construir e operar."
+  },
+  {
+   "id": "dados",
+   "titulo": "3. Dados e Fontes",
+   "descricao": "De onde vêm os dados, quanto são e com que frequência mudam."
+  },
+  {
+   "id": "infraestrutura",
+   "titulo": "4. Infraestrutura",
+   "descricao": "Onde as coisas rodam hoje e quais as restrições."
+  },
+  {
+   "id": "consumo",
+   "titulo": "5. Consumo e Analytics",
+   "descricao": "Quem consome os dados, como e por onde."
+  },
+  {
+   "id": "ia",
+   "titulo": "6. Inteligência Artificial e Ciência de Dados",
+   "descricao": "Onde IA pode gerar valor e com que restrições."
+  },
+  {
+   "id": "automacao",
+   "titulo": "7. Automação",
+   "descricao": "Processos repetitivos que podem sair das mãos das pessoas."
+  },
+  {
+   "id": "seguranca",
+   "titulo": "8. Segurança e Compliance",
+   "descricao": "Proteção dos dados e exigências legais."
+  },
+  {
+   "id": "orcamento",
+   "titulo": "9. Orçamento, Prazos e Contratação",
+   "descricao": "Para propormos algo viável."
+  },
+  {
+   "id": "objetivo",
+   "titulo": "10. Objetivo da Plataforma",
+   "descricao": "A parte mais importante: o que a plataforma precisa resolver."
+  }
+ ],
+ "pesos": {
+  "neg.segmento=energia": {
+   "tempo_real": 1
+  },
+  "neg.varejo.skus=10k_100k": {
+   "complexidade": 1
+  },
+  "neg.varejo.skus=mais_100k": {
+   "complexidade": 2
+  },
+  "neg.varejo.estoque=ruptura": {
+   "ia": 1
+  },
+  "neg.varejo.estoque=excesso": {
+   "ia": 1
+  },
+  "neg.ind.fontes_fabrica=clp": {
+   "tempo_real": 1,
+   "onprem": 1
+  },
+  "neg.ind.fontes_fabrica=scada": {
+   "tempo_real": 1,
+   "onprem": 1
+  },
+  "neg.ind.fontes_fabrica=sensores_iot": {
+   "tempo_real": 2
+  },
+  "neg.ind.apontamento=papel": {
+   "automacao": 1
+  },
+  "neg.ind.kpis=manutencao": {
+   "ia": 1
+  },
+  "neg.ind.kpis=sop": {
+   "ia": 1
+  },
+  "neg.agro.tipo=agroindustria": {
+   "complexidade": 1
+  },
+  "neg.agro.dados_campo=telemetria_maquinas": {
+   "tempo_real": 1
+  },
+  "neg.agro.dados_campo=satelite_drone": {
+   "ia": 2,
+   "complexidade": 1
+  },
+  "neg.log.posicoes=segundos": {
+   "tempo_real": 2,
+   "complexidade": 1
+  },
+  "neg.log.posicoes=minuto": {
+   "tempo_real": 1
+  },
+  "neg.log.dores=roteirizacao": {
+   "ia": 1
+  },
+  "neg.log.dores=sinistro_roubo": {
+   "ia": 1
+  },
+  "neg.seg.tipo=seguradora": {
+   "risco": 1
+  },
+  "neg.seg.dores=inadimplencia": {
+   "ia": 1
+  },
+  "neg.seg.dores=sinistralidade": {
+   "ia": 1
+  },
+  "neg.seg.dores=fraude": {
+   "ia": 2
+  },
+  "neg.seg.dores=churn": {
+   "ia": 1
+  },
+  "neg.seg.dores=precificacao": {
+   "ia": 1
+  },
+  "neg.seg.dores=regulatorio": {
+   "risco": 1
+  },
+  "neg.fin.tipo=banco_fintech": {
+   "risco": 2
+  },
+  "neg.fin.tipo=coop_credito": {
+   "risco": 2
+  },
+  "neg.fin.tipo=fidc_factoring": {
+   "risco": 1
+  },
+  "neg.fin.tipo=pagamentos": {
+   "risco": 2,
+   "tempo_real": 1
+  },
+  "neg.fin.casos=score_credito": {
+   "ia": 2
+  },
+  "neg.fin.casos=pld_aml": {
+   "ia": 1,
+   "risco": 1
+  },
+  "neg.fin.casos=fraude": {
+   "ia": 2,
+   "tempo_real": 1
+  },
+  "neg.fin.casos=cobranca": {
+   "automacao": 1
+  },
+  "neg.saude.tipo=hospital": {
+   "complexidade": 1
+  },
+  "neg.saude.tipo=operadora": {
+   "risco": 1
+  },
+  "neg.saude.prontuario.aviso=parcial": {
+   "risco": 1
+  },
+  "neg.saude.prontuario.aviso=nao": {
+   "risco": 2
+  },
+  "neg.edu.tipo=escola": {
+   "risco": 1
+  },
+  "neg.edu.dores=evasao": {
+   "ia": 1
+  },
+  "neg.edu.dores=inadimplencia": {
+   "ia": 1
+  },
+  "neg.saas.modelo=app_b2c": {
+   "complexidade": 1
+  },
+  "neg.saas.metricas=uso": {
+   "complexidade": 1
+  },
+  "neg.serv.tipo=advocacia": {
+   "risco": 1
+  },
+  "neg.pub.esfera=federal": {
+   "risco": 1
+  },
+  "neg.publico=b2c": {
+   "risco": 1
+  },
+  "neg.receita.churn_conhecido=nao": {
+   "ia": 1
+  },
+  "neg.unidades=mais_20": {
+   "complexidade": 1
+  },
+  "neg.unidades.consolidacao=planilha": {
+   "automacao": 1
+  },
+  "neg.unidades.consolidacao=nao": {
+   "automacao": 1
+  },
+  "neg.areas=juridico": {
+   "risco": 1
+  },
+  "neg.area.fin.dores=fluxo_caixa": {
+   "ia": 1
+  },
+  "neg.area.fin.dores=conciliacao": {
+   "automacao": 2
+  },
+  "neg.area.fin.dores=dre_lento": {
+   "automacao": 1
+  },
+  "neg.area.fin.dores=inadimplencia": {
+   "ia": 1
+  },
+  "neg.area.com.dores=metas": {
+   "automacao": 1
+  },
+  "neg.area.com.dores=previsao": {
+   "ia": 1
+  },
+  "neg.area.com.dores=comissao": {
+   "automacao": 1
+  },
+  "neg.area.mkt.dores=segmentacao": {
+   "ia": 1
+  },
+  "neg.area.mkt.dores=relatorios_midia": {
+   "automacao": 1
+  },
+  "neg.area.sup.dores=ruptura": {
+   "ia": 1
+  },
+  "neg.area.sup.dores=compras": {
+   "ia": 1
+  },
+  "neg.area.rh.dores=turnover": {
+   "ia": 1
+  },
+  "neg.area.cs.dores=volume": {
+   "ia": 2,
+   "automacao": 1
+  },
+  "neg.area.cs.dores=sentimento": {
+   "ia": 1
+  },
+  "neg.area.dir.necessidade=simulacao": {
+   "ia": 1
+  },
+  "neg.crescimento=20_50": {
+   "complexidade": 1
+  },
+  "neg.crescimento=mais_50": {
+   "complexidade": 2
+  },
+  "neg.regulacao=bacen": {
+   "risco": 2
+  },
+  "neg.regulacao=susep": {
+   "risco": 1
+  },
+  "neg.regulacao=ans": {
+   "risco": 1
+  },
+  "neg.regulacao=cvm": {
+   "risco": 1
+  },
+  "mat.nivel=1": {
+   "automacao": 1
+  },
+  "mat.nivel=4": {
+   "complexidade": 1
+  },
+  "mat.nivel=5": {
+   "complexidade": 1,
+   "ia": 1
+  },
+  "mat.time.skills=powerbi": {
+   "azure": 1
+  },
+  "mat.time.skills=looker": {
+   "gcp": 1
+  },
+  "mat.time.skills=aws": {
+   "aws": 1
+  },
+  "mat.time.skills=gcp": {
+   "gcp": 1
+  },
+  "mat.time.skills=azure": {
+   "azure": 1
+  },
+  "mat.time.skills=oci": {
+   "oci": 1
+  },
+  "mat.time.skills=linux_docker": {
+   "onprem": 1
+  },
+  "mat.ti=nenhuma": {
+   "onprem": -1
+  },
+  "dados.fontes=iot": {
+   "tempo_real": 1
+  },
+  "dados.erp.sistema=sap": {
+   "complexidade": 2,
+   "azure": 1,
+   "aws": 1
+  },
+  "dados.erp.sistema=datasul": {
+   "complexidade": 1
+  },
+  "dados.erp.sistema=oracle": {
+   "oci": 2
+  },
+  "dados.erp.sistema=dynamics": {
+   "azure": 2
+  },
+  "dados.erp.hospedagem=servidor_local": {
+   "onprem": 1
+  },
+  "dados.erp.acesso=exportacao": {
+   "automacao": 1,
+   "complexidade": 1
+  },
+  "dados.erp.banco=sqlserver": {
+   "azure": 1
+  },
+  "dados.erp.banco=oracle": {
+   "oci": 1
+  },
+  "dados.erp.banco=progress": {
+   "complexidade": 1
+  },
+  "dados.erp.banco=hana": {
+   "complexidade": 1
+  },
+  "dados.crm.sistema=dynamics_crm": {
+   "azure": 1
+  },
+  "dados.bd.tipos=sqlserver": {
+   "azure": 1
+  },
+  "dados.bd.tipos=oracle": {
+   "oci": 1
+  },
+  "dados.planilhas.onde=local": {
+   "automacao": 1
+  },
+  "dados.planilhas.onde=sharepoint": {
+   "azure": 1
+  },
+  "dados.planilhas.onde=google_sheets": {
+   "gcp": 1
+  },
+  "dados.mkt.fontes=ga4": {
+   "gcp": 2
+  },
+  "dados.mkt.fontes=google_ads": {
+   "gcp": 1
+  },
+  "dados.iot.frequencia=segundos": {
+   "tempo_real": 2,
+   "complexidade": 2
+  },
+  "dados.iot.frequencia=minutos": {
+   "tempo_real": 1
+  },
+  "dados.doc.tipos=pdf": {
+   "ia": 1
+  },
+  "dados.doc.tipos=imagens": {
+   "ia": 2
+  },
+  "dados.doc.tipos=audio": {
+   "ia": 2
+  },
+  "dados.doc.volume=mais_50k": {
+   "complexidade": 1
+  },
+  "dados.ext.quais=scraping": {
+   "complexidade": 1
+  },
+  "dados.bd.administracao=ninguem": {
+   "risco": 1
+  },
+  "dados.volume_total=1_10tb": {
+   "complexidade": 1
+  },
+  "dados.volume_total=10_100tb": {
+   "complexidade": 2,
+   "onprem": -1
+  },
+  "dados.volume_total=mais_100tb": {
+   "complexidade": 3,
+   "onprem": -2
+  },
+  "dados.volume.registros=mais_10m": {
+   "complexidade": 1
+  },
+  "dados.crescimento=alto": {
+   "complexidade": 1
+  },
+  "dados.latencia=horario": {
+   "complexidade": 1
+  },
+  "dados.latencia=near_real_time": {
+   "tempo_real": 1,
+   "complexidade": 1
+  },
+  "dados.latencia=tempo_real": {
+   "tempo_real": 2,
+   "complexidade": 2
+  },
+  "dados.rt.eventos=100_5k": {
+   "complexidade": 1
+  },
+  "dados.rt.eventos=mais_5k": {
+   "complexidade": 2,
+   "onprem": -1
+  },
+  "dados.qualidade.problemas=sem_chave": {
+   "complexidade": 1
+  },
+  "dados.pessoais.tipos=financeiro": {
+   "risco": 1
+  },
+  "dados.pessoais.tipos=localizacao": {
+   "risco": 1
+  },
+  "dados.pessoais.tipos=saude": {
+   "risco": 2
+  },
+  "dados.pessoais.tipos=biometria": {
+   "risco": 2
+  },
+  "dados.pessoais.tipos=menores": {
+   "risco": 2
+  },
+  "dados.pessoais.titulares=100k_1m": {
+   "risco": 1
+  },
+  "dados.pessoais.titulares=mais_1m": {
+   "risco": 2
+  },
+  "dados.governanca=ninguem": {
+   "risco": 1
+  },
+  "infra.atual=on_premise": {
+   "onprem": 1
+  },
+  "infra.onprem.virtualizacao=vmware": {
+   "complexidade": 1
+  },
+  "infra.onprem.virtualizacao=hyperv": {
+   "azure": 1
+  },
+  "infra.onprem.virtualizacao=proxmox": {
+   "onprem": 1
+  },
+  "infra.onprem.virtualizacao=zimaos_casaos": {
+   "onprem": 1
+  },
+  "infra.onprem.ociosa.detalhe": {
+   "onprem": 1
+  },
+  "infra.onprem.idade=ate_3": {
+   "onprem": 1
+  },
+  "infra.onprem.idade=mais_5": {
+   "onprem": -1
+  },
+  "infra.cloud.provedores=aws": {
+   "aws": 3
+  },
+  "infra.cloud.provedores=gcp": {
+   "gcp": 3
+  },
+  "infra.cloud.provedores=azure": {
+   "azure": 3
+  },
+  "infra.cloud.provedores=oci": {
+   "oci": 3
+  },
+  "infra.cloud.iac=nao": {
+   "risco": 1
+  },
+  "infra.plataforma_dados=databricks": {
+   "complexidade": 1
+  },
+  "infra.plataforma_dados=snowflake": {
+   "complexidade": 1
+  },
+  "infra.plataforma_dados=bigquery": {
+   "gcp": 2
+  },
+  "infra.plataforma_dados=redshift": {
+   "aws": 2
+  },
+  "infra.plataforma_dados=fabric_synapse": {
+   "azure": 2
+  },
+  "infra.plataforma_dados=oracle_adw": {
+   "oci": 2
+  },
+  "infra.databricks.cloud=aws": {
+   "aws": 2
+  },
+  "infra.databricks.cloud=azure": {
+   "azure": 2
+  },
+  "infra.databricks.cloud=gcp": {
+   "gcp": 2
+  },
+  "infra.databricks.git=nao": {
+   "risco": 1
+  },
+  "infra.snowflake.cloud=aws_sp": {
+   "aws": 2
+  },
+  "infra.snowflake.cloud=aws_outra": {
+   "aws": 1
+  },
+  "infra.snowflake.cloud=azure": {
+   "azure": 2
+  },
+  "infra.snowflake.cloud=gcp": {
+   "gcp": 2
+  },
+  "infra.snowflake.edicao=business_critical": {
+   "risco": 1
+  },
+  "infra.microsoft365.powerbi": {
+   "azure": 1
+  },
+  "infra.link=ate_100": {
+   "onprem": -1
+  },
+  "infra.link.redundante=redundante": {
+   "onprem": 1
+  },
+  "infra.link.redundante=nenhum": {
+   "onprem": -1
+  },
+  "infra.preferencia=on_premise": {
+   "onprem": 3
+  },
+  "infra.preferencia=hibrido": {
+   "onprem": 1
+  },
+  "infra.preferencia.cloud=aws": {
+   "aws": 2
+  },
+  "infra.preferencia.cloud=gcp": {
+   "gcp": 2
+  },
+  "infra.preferencia.cloud=azure": {
+   "azure": 2
+  },
+  "infra.preferencia.cloud=oci": {
+   "oci": 2
+  },
+  "infra.restricoes=sem_saas": {
+   "onprem": 2
+  },
+  "infra.restricoes=air_gapped": {
+   "onprem": 3,
+   "complexidade": 1
+  },
+  "infra.restricoes=cambio": {
+   "onprem": 1
+  },
+  "infra.disponibilidade=minutos": {
+   "complexidade": 2,
+   "onprem": -1
+  },
+  "infra.perda_dados=1h": {
+   "complexidade": 1
+  },
+  "infra.perda_dados=zero": {
+   "complexidade": 2
+  },
+  "cons.bi=powerbi": {
+   "azure": 2
+  },
+  "cons.bi=looker_studio": {
+   "gcp": 2
+  },
+  "cons.bi=looker": {
+   "gcp": 2
+  },
+  "cons.bi=quicksight": {
+   "aws": 2
+  },
+  "cons.bi=metabase_superset": {
+   "onprem": 1
+  },
+  "cons.usuarios=101_500": {
+   "complexidade": 1
+  },
+  "cons.usuarios=mais_500": {
+   "complexidade": 2
+  },
+  "cons.perfis=clientes_externos": {
+   "risco": 1,
+   "complexidade": 1
+  },
+  "cons.perfis=parceiros": {
+   "risco": 1
+  },
+  "cons.alertas=whatsapp": {
+   "automacao": 1
+  },
+  "cons.alertas=teams": {
+   "azure": 1
+  },
+  "cons.apps=portal_clientes": {
+   "complexidade": 1,
+   "risco": 1
+  },
+  "cons.apps=app_campo": {
+   "complexidade": 1
+  },
+  "cons.apps=formularios": {
+   "automacao": 1
+  },
+  "cons.apps=aprovacoes": {
+   "automacao": 1
+  },
+  "cons.apps=embedded": {
+   "complexidade": 1
+  },
+  "cons.apps.portal_login=sso_cliente": {
+   "complexidade": 1
+  },
+  "cons.nl.canal=whatsapp": {
+   "ia": 1,
+   "automacao": 1
+  },
+  "cons.nl.canal=teams_slack": {
+   "ia": 1
+  },
+  "cons.nl.canal=web": {
+   "ia": 1
+  },
+  "ia.interesse=explorar": {
+   "ia": 1
+  },
+  "ia.interesse=caso_definido": {
+   "ia": 2
+  },
+  "ia.interesse=producao": {
+   "ia": 2,
+   "complexidade": 1
+  },
+  "ia.casos=previsao_demanda": {
+   "ia": 1
+  },
+  "ia.casos=churn": {
+   "ia": 1
+  },
+  "ia.casos=precificacao": {
+   "ia": 1
+  },
+  "ia.casos=fraude_anomalia": {
+   "ia": 1
+  },
+  "ia.casos=credito": {
+   "ia": 1
+  },
+  "ia.casos=recomendacao": {
+   "ia": 1
+  },
+  "ia.casos=segmentacao": {
+   "ia": 1
+  },
+  "ia.casos=rotas": {
+   "ia": 1
+  },
+  "ia.casos=manutencao": {
+   "ia": 1
+  },
+  "ia.casos=visao": {
+   "ia": 2,
+   "complexidade": 1
+  },
+  "ia.casos=ocr": {
+   "ia": 1
+  },
+  "ia.casos=rag": {
+   "ia": 2
+  },
+  "ia.casos=agentes": {
+   "ia": 2,
+   "automacao": 2
+  },
+  "ia.casos=sentimento": {
+   "ia": 1
+  },
+  "ia.rag.base=banco": {
+   "complexidade": 1
+  },
+  "ia.rag.publico=clientes": {
+   "risco": 1
+  },
+  "ia.dados_rotulados=nao": {
+   "complexidade": 1
+  },
+  "ia.llm_privacidade=anonimizado": {
+   "complexidade": 1
+  },
+  "ia.llm_privacidade=local": {
+   "onprem": 2,
+   "complexidade": 1
+  },
+  "aut.processos=relatorios": {
+   "automacao": 1
+  },
+  "aut.processos=integracao": {
+   "automacao": 1
+  },
+  "aut.processos=alertas": {
+   "automacao": 1
+  },
+  "aut.processos=conciliacao": {
+   "automacao": 1
+  },
+  "aut.processos=cobranca": {
+   "automacao": 1
+  },
+  "aut.processos=atendimento": {
+   "automacao": 1,
+   "ia": 1
+  },
+  "aut.processos=documentos": {
+   "automacao": 1,
+   "ia": 1
+  },
+  "aut.processos=rpa": {
+   "automacao": 2,
+   "complexidade": 1
+  },
+  "aut.processos=aprovacoes": {
+   "automacao": 1
+  },
+  "aut.ferramentas=n8n": {
+   "onprem": 1
+  },
+  "aut.ferramentas=power_automate": {
+   "azure": 1
+  },
+  "seg.certificacoes=iso27001": {
+   "risco": 1
+  },
+  "seg.certificacoes=soc2": {
+   "risco": 1
+  },
+  "seg.certificacoes=pci": {
+   "risco": 2
+  },
+  "seg.certificacoes=bacen": {
+   "risco": 2
+  },
+  "seg.incidente.tipo=ransomware": {
+   "risco": 2
+  },
+  "seg.incidente.tipo=vazamento": {
+   "risco": 2
+  },
+  "seg.incidente.tipo=acesso_indevido": {
+   "risco": 1
+  },
+  "seg.incidente.tipo=fraude": {
+   "risco": 1
+  },
+  "seg.identidade=entra": {
+   "azure": 1
+  },
+  "seg.identidade=google": {
+   "gcp": 1
+  },
+  "seg.identidade=ad_local": {
+   "onprem": 1
+  },
+  "seg.identidade=nenhum": {
+   "risco": 1
+  },
+  "seg.backup=nao": {
+   "risco": 2
+  },
+  "seg.backup=local": {
+   "risco": 1
+  },
+  "seg.acesso_remoto=publico": {
+   "risco": 2
+  },
+  "seg.acesso_remoto=rdp": {
+   "risco": 2
+  },
+  "orc.infra_mensal=ate_500": {
+   "onprem": 1
+  },
+  "orc.prazo=urgente": {
+   "complexidade": 1
+  },
+  "obj.entregas=integracoes": {
+   "automacao": 1
+  },
+  "obj.entregas=automacoes": {
+   "automacao": 1
+  },
+  "obj.entregas=modelos_ia": {
+   "ia": 1
+  },
+  "obj.entregas=portal": {
+   "complexidade": 1
+  },
+  "obj.prioridade=seguranca": {
+   "risco": 1
+  }
+ },
+ "perguntas": [
+  {
+   "id": "id.empresa",
+   "texto": "Nome da empresa",
+   "tipo": "texto",
+   "secao": "identificacao",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "comercial",
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "id.cnpj",
+   "texto": "CNPJ (opcional — usado para enriquecer com dados públicos da Receita)",
+   "tipo": "texto",
+   "secao": "identificacao",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "id.contato_nome",
+   "texto": "Seu nome",
+   "tipo": "texto",
+   "secao": "identificacao",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "id.contato_cargo",
+   "texto": "Seu cargo / papel na decisão",
+   "tipo": "unica",
+   "secao": "identificacao",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial",
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "socio_ceo",
+     "rotulo": "Sócio / CEO / Diretor geral"
+    },
+    {
+     "valor": "financeiro",
+     "rotulo": "CFO / Financeiro / Controladoria"
+    },
+    {
+     "valor": "ti",
+     "rotulo": "CTO / Gerente de TI"
+    },
+    {
+     "valor": "comercial",
+     "rotulo": "Diretor / Gerente comercial"
+    },
+    {
+     "valor": "operacoes",
+     "rotulo": "Operações / Produção / Logística"
+    },
+    {
+     "valor": "analista",
+     "rotulo": "Analista / Coordenador (influenciador)"
+    },
+    {
+     "valor": "outro",
+     "rotulo": "Outro"
+    }
+   ]
+  },
+  {
+   "id": "id.contato_email",
+   "texto": "E-mail",
+   "tipo": "texto",
+   "secao": "identificacao",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "id.contato_whatsapp",
+   "texto": "WhatsApp",
+   "tipo": "texto",
+   "secao": "identificacao",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "id.cidade_uf",
+   "texto": "Cidade / UF da sede",
+   "tipo": "texto",
+   "secao": "identificacao",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "id.origem",
+   "texto": "Como chegou até nós?",
+   "tipo": "unica",
+   "secao": "identificacao",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "indicacao",
+     "rotulo": "Indicação"
+    },
+    {
+     "valor": "instagram",
+     "rotulo": "Instagram"
+    },
+    {
+     "valor": "linkedin",
+     "rotulo": "LinkedIn"
+    },
+    {
+     "valor": "google",
+     "rotulo": "Google / site"
+    },
+    {
+     "valor": "evento",
+     "rotulo": "Evento / palestra"
+    },
+    {
+     "valor": "outro",
+     "rotulo": "Outro"
+    }
+   ]
+  },
+  {
+   "id": "id.origem.indicacao",
+   "texto": "Quem indicou?",
+   "tipo": "texto",
+   "secao": "identificacao",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "id.origem",
+     "indicacao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.descricao",
+   "texto": "Em poucas linhas: o que a empresa faz e como ganha dinheiro?",
+   "tipo": "texto_longo",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "negocios",
+    "comercial",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.segmento",
+   "texto": "Qual o segmento principal?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "negocios",
+    "arquiteto",
+    "cientista",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "varejo",
+     "rotulo": "Varejo / E-commerce"
+    },
+    {
+     "valor": "industria",
+     "rotulo": "Indústria"
+    },
+    {
+     "valor": "agro",
+     "rotulo": "Agronegócio"
+    },
+    {
+     "valor": "logistica",
+     "rotulo": "Logística / Transporte"
+    },
+    {
+     "valor": "seguros_protecao",
+     "rotulo": "Seguros / Proteção veicular"
+    },
+    {
+     "valor": "financeiro",
+     "rotulo": "Serviços financeiros"
+    },
+    {
+     "valor": "saude",
+     "rotulo": "Saúde"
+    },
+    {
+     "valor": "educacao",
+     "rotulo": "Educação"
+    },
+    {
+     "valor": "saas_tecnologia",
+     "rotulo": "SaaS / Tecnologia"
+    },
+    {
+     "valor": "servicos",
+     "rotulo": "Serviços profissionais"
+    },
+    {
+     "valor": "setor_publico",
+     "rotulo": "Setor público"
+    },
+    {
+     "valor": "energia",
+     "rotulo": "Energia / Utilities"
+    },
+    {
+     "valor": "construcao",
+     "rotulo": "Construção / Imobiliário"
+    },
+    {
+     "valor": "telecom",
+     "rotulo": "Telecom"
+    },
+    {
+     "valor": "outro",
+     "rotulo": "Outro"
+    }
+   ]
+  },
+  {
+   "id": "neg.varejo.canais",
+   "texto": "Quais canais de venda?",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "varejo"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "loja_fisica",
+     "rotulo": "Loja física"
+    },
+    {
+     "valor": "ecommerce",
+     "rotulo": "E-commerce próprio"
+    },
+    {
+     "valor": "marketplace",
+     "rotulo": "Marketplaces"
+    },
+    {
+     "valor": "whatsapp_social",
+     "rotulo": "WhatsApp / social selling"
+    },
+    {
+     "valor": "televendas",
+     "rotulo": "Televendas / representantes"
+    }
+   ]
+  },
+  {
+   "id": "neg.varejo.lojas",
+   "texto": "Quantas lojas?",
+   "tipo": "numero",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.varejo.canais",
+     "loja_fisica"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.varejo.plataforma_ecom",
+   "texto": "Plataforma do e-commerce",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.varejo.canais",
+     "ecommerce"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "vtex",
+     "rotulo": "VTEX"
+    },
+    {
+     "valor": "shopify",
+     "rotulo": "Shopify"
+    },
+    {
+     "valor": "nuvemshop",
+     "rotulo": "Nuvemshop"
+    },
+    {
+     "valor": "tray",
+     "rotulo": "Tray"
+    },
+    {
+     "valor": "woocommerce",
+     "rotulo": "WooCommerce"
+    },
+    {
+     "valor": "magento",
+     "rotulo": "Magento / Adobe Commerce"
+    },
+    {
+     "valor": "propria",
+     "rotulo": "Plataforma própria"
+    },
+    {
+     "valor": "outra",
+     "rotulo": "Outra"
+    }
+   ]
+  },
+  {
+   "id": "neg.varejo.marketplaces",
+   "texto": "Quais marketplaces?",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "analista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.varejo.canais",
+     "marketplace"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "mercado_livre",
+     "rotulo": "Mercado Livre"
+    },
+    {
+     "valor": "amazon",
+     "rotulo": "Amazon"
+    },
+    {
+     "valor": "shopee",
+     "rotulo": "Shopee"
+    },
+    {
+     "valor": "magalu",
+     "rotulo": "Magalu"
+    },
+    {
+     "valor": "americanas",
+     "rotulo": "Americanas"
+    },
+    {
+     "valor": "tiktok_shop",
+     "rotulo": "TikTok Shop"
+    },
+    {
+     "valor": "outro",
+     "rotulo": "Outro"
+    }
+   ]
+  },
+  {
+   "id": "neg.varejo.hub",
+   "texto": "Usa hub de integração (ex.: Bling, Tiny/Olist, ANYMARKET, Plugg.To)?",
+   "tipo": "texto",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.varejo.canais",
+     "marketplace"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.varejo.skus",
+   "texto": "Quantos SKUs ativos?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "varejo"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_1k",
+     "rotulo": "Até 1 mil"
+    },
+    {
+     "valor": "1k_10k",
+     "rotulo": "1 mil a 10 mil"
+    },
+    {
+     "valor": "10k_100k",
+     "rotulo": "10 mil a 100 mil"
+    },
+    {
+     "valor": "mais_100k",
+     "rotulo": "Mais de 100 mil"
+    }
+   ]
+  },
+  {
+   "id": "neg.varejo.estoque",
+   "texto": "Principal dor com estoque",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "varejo"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ruptura",
+     "rotulo": "Ruptura (falta produto)"
+    },
+    {
+     "valor": "excesso",
+     "rotulo": "Estoque parado / excesso"
+    },
+    {
+     "valor": "inventario",
+     "rotulo": "Divergência de inventário"
+    },
+    {
+     "valor": "nenhuma",
+     "rotulo": "Nenhuma relevante"
+    }
+   ]
+  },
+  {
+   "id": "neg.ind.tipo",
+   "texto": "Tipo de indústria",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "industria"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "discreta",
+     "rotulo": "Manufatura discreta (peças, montagem)"
+    },
+    {
+     "valor": "processo",
+     "rotulo": "Processo contínuo (química, papel, plástico)"
+    },
+    {
+     "valor": "alimentos",
+     "rotulo": "Alimentos e bebidas"
+    },
+    {
+     "valor": "metal_mecanica",
+     "rotulo": "Metal-mecânica"
+    },
+    {
+     "valor": "textil",
+     "rotulo": "Têxtil / confecção"
+    },
+    {
+     "valor": "outra",
+     "rotulo": "Outra"
+    }
+   ]
+  },
+  {
+   "id": "neg.ind.chao_fabrica",
+   "texto": "Há coleta automática de dados do chão de fábrica?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "industria"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.ind.fontes_fabrica",
+   "texto": "Quais fontes?",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.ind.chao_fabrica",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "clp",
+     "rotulo": "CLP / PLC"
+    },
+    {
+     "valor": "scada",
+     "rotulo": "SCADA / supervisório"
+    },
+    {
+     "valor": "mes",
+     "rotulo": "MES"
+    },
+    {
+     "valor": "sensores_iot",
+     "rotulo": "Sensores IoT"
+    },
+    {
+     "valor": "apontamento",
+     "rotulo": "Apontamento manual em sistema"
+    }
+   ]
+  },
+  {
+   "id": "neg.ind.protocolo",
+   "texto": "Protocolo industrial predominante",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.ind.chao_fabrica",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "opcua",
+     "rotulo": "OPC-UA"
+    },
+    {
+     "valor": "modbus",
+     "rotulo": "Modbus"
+    },
+    {
+     "valor": "mqtt",
+     "rotulo": "MQTT"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "neg.ind.apontamento",
+   "texto": "Como a produção é registrada hoje?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.ind.chao_fabrica",
+     "nao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "papel",
+     "rotulo": "Papel / planilha"
+    },
+    {
+     "valor": "erp",
+     "rotulo": "Direto no ERP"
+    },
+    {
+     "valor": "nao_registra",
+     "rotulo": "Não é registrada"
+    }
+   ]
+  },
+  {
+   "id": "neg.ind.kpis",
+   "texto": "Quais indicadores industriais importam?",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "analista",
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "industria"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "oee",
+     "rotulo": "OEE"
+    },
+    {
+     "valor": "refugo",
+     "rotulo": "Refugo / retrabalho"
+    },
+    {
+     "valor": "custo_produto",
+     "rotulo": "Custo por produto"
+    },
+    {
+     "valor": "manutencao",
+     "rotulo": "MTBF / MTTR (manutenção)"
+    },
+    {
+     "valor": "sop",
+     "rotulo": "S&OP / planejamento de demanda"
+    }
+   ]
+  },
+  {
+   "id": "neg.agro.tipo",
+   "texto": "Atuação no agro",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "agro"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "cooperativa",
+     "rotulo": "Cooperativa agroindustrial"
+    },
+    {
+     "valor": "produtor",
+     "rotulo": "Produtor rural / fazenda"
+    },
+    {
+     "valor": "agroindustria",
+     "rotulo": "Agroindústria / frigorífico"
+    },
+    {
+     "valor": "revenda_insumos",
+     "rotulo": "Revenda de insumos / máquinas"
+    },
+    {
+     "valor": "armazenagem",
+     "rotulo": "Armazenagem / trading de grãos"
+    }
+   ]
+  },
+  {
+   "id": "neg.agro.coop.cooperados",
+   "texto": "Número de cooperados",
+   "tipo": "numero",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.agro.tipo",
+     "cooperativa"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.agro.coop.unidades",
+   "texto": "Número de unidades / filiais / entrepostos",
+   "tipo": "numero",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.agro.tipo",
+     "cooperativa"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.agro.dados_campo",
+   "texto": "Dados de campo disponíveis",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "agro"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "telemetria_maquinas",
+     "rotulo": "Telemetria de máquinas (John Deere Ops Center, CNH, AGCO)"
+    },
+    {
+     "valor": "estacoes_clima",
+     "rotulo": "Estações meteorológicas"
+    },
+    {
+     "valor": "satelite_drone",
+     "rotulo": "Imagens de satélite / drone"
+    },
+    {
+     "valor": "balanca_classificacao",
+     "rotulo": "Balança / classificação de grãos"
+    },
+    {
+     "valor": "rastreabilidade",
+     "rotulo": "Rastreabilidade animal / lote"
+    },
+    {
+     "valor": "nenhum",
+     "rotulo": "Nenhum estruturado"
+    }
+   ]
+  },
+  {
+   "id": "neg.agro.cotacoes",
+   "texto": "Precisa cruzar com cotações e indicadores externos (CEPEA, B3, CBOT, câmbio)?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "agro"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.log.modal",
+   "texto": "Modais",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "logistica"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "rodoviario_carga",
+     "rotulo": "Rodoviário de carga"
+    },
+    {
+     "valor": "passageiros",
+     "rotulo": "Transporte de passageiros"
+    },
+    {
+     "valor": "last_mile",
+     "rotulo": "Last mile / entregas urbanas"
+    },
+    {
+     "valor": "armazem",
+     "rotulo": "Armazenagem / CD"
+    },
+    {
+     "valor": "multimodal",
+     "rotulo": "Multimodal"
+    }
+   ]
+  },
+  {
+   "id": "neg.log.frota",
+   "texto": "Tamanho da frota (próprios + agregados)",
+   "tipo": "numero",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "engenheiro",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "logistica"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.log.rastreamento",
+   "texto": "A frota tem rastreamento / telemetria?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "logistica"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.log.rastreador",
+   "texto": "Provedor de rastreamento",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.log.rastreamento",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sascar",
+     "rotulo": "Sascar"
+    },
+    {
+     "valor": "omnilink",
+     "rotulo": "Omnilink"
+    },
+    {
+     "valor": "onixsat",
+     "rotulo": "Onixsat"
+    },
+    {
+     "valor": "autotrac",
+     "rotulo": "Autotrac"
+    },
+    {
+     "valor": "positron",
+     "rotulo": "Pósitron"
+    },
+    {
+     "valor": "outro",
+     "rotulo": "Outro / próprio"
+    }
+   ]
+  },
+  {
+   "id": "neg.log.posicoes",
+   "texto": "Frequência de posição GPS",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.log.rastreamento",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "segundos",
+     "rotulo": "A cada poucos segundos"
+    },
+    {
+     "valor": "minuto",
+     "rotulo": "A cada 1–5 minutos"
+    },
+    {
+     "valor": "maior",
+     "rotulo": "Mais espaçado"
+    }
+   ]
+  },
+  {
+   "id": "neg.log.tms",
+   "texto": "Sistema TMS / WMS utilizado",
+   "tipo": "texto",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "logistica"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.log.dores",
+   "texto": "Principais dores",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "logistica"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "custo_km",
+     "rotulo": "Custo por km / por entrega"
+    },
+    {
+     "valor": "roteirizacao",
+     "rotulo": "Roteirização"
+    },
+    {
+     "valor": "combustivel",
+     "rotulo": "Consumo de combustível / fraude"
+    },
+    {
+     "valor": "sla_entrega",
+     "rotulo": "SLA de entrega"
+    },
+    {
+     "valor": "sinistro_roubo",
+     "rotulo": "Sinistro / roubo de carga"
+    }
+   ]
+  },
+  {
+   "id": "neg.seg.tipo",
+   "texto": "Tipo de operação",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "seguros_protecao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "seguradora",
+     "rotulo": "Seguradora (SUSEP)"
+    },
+    {
+     "valor": "corretora",
+     "rotulo": "Corretora"
+    },
+    {
+     "valor": "associacao",
+     "rotulo": "Associação de proteção veicular"
+    },
+    {
+     "valor": "cooperativa",
+     "rotulo": "Cooperativa de proteção"
+    },
+    {
+     "valor": "insurtech",
+     "rotulo": "Insurtech"
+    }
+   ]
+  },
+  {
+   "id": "neg.seg.carteira",
+   "texto": "Tamanho da carteira (apólices / associados ativos)",
+   "tipo": "numero",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "finops",
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "seguros_protecao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.seg.produtos",
+   "texto": "Produtos",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "seguros_protecao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "auto",
+     "rotulo": "Auto / moto"
+    },
+    {
+     "valor": "caminhao_carga",
+     "rotulo": "Caminhão / carga / reboque"
+    },
+    {
+     "valor": "vida",
+     "rotulo": "Vida"
+    },
+    {
+     "valor": "residencial",
+     "rotulo": "Residencial / patrimonial"
+    },
+    {
+     "valor": "rastreamento",
+     "rotulo": "Rastreamento / assistência 24h"
+    }
+   ]
+  },
+  {
+   "id": "neg.seg.dores",
+   "texto": "Principais dores",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "cientista",
+    "analista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "seguros_protecao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "inadimplencia",
+     "rotulo": "Inadimplência"
+    },
+    {
+     "valor": "sinistralidade",
+     "rotulo": "Sinistralidade alta"
+    },
+    {
+     "valor": "fraude",
+     "rotulo": "Fraude em sinistro"
+    },
+    {
+     "valor": "churn",
+     "rotulo": "Cancelamentos / churn"
+    },
+    {
+     "valor": "precificacao",
+     "rotulo": "Precificação (FIPE, perfil de risco)"
+    },
+    {
+     "valor": "regulatorio",
+     "rotulo": "Relatórios regulatórios"
+    }
+   ]
+  },
+  {
+   "id": "neg.seg.fipe",
+   "texto": "Usa tabela FIPE ou bases externas de veículos na precificação?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "seguros_protecao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.fin.tipo",
+   "texto": "Tipo",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "financeiro"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "banco_fintech",
+     "rotulo": "Banco / fintech"
+    },
+    {
+     "valor": "coop_credito",
+     "rotulo": "Cooperativa de crédito"
+    },
+    {
+     "valor": "fidc_factoring",
+     "rotulo": "FIDC / factoring / securitizadora"
+    },
+    {
+     "valor": "pagamentos",
+     "rotulo": "Meios de pagamento"
+    },
+    {
+     "valor": "contabil_bpo",
+     "rotulo": "Contabilidade / BPO financeiro"
+    }
+   ]
+  },
+  {
+   "id": "neg.fin.bacen",
+   "texto": "É regulada pelo Banco Central (Res. CMN 4.893 / BCB 85 — segurança cibernética e nuvem)?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber",
+    "arquiteto",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "financeiro"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.fin.bacen.comunicacao",
+   "texto": "Já comunicou ao BACEN a contratação de serviços de nuvem relevantes?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.fin.bacen",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.fin.casos",
+   "texto": "Casos de uso prioritários",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista",
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "financeiro"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "score_credito",
+     "rotulo": "Score de crédito"
+    },
+    {
+     "valor": "pld_aml",
+     "rotulo": "PLD / AML"
+    },
+    {
+     "valor": "fraude",
+     "rotulo": "Detecção de fraude"
+    },
+    {
+     "valor": "cobranca",
+     "rotulo": "Régua de cobrança"
+    },
+    {
+     "valor": "open_finance",
+     "rotulo": "Open Finance"
+    }
+   ]
+  },
+  {
+   "id": "neg.saude.tipo",
+   "texto": "Tipo",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "saude"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "clinica",
+     "rotulo": "Clínica / consultório"
+    },
+    {
+     "valor": "hospital",
+     "rotulo": "Hospital"
+    },
+    {
+     "valor": "laboratorio",
+     "rotulo": "Laboratório / imagem"
+    },
+    {
+     "valor": "operadora",
+     "rotulo": "Operadora de plano (ANS)"
+    },
+    {
+     "valor": "farmacia",
+     "rotulo": "Farmácia / distribuidora"
+    },
+    {
+     "valor": "healthtech",
+     "rotulo": "Healthtech"
+    }
+   ]
+  },
+  {
+   "id": "neg.saude.sistemas",
+   "texto": "Sistemas de gestão (ex.: Tasy, MV, Soul, iClinic, próprio)",
+   "tipo": "texto",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "saude"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.saude.prontuario",
+   "texto": "A plataforma vai tocar dados de prontuário / clínicos?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "saude"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.saude.prontuario.aviso",
+   "texto": "Dados de saúde são sensíveis (LGPD art. 11). Há base legal e consentimento mapeados?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.saude.prontuario",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim, mapeado pelo DPO"
+    },
+    {
+     "valor": "parcial",
+     "rotulo": "Parcialmente"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.edu.tipo",
+   "texto": "Tipo",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "educacao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "escola",
+     "rotulo": "Escola (básico)"
+    },
+    {
+     "valor": "superior",
+     "rotulo": "Ensino superior"
+    },
+    {
+     "valor": "edtech",
+     "rotulo": "Edtech / cursos online"
+    },
+    {
+     "valor": "livres",
+     "rotulo": "Cursos livres / idiomas"
+    }
+   ]
+  },
+  {
+   "id": "neg.edu.alunos",
+   "texto": "Número de alunos ativos",
+   "tipo": "numero",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "educacao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.edu.lms",
+   "texto": "Plataforma acadêmica / LMS (ex.: TOTVS RM, Moodle, Canvas, Hotmart, própria)",
+   "tipo": "texto",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "educacao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.edu.dores",
+   "texto": "Dores",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "educacao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "evasao",
+     "rotulo": "Evasão"
+    },
+    {
+     "valor": "captacao",
+     "rotulo": "Captação / funil de matrícula"
+    },
+    {
+     "valor": "inadimplencia",
+     "rotulo": "Inadimplência"
+    },
+    {
+     "valor": "desempenho",
+     "rotulo": "Desempenho acadêmico"
+    }
+   ]
+  },
+  {
+   "id": "neg.saas.modelo",
+   "texto": "Modelo",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "saas_tecnologia"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "saas_b2b",
+     "rotulo": "SaaS B2B"
+    },
+    {
+     "valor": "app_b2c",
+     "rotulo": "App B2C"
+    },
+    {
+     "valor": "software_house",
+     "rotulo": "Software house / fábrica"
+    },
+    {
+     "valor": "provedor_internet",
+     "rotulo": "Provedor de internet (ISP)"
+    }
+   ]
+  },
+  {
+   "id": "neg.saas.metricas",
+   "texto": "Métricas de produto já medidas",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "analista",
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "saas_tecnologia"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "mrr",
+     "rotulo": "MRR / ARR"
+    },
+    {
+     "valor": "churn",
+     "rotulo": "Churn / NRR"
+    },
+    {
+     "valor": "cac_ltv",
+     "rotulo": "CAC / LTV"
+    },
+    {
+     "valor": "uso",
+     "rotulo": "Uso do produto (DAU/MAU, eventos)"
+    },
+    {
+     "valor": "nenhuma",
+     "rotulo": "Nenhuma"
+    }
+   ]
+  },
+  {
+   "id": "neg.saas.embedded",
+   "texto": "Quer oferecer analytics dentro do produto para os seus clientes (embedded)?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "analista",
+    "cyber",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "saas_tecnologia"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.saas.embedded.tenants",
+   "texto": "Quantos clientes (tenants) acessariam?",
+   "tipo": "numero",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "finops",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.saas.embedded",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.serv.tipo",
+   "texto": "Tipo",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "servicos"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "contabilidade",
+     "rotulo": "Contabilidade"
+    },
+    {
+     "valor": "advocacia",
+     "rotulo": "Advocacia"
+    },
+    {
+     "valor": "consultoria",
+     "rotulo": "Consultoria"
+    },
+    {
+     "valor": "agencia",
+     "rotulo": "Agência de marketing"
+    },
+    {
+     "valor": "engenharia",
+     "rotulo": "Engenharia / arquitetura"
+    },
+    {
+     "valor": "outro",
+     "rotulo": "Outro"
+    }
+   ]
+  },
+  {
+   "id": "neg.serv.horas",
+   "texto": "Cobra por hora / projeto e precisa medir rentabilidade por cliente?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "analista",
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "servicos"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.pub.esfera",
+   "texto": "Esfera",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "comercial",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "setor_publico"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "municipal",
+     "rotulo": "Municipal"
+    },
+    {
+     "valor": "estadual",
+     "rotulo": "Estadual"
+    },
+    {
+     "valor": "federal",
+     "rotulo": "Federal"
+    },
+    {
+     "valor": "autarquia",
+     "rotulo": "Autarquia / consórcio / estatal"
+    }
+   ]
+  },
+  {
+   "id": "neg.pub.contratacao",
+   "texto": "Forma de contratação",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "setor_publico"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "licitacao",
+     "rotulo": "Licitação (Lei 14.133)"
+    },
+    {
+     "valor": "ata",
+     "rotulo": "Adesão a ata de registro de preços"
+    },
+    {
+     "valor": "dispensa",
+     "rotulo": "Dispensa"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "neg.pub.nuvem",
+   "texto": "Há exigência de nuvem nacional / soberana?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "setor_publico"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.pub.nuvem.detalhe",
+   "texto": "Detalhe a exigência (ex.: dados em território nacional, provedor estatal)",
+   "tipo": "texto_longo",
+   "secao": "negocio",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.pub.nuvem",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.segmento.outro",
+   "texto": "Qual?",
+   "tipo": "texto",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": true,
+   "agentes": [
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.segmento",
+     "outro"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.publico",
+   "texto": "Para quem vende?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "b2b",
+     "rotulo": "Empresas (B2B)"
+    },
+    {
+     "valor": "b2c",
+     "rotulo": "Consumidor final (B2C)"
+    },
+    {
+     "valor": "b2b2c",
+     "rotulo": "Ambos / B2B2C"
+    },
+    {
+     "valor": "b2g",
+     "rotulo": "Governo (B2G)"
+    }
+   ]
+  },
+  {
+   "id": "neg.modelo_receita",
+   "texto": "Como a receita é gerada?",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "analista",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "venda_produto",
+     "rotulo": "Venda de produto"
+    },
+    {
+     "valor": "recorrencia",
+     "rotulo": "Assinatura / recorrência / mensalidade"
+    },
+    {
+     "valor": "projeto_servico",
+     "rotulo": "Serviço por projeto / hora"
+    },
+    {
+     "valor": "comissao",
+     "rotulo": "Comissão / intermediação / marketplace"
+    },
+    {
+     "valor": "licenca",
+     "rotulo": "Licenciamento"
+    },
+    {
+     "valor": "publicidade",
+     "rotulo": "Publicidade"
+    },
+    {
+     "valor": "outro",
+     "rotulo": "Outro"
+    }
+   ]
+  },
+  {
+   "id": "neg.receita.churn_conhecido",
+   "texto": "Conhece o churn mensal?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "analista",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.modelo_receita",
+     "recorrencia"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim_confiavel",
+     "rotulo": "Sim, e confio no número"
+    },
+    {
+     "valor": "sim_duvida",
+     "rotulo": "Sim, mas não confio"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.faturamento",
+   "texto": "Faturamento anual",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_360k",
+     "rotulo": "Até R$ 360 mil (ME)"
+    },
+    {
+     "valor": "360k_4m8",
+     "rotulo": "R$ 360 mil a R$ 4,8 milhões (EPP)"
+    },
+    {
+     "valor": "4m8_30m",
+     "rotulo": "R$ 4,8 a 30 milhões"
+    },
+    {
+     "valor": "30m_300m",
+     "rotulo": "R$ 30 a 300 milhões"
+    },
+    {
+     "valor": "mais_300m",
+     "rotulo": "Mais de R$ 300 milhões"
+    },
+    {
+     "valor": "nao_informar",
+     "rotulo": "Prefiro não informar"
+    }
+   ]
+  },
+  {
+   "id": "neg.funcionarios",
+   "texto": "Número de colaboradores",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_10",
+     "rotulo": "Até 10"
+    },
+    {
+     "valor": "11_50",
+     "rotulo": "11 a 50"
+    },
+    {
+     "valor": "51_200",
+     "rotulo": "51 a 200"
+    },
+    {
+     "valor": "201_1000",
+     "rotulo": "201 a 1.000"
+    },
+    {
+     "valor": "mais_1000",
+     "rotulo": "Mais de 1.000"
+    }
+   ]
+  },
+  {
+   "id": "neg.unidades",
+   "texto": "Quantas unidades / filiais / CNPJs?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "1",
+     "rotulo": "1"
+    },
+    {
+     "valor": "2_5",
+     "rotulo": "2 a 5"
+    },
+    {
+     "valor": "6_20",
+     "rotulo": "6 a 20"
+    },
+    {
+     "valor": "mais_20",
+     "rotulo": "Mais de 20"
+    }
+   ]
+  },
+  {
+   "id": "neg.unidades.consolidacao",
+   "texto": "Os números das unidades são consolidados hoje? Como?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.unidades",
+     "2_5"
+    ],
+    [
+     "neg.unidades",
+     "6_20"
+    ],
+    [
+     "neg.unidades",
+     "mais_20"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "automatico",
+     "rotulo": "Automaticamente no ERP / BI"
+    },
+    {
+     "valor": "planilha",
+     "rotulo": "Manualmente em planilha"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não são consolidados"
+    }
+   ]
+  },
+  {
+   "id": "neg.areas",
+   "texto": "Quais áreas a plataforma deve atender? (cada uma abre perguntas sobre suas dores)",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "negocios",
+    "analista"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "financeiro",
+     "rotulo": "Financeiro / Controladoria"
+    },
+    {
+     "valor": "comercial",
+     "rotulo": "Comercial / Vendas"
+    },
+    {
+     "valor": "marketing",
+     "rotulo": "Marketing"
+    },
+    {
+     "valor": "operacoes",
+     "rotulo": "Operações / Produção"
+    },
+    {
+     "valor": "supply",
+     "rotulo": "Logística / Supply chain / Compras"
+    },
+    {
+     "valor": "rh",
+     "rotulo": "RH / Pessoas"
+    },
+    {
+     "valor": "atendimento",
+     "rotulo": "Atendimento / CS"
+    },
+    {
+     "valor": "juridico",
+     "rotulo": "Jurídico / Compliance"
+    },
+    {
+     "valor": "ti",
+     "rotulo": "TI"
+    },
+    {
+     "valor": "diretoria",
+     "rotulo": "Diretoria / Conselho"
+    }
+   ]
+  },
+  {
+   "id": "neg.area.fin.dores",
+   "texto": "Dores do financeiro",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "analista",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.areas",
+     "financeiro"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "fluxo_caixa",
+     "rotulo": "Fluxo de caixa sem previsibilidade"
+    },
+    {
+     "valor": "conciliacao",
+     "rotulo": "Conciliação bancária manual"
+    },
+    {
+     "valor": "dre_lento",
+     "rotulo": "DRE / fechamento demora"
+    },
+    {
+     "valor": "inadimplencia",
+     "rotulo": "Inadimplência"
+    },
+    {
+     "valor": "custo_centro",
+     "rotulo": "Custo por centro / produto / cliente sem visibilidade"
+    },
+    {
+     "valor": "orcado_realizado",
+     "rotulo": "Orçado x realizado"
+    }
+   ]
+  },
+  {
+   "id": "neg.area.com.dores",
+   "texto": "Dores do comercial",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "analista",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.areas",
+     "comercial"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "funil",
+     "rotulo": "Funil sem visibilidade"
+    },
+    {
+     "valor": "metas",
+     "rotulo": "Metas e acompanhamento manuais"
+    },
+    {
+     "valor": "previsao",
+     "rotulo": "Previsão de vendas"
+    },
+    {
+     "valor": "comissao",
+     "rotulo": "Cálculo de comissão manual"
+    },
+    {
+     "valor": "carteira",
+     "rotulo": "Carteira / positivação de clientes"
+    },
+    {
+     "valor": "mix_margem",
+     "rotulo": "Mix e margem por vendedor"
+    }
+   ]
+  },
+  {
+   "id": "neg.area.mkt.dores",
+   "texto": "Dores do marketing",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "analista",
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.areas",
+     "marketing"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "atribuicao",
+     "rotulo": "Atribuição de canais / ROI de mídia"
+    },
+    {
+     "valor": "cac",
+     "rotulo": "CAC por canal"
+    },
+    {
+     "valor": "segmentacao",
+     "rotulo": "Segmentação de base"
+    },
+    {
+     "valor": "relatorios_midia",
+     "rotulo": "Relatórios de mídia manuais"
+    }
+   ]
+  },
+  {
+   "id": "neg.area.ops.dores",
+   "texto": "Dores de operações",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "analista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.areas",
+     "operacoes"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "produtividade",
+     "rotulo": "Produtividade / eficiência"
+    },
+    {
+     "valor": "desperdicio",
+     "rotulo": "Desperdício / perdas"
+    },
+    {
+     "valor": "sla",
+     "rotulo": "SLA / prazo"
+    },
+    {
+     "valor": "qualidade",
+     "rotulo": "Qualidade / não conformidades"
+    }
+   ]
+  },
+  {
+   "id": "neg.area.sup.dores",
+   "texto": "Dores de supply",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.areas",
+     "supply"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "frete",
+     "rotulo": "Custo de frete"
+    },
+    {
+     "valor": "ruptura",
+     "rotulo": "Ruptura / excesso de estoque"
+    },
+    {
+     "valor": "lead_time",
+     "rotulo": "Lead time de fornecedor"
+    },
+    {
+     "valor": "compras",
+     "rotulo": "Sugestão de compras"
+    }
+   ]
+  },
+  {
+   "id": "neg.area.rh.dores",
+   "texto": "Dores de RH",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "analista",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.areas",
+     "rh"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "turnover",
+     "rotulo": "Turnover"
+    },
+    {
+     "valor": "absenteismo",
+     "rotulo": "Absenteísmo"
+    },
+    {
+     "valor": "headcount",
+     "rotulo": "Headcount e custo de folha"
+    },
+    {
+     "valor": "desempenho",
+     "rotulo": "Avaliação de desempenho"
+    }
+   ]
+  },
+  {
+   "id": "neg.area.cs.dores",
+   "texto": "Dores do atendimento",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.areas",
+     "atendimento"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "nps",
+     "rotulo": "NPS / satisfação"
+    },
+    {
+     "valor": "tempo_resposta",
+     "rotulo": "Tempo de resposta"
+    },
+    {
+     "valor": "volume",
+     "rotulo": "Volume alto de atendimentos repetitivos"
+    },
+    {
+     "valor": "sentimento",
+     "rotulo": "Entender motivos de reclamação"
+    }
+   ]
+  },
+  {
+   "id": "neg.area.dir.necessidade",
+   "texto": "O que a diretoria precisa?",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "analista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.areas",
+     "diretoria"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "visao_consolidada",
+     "rotulo": "Visão consolidada da empresa"
+    },
+    {
+     "valor": "okr",
+     "rotulo": "Metas / OKRs"
+    },
+    {
+     "valor": "board",
+     "rotulo": "Relatório para conselho / investidores"
+    },
+    {
+     "valor": "simulacao",
+     "rotulo": "Simulação de cenários"
+    }
+   ]
+  },
+  {
+   "id": "neg.kpis_atuais",
+   "texto": "Quais indicadores a diretoria acompanha hoje, e de onde vêm os números?",
+   "tipo": "texto_longo",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "analista"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.decisao_dados",
+   "texto": "De 1 a 5: o quanto as decisões hoje são baseadas em dados?",
+   "tipo": "escala",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": 1,
+   "max": 5,
+   "opcoes": []
+  },
+  {
+   "id": "neg.sazonalidade",
+   "texto": "O negócio tem sazonalidade forte?",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista",
+    "finops",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "neg.sazonalidade.detalhe",
+   "texto": "Quais meses / eventos (safra, Black Friday, volta às aulas...)?",
+   "tipo": "texto",
+   "secao": "negocio",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "neg.sazonalidade",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "neg.crescimento",
+   "texto": "Ritmo de crescimento esperado",
+   "tipo": "unica",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "finops",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "estavel",
+     "rotulo": "Estável"
+    },
+    {
+     "valor": "ate_20",
+     "rotulo": "Até 20% ao ano"
+    },
+    {
+     "valor": "20_50",
+     "rotulo": "20% a 50% ao ano"
+    },
+    {
+     "valor": "mais_50",
+     "rotulo": "Mais de 50% ao ano"
+    },
+    {
+     "valor": "reestruturacao",
+     "rotulo": "Em reestruturação"
+    }
+   ]
+  },
+  {
+   "id": "neg.regulacao",
+   "texto": "Regulações que se aplicam",
+   "tipo": "multipla",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "lgpd",
+     "rotulo": "LGPD (praticamente todas)"
+    },
+    {
+     "valor": "bacen",
+     "rotulo": "BACEN"
+    },
+    {
+     "valor": "susep",
+     "rotulo": "SUSEP"
+    },
+    {
+     "valor": "ans",
+     "rotulo": "ANS"
+    },
+    {
+     "valor": "anvisa",
+     "rotulo": "ANVISA"
+    },
+    {
+     "valor": "anatel_aneel",
+     "rotulo": "ANATEL / ANEEL"
+    },
+    {
+     "valor": "cvm",
+     "rotulo": "CVM (companhia aberta)"
+    },
+    {
+     "valor": "sped",
+     "rotulo": "Fiscal (SPED, NF-e)"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "neg.concorrentes",
+   "texto": "Principais concorrentes e o que fazem melhor com dados (se souber)",
+   "tipo": "texto_longo",
+   "secao": "negocio",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "mat.nivel",
+   "texto": "Como está a gestão de dados hoje?",
+   "tipo": "unica",
+   "secao": "maturidade",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "negocios",
+    "arquiteto",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "1",
+     "rotulo": "1 — Planilhas e relatórios manuais"
+    },
+    {
+     "valor": "2",
+     "rotulo": "2 — Relatórios do ERP e algum BI isolado"
+    },
+    {
+     "valor": "3",
+     "rotulo": "3 — BI centralizado com data warehouse"
+    },
+    {
+     "valor": "4",
+     "rotulo": "4 — Plataforma de dados com governança"
+    },
+    {
+     "valor": "5",
+     "rotulo": "5 — Data-driven, com IA em produção"
+    }
+   ]
+  },
+  {
+   "id": "mat.time_dados",
+   "texto": "Existe time de dados?",
+   "tipo": "unica",
+   "secao": "maturidade",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "devops",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    },
+    {
+     "valor": "uma_pessoa",
+     "rotulo": "Uma pessoa (analista / BI)"
+    },
+    {
+     "valor": "pequeno",
+     "rotulo": "Pequeno (2 a 5)"
+    },
+    {
+     "valor": "estruturado",
+     "rotulo": "Estruturado (6+)"
+    }
+   ]
+  },
+  {
+   "id": "mat.time.skills",
+   "texto": "Competências do time",
+   "tipo": "multipla",
+   "secao": "maturidade",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "devops",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "mat.time_dados",
+     "uma_pessoa"
+    ],
+    [
+     "mat.time_dados",
+     "pequeno"
+    ],
+    [
+     "mat.time_dados",
+     "estruturado"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sql",
+     "rotulo": "SQL"
+    },
+    {
+     "valor": "python",
+     "rotulo": "Python"
+    },
+    {
+     "valor": "powerbi",
+     "rotulo": "Power BI / DAX"
+    },
+    {
+     "valor": "looker",
+     "rotulo": "Looker / Looker Studio"
+    },
+    {
+     "valor": "spark",
+     "rotulo": "Spark / Databricks"
+    },
+    {
+     "valor": "dbt",
+     "rotulo": "dbt"
+    },
+    {
+     "valor": "airflow",
+     "rotulo": "Airflow / orquestração"
+    },
+    {
+     "valor": "aws",
+     "rotulo": "AWS"
+    },
+    {
+     "valor": "gcp",
+     "rotulo": "GCP"
+    },
+    {
+     "valor": "azure",
+     "rotulo": "Azure"
+    },
+    {
+     "valor": "oci",
+     "rotulo": "Oracle Cloud"
+    },
+    {
+     "valor": "linux_docker",
+     "rotulo": "Linux / Docker"
+    }
+   ]
+  },
+  {
+   "id": "mat.ti",
+   "texto": "Como é a TI?",
+   "tipo": "unica",
+   "secao": "maturidade",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "devops",
+    "cyber",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "interna",
+     "rotulo": "TI interna"
+    },
+    {
+     "valor": "terceirizada",
+     "rotulo": "TI terceirizada"
+    },
+    {
+     "valor": "nenhuma",
+     "rotulo": "Não há TI"
+    }
+   ]
+  },
+  {
+   "id": "mat.ti.fornecedor",
+   "texto": "Quem é o fornecedor e qual o escopo?",
+   "tipo": "texto",
+   "secao": "maturidade",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "devops",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "mat.ti",
+     "terceirizada"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "mat.sponsor",
+   "texto": "Há um patrocinador executivo do projeto?",
+   "tipo": "unica",
+   "secao": "maturidade",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial",
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "mat.sponsor.quem",
+   "texto": "Quem (cargo)?",
+   "tipo": "texto",
+   "secao": "maturidade",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "mat.sponsor",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "mat.sponsor.risco",
+   "texto": "Quem aprovaria o investimento?",
+   "tipo": "texto",
+   "secao": "maturidade",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "mat.sponsor",
+     "nao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "mat.operacao",
+   "texto": "Depois de implantada, quem opera a plataforma?",
+   "tipo": "unica",
+   "secao": "maturidade",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "comercial",
+    "devops",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "interno",
+     "rotulo": "Nosso time interno"
+    },
+    {
+     "valor": "gerenciado",
+     "rotulo": "Vocês (serviço gerenciado mensal)"
+    },
+    {
+     "valor": "hibrido",
+     "rotulo": "Híbrido: vocês sustentam, nós evoluímos"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Ainda não sei"
+    }
+   ]
+  },
+  {
+   "id": "mat.treinamento",
+   "texto": "Precisa de capacitação do time?",
+   "tipo": "multipla",
+   "secao": "maturidade",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial",
+    "analista"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "usuarios_bi",
+     "rotulo": "Usuários de BI"
+    },
+    {
+     "valor": "sql",
+     "rotulo": "SQL / análise"
+    },
+    {
+     "valor": "engenharia",
+     "rotulo": "Engenharia de dados"
+    },
+    {
+     "valor": "ia",
+     "rotulo": "IA generativa no dia a dia"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "dados.fontes",
+   "texto": "Quais fontes de dados existem? (cada uma abre detalhes)",
+   "tipo": "multipla",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "engenheiro",
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "erp",
+     "rotulo": "ERP"
+    },
+    {
+     "valor": "crm",
+     "rotulo": "CRM"
+    },
+    {
+     "valor": "bancos",
+     "rotulo": "Bancos de dados de sistemas próprios"
+    },
+    {
+     "valor": "planilhas",
+     "rotulo": "Planilhas"
+    },
+    {
+     "valor": "ecommerce",
+     "rotulo": "E-commerce / marketplaces"
+    },
+    {
+     "valor": "marketing",
+     "rotulo": "Marketing e mídia"
+    },
+    {
+     "valor": "iot",
+     "rotulo": "IoT / telemetria / sensores"
+    },
+    {
+     "valor": "documentos",
+     "rotulo": "Arquivos e documentos (XML, PDF, imagens)"
+    },
+    {
+     "valor": "atendimento",
+     "rotulo": "Atendimento / WhatsApp / tickets"
+    },
+    {
+     "valor": "publicos",
+     "rotulo": "Dados públicos / externos"
+    },
+    {
+     "valor": "outra",
+     "rotulo": "Outra"
+    }
+   ]
+  },
+  {
+   "id": "dados.erp.sistema",
+   "texto": "Qual ERP?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "erp"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sap",
+     "rotulo": "SAP (ECC / S/4HANA / Business One)"
+    },
+    {
+     "valor": "protheus",
+     "rotulo": "TOTVS Protheus"
+    },
+    {
+     "valor": "rm",
+     "rotulo": "TOTVS RM"
+    },
+    {
+     "valor": "datasul",
+     "rotulo": "TOTVS Datasul"
+    },
+    {
+     "valor": "senior",
+     "rotulo": "Senior"
+    },
+    {
+     "valor": "sankhya",
+     "rotulo": "Sankhya"
+    },
+    {
+     "valor": "oracle",
+     "rotulo": "Oracle (EBS / JD Edwards / NetSuite)"
+    },
+    {
+     "valor": "dynamics",
+     "rotulo": "Microsoft Dynamics 365"
+    },
+    {
+     "valor": "omie",
+     "rotulo": "Omie"
+    },
+    {
+     "valor": "bling_tiny",
+     "rotulo": "Bling / Tiny (Olist)"
+    },
+    {
+     "valor": "conta_azul",
+     "rotulo": "Conta Azul"
+    },
+    {
+     "valor": "proprio",
+     "rotulo": "Sistema próprio"
+    },
+    {
+     "valor": "outro",
+     "rotulo": "Outro"
+    }
+   ]
+  },
+  {
+   "id": "dados.erp.hospedagem",
+   "texto": "Onde o ERP roda?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "engenheiro",
+    "cyber",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "erp"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "servidor_local",
+     "rotulo": "Servidor na empresa"
+    },
+    {
+     "valor": "saas",
+     "rotulo": "Na nuvem do fornecedor (SaaS)"
+    },
+    {
+     "valor": "datacenter",
+     "rotulo": "Datacenter / hosting terceiro"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "dados.erp.acesso",
+   "texto": "Como conseguimos ler os dados do ERP?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "cyber",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "erp"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "banco",
+     "rotulo": "Acesso direto ao banco (leitura)"
+    },
+    {
+     "valor": "api",
+     "rotulo": "API do fornecedor"
+    },
+    {
+     "valor": "exportacao",
+     "rotulo": "Só exportando relatórios (Excel/CSV)"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "dados.erp.banco",
+   "texto": "Banco do ERP",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.erp.acesso",
+     "banco"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sqlserver",
+     "rotulo": "SQL Server"
+    },
+    {
+     "valor": "oracle",
+     "rotulo": "Oracle"
+    },
+    {
+     "valor": "postgres",
+     "rotulo": "PostgreSQL"
+    },
+    {
+     "valor": "progress",
+     "rotulo": "Progress / OpenEdge"
+    },
+    {
+     "valor": "firebird",
+     "rotulo": "Firebird"
+    },
+    {
+     "valor": "mysql",
+     "rotulo": "MySQL / MariaDB"
+    },
+    {
+     "valor": "hana",
+     "rotulo": "SAP HANA"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "dados.crm.sistema",
+   "texto": "Qual CRM?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "crm"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "salesforce",
+     "rotulo": "Salesforce"
+    },
+    {
+     "valor": "hubspot",
+     "rotulo": "HubSpot"
+    },
+    {
+     "valor": "rd_crm",
+     "rotulo": "RD Station CRM"
+    },
+    {
+     "valor": "pipedrive",
+     "rotulo": "Pipedrive"
+    },
+    {
+     "valor": "dynamics_crm",
+     "rotulo": "Dynamics 365 Sales"
+    },
+    {
+     "valor": "ploomes",
+     "rotulo": "Ploomes"
+    },
+    {
+     "valor": "agendor",
+     "rotulo": "Agendor"
+    },
+    {
+     "valor": "outro",
+     "rotulo": "Outro"
+    }
+   ]
+  },
+  {
+   "id": "dados.bd.tipos",
+   "texto": "Quais bancos?",
+   "tipo": "multipla",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "bancos"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sqlserver",
+     "rotulo": "SQL Server"
+    },
+    {
+     "valor": "oracle",
+     "rotulo": "Oracle"
+    },
+    {
+     "valor": "postgres",
+     "rotulo": "PostgreSQL"
+    },
+    {
+     "valor": "mysql",
+     "rotulo": "MySQL / MariaDB"
+    },
+    {
+     "valor": "mongodb",
+     "rotulo": "MongoDB"
+    },
+    {
+     "valor": "firebird",
+     "rotulo": "Firebird"
+    },
+    {
+     "valor": "dynamodb_firestore",
+     "rotulo": "DynamoDB / Firestore / Cosmos"
+    },
+    {
+     "valor": "outro",
+     "rotulo": "Outro"
+    }
+   ]
+  },
+  {
+   "id": "dados.bd.cdc",
+   "texto": "Precisa capturar alterações em tempo real (CDC)?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "bancos"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "dados.bd.cdc.tabelas",
+   "texto": "Quantas tabelas aproximadamente?",
+   "tipo": "numero",
+   "secao": "dados",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "finops",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.bd.cdc",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "dados.planilhas.onde",
+   "texto": "Onde ficam?",
+   "tipo": "multipla",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "planilhas"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "local",
+     "rotulo": "Excel em máquinas / rede local"
+    },
+    {
+     "valor": "sharepoint",
+     "rotulo": "SharePoint / OneDrive"
+    },
+    {
+     "valor": "google_sheets",
+     "rotulo": "Google Sheets"
+    }
+   ]
+  },
+  {
+   "id": "dados.planilhas.oficiais",
+   "texto": "Alguma planilha é fonte oficial de número da diretoria?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "negocios",
+    "cyber",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "planilhas"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "dados.planilhas.oficiais.quais",
+   "texto": "Quais e quem mantém?",
+   "tipo": "texto_longo",
+   "secao": "dados",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.planilhas.oficiais",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "dados.ecom.detalhe",
+   "texto": "Plataformas e contas (ex.: VTEX + Mercado Livre com 2 contas)",
+   "tipo": "texto",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "ecommerce"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "dados.mkt.fontes",
+   "texto": "Quais?",
+   "tipo": "multipla",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "analista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "marketing"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ga4",
+     "rotulo": "Google Analytics 4"
+    },
+    {
+     "valor": "google_ads",
+     "rotulo": "Google Ads"
+    },
+    {
+     "valor": "meta_ads",
+     "rotulo": "Meta Ads"
+    },
+    {
+     "valor": "tiktok_ads",
+     "rotulo": "TikTok Ads"
+    },
+    {
+     "valor": "linkedin_ads",
+     "rotulo": "LinkedIn Ads"
+    },
+    {
+     "valor": "rd_marketing",
+     "rotulo": "RD Station Marketing"
+    },
+    {
+     "valor": "instagram",
+     "rotulo": "Instagram orgânico"
+    }
+   ]
+  },
+  {
+   "id": "dados.iot.dispositivos",
+   "texto": "Quantos dispositivos?",
+   "tipo": "numero",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "iot"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "dados.iot.frequencia",
+   "texto": "Frequência de envio",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "iot"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "segundos",
+     "rotulo": "Segundos"
+    },
+    {
+     "valor": "minutos",
+     "rotulo": "Minutos"
+    },
+    {
+     "valor": "horas",
+     "rotulo": "Horas ou lote diário"
+    }
+   ]
+  },
+  {
+   "id": "dados.iot.protocolo",
+   "texto": "Como os dados chegam?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "iot"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "mqtt",
+     "rotulo": "MQTT"
+    },
+    {
+     "valor": "http",
+     "rotulo": "HTTP / webhook"
+    },
+    {
+     "valor": "arquivo",
+     "rotulo": "Arquivo / API do fornecedor"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "dados.doc.tipos",
+   "texto": "Tipos",
+   "tipo": "multipla",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "documentos"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "nfe_xml",
+     "rotulo": "XML de NF-e / CT-e / NFS-e"
+    },
+    {
+     "valor": "pdf",
+     "rotulo": "PDFs (contratos, boletos, laudos)"
+    },
+    {
+     "valor": "imagens",
+     "rotulo": "Imagens / fotos (vistoria, produto)"
+    },
+    {
+     "valor": "audio",
+     "rotulo": "Áudios / ligações"
+    },
+    {
+     "valor": "csv",
+     "rotulo": "CSV / TXT de sistemas"
+    }
+   ]
+  },
+  {
+   "id": "dados.doc.volume",
+   "texto": "Volume mensal de documentos",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "documentos"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_1k",
+     "rotulo": "Até 1 mil"
+    },
+    {
+     "valor": "1k_50k",
+     "rotulo": "1 mil a 50 mil"
+    },
+    {
+     "valor": "mais_50k",
+     "rotulo": "Mais de 50 mil"
+    }
+   ]
+  },
+  {
+   "id": "dados.atend.ferramenta",
+   "texto": "Ferramenta (ex.: Zendesk, Blip, Take, Octadesk, WhatsApp Business API)",
+   "tipo": "texto",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "atendimento"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "dados.ext.quais",
+   "texto": "Quais?",
+   "tipo": "multipla",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "publicos"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "receita_cnpj",
+     "rotulo": "Receita Federal (CNPJ)"
+    },
+    {
+     "valor": "ibge",
+     "rotulo": "IBGE / censo"
+    },
+    {
+     "valor": "fipe",
+     "rotulo": "Tabela FIPE"
+    },
+    {
+     "valor": "bcb",
+     "rotulo": "Banco Central (câmbio, Selic, IPCA)"
+    },
+    {
+     "valor": "clima",
+     "rotulo": "Clima (INMET, APIs)"
+    },
+    {
+     "valor": "cepea_b3",
+     "rotulo": "CEPEA / B3 / commodities"
+    },
+    {
+     "valor": "scraping",
+     "rotulo": "Preços de concorrentes (web scraping)"
+    }
+   ]
+  },
+  {
+   "id": "dados.fontes.outra",
+   "texto": "Descreva",
+   "tipo": "texto_longo",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.fontes",
+     "outra"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "dados.bd.administracao",
+   "texto": "Quem cuida dos bancos de dados hoje (backup, atualização, desempenho)?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "dba",
+    "cyber",
+    "devops",
+    "comercial"
+   ],
+   "mostrar_se": {
+    "pergunta": "dados.fontes",
+    "em": [
+     "erp",
+     "bancos"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "dba_interno",
+     "rotulo": "DBA ou analista dedicado"
+    },
+    {
+     "valor": "ti_geral",
+     "rotulo": "A TI, junto com outras tarefas"
+    },
+    {
+     "valor": "fornecedor_erp",
+     "rotulo": "O fornecedor do ERP / sistema"
+    },
+    {
+     "valor": "terceiro",
+     "rotulo": "Empresa terceirizada"
+    },
+    {
+     "valor": "ninguem",
+     "rotulo": "Ninguém especificamente"
+    }
+   ]
+  },
+  {
+   "id": "dados.bd.versao",
+   "texto": "Versão e edição dos bancos, se souber (ex.: SQL Server 2019 Standard, Oracle 19c SE2, PostgreSQL 15)",
+   "tipo": "texto",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "dba",
+    "finops",
+    "cyber"
+   ],
+   "mostrar_se": {
+    "pergunta": "dados.fontes",
+    "em": [
+     "erp",
+     "bancos"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "dados.bd.replica",
+   "texto": "Existe uma cópia de leitura do banco (réplica) para relatórios, sem pesar no sistema?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "dba",
+    "engenheiro",
+    "arquiteto"
+   ],
+   "mostrar_se": {
+    "pergunta": "dados.fontes",
+    "em": [
+     "erp",
+     "bancos"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "dados.bd.janela",
+   "texto": "Em que horário o sistema pode receber consultas pesadas?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "dba",
+    "engenheiro",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.bd.replica",
+     "nao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "madrugada",
+     "rotulo": "Só de madrugada"
+    },
+    {
+     "valor": "fora_expediente",
+     "rotulo": "Fora do horário comercial"
+    },
+    {
+     "valor": "qualquer",
+     "rotulo": "A qualquer hora, o servidor aguenta"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "dados.volume_total",
+   "texto": "Volume total de dados (estimativa)",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "arquiteto",
+    "engenheiro",
+    "finops",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_10gb",
+     "rotulo": "Até 10 GB"
+    },
+    {
+     "valor": "10_100gb",
+     "rotulo": "10 GB a 100 GB"
+    },
+    {
+     "valor": "100gb_1tb",
+     "rotulo": "100 GB a 1 TB"
+    },
+    {
+     "valor": "1_10tb",
+     "rotulo": "1 TB a 10 TB"
+    },
+    {
+     "valor": "10_100tb",
+     "rotulo": "10 TB a 100 TB"
+    },
+    {
+     "valor": "mais_100tb",
+     "rotulo": "Mais de 100 TB"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "dados.volume.registros",
+   "texto": "Quantos registros novos por mês na maior tabela (vendas, pedidos, eventos)?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.volume_total",
+     "nao_sei"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_100k",
+     "rotulo": "Até 100 mil"
+    },
+    {
+     "valor": "100k_1m",
+     "rotulo": "100 mil a 1 milhão"
+    },
+    {
+     "valor": "1m_10m",
+     "rotulo": "1 a 10 milhões"
+    },
+    {
+     "valor": "mais_10m",
+     "rotulo": "Mais de 10 milhões"
+    }
+   ]
+  },
+  {
+   "id": "dados.crescimento",
+   "texto": "Crescimento mensal dos dados",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "finops",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "baixo",
+     "rotulo": "Baixo (< 5% ao mês)"
+    },
+    {
+     "valor": "medio",
+     "rotulo": "Médio (5% a 15%)"
+    },
+    {
+     "valor": "alto",
+     "rotulo": "Alto (> 15%)"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "dados.latencia",
+   "texto": "Com que frequência os números precisam estar atualizados?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "arquiteto",
+    "engenheiro",
+    "finops",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "mensal",
+     "rotulo": "Mensal"
+    },
+    {
+     "valor": "diario",
+     "rotulo": "Diário (D-1)"
+    },
+    {
+     "valor": "intradiario",
+     "rotulo": "Algumas vezes ao dia"
+    },
+    {
+     "valor": "horario",
+     "rotulo": "De hora em hora"
+    },
+    {
+     "valor": "near_real_time",
+     "rotulo": "Quase tempo real (minutos)"
+    },
+    {
+     "valor": "tempo_real",
+     "rotulo": "Tempo real (segundos)"
+    }
+   ]
+  },
+  {
+   "id": "dados.rt.motivo",
+   "texto": "Que decisão depende desse tempo real? (evita pagar streaming sem necessidade)",
+   "tipo": "texto_longo",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": true,
+   "agentes": [
+    "arquiteto",
+    "finops",
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.latencia",
+     "near_real_time"
+    ],
+    [
+     "dados.latencia",
+     "tempo_real"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "dados.rt.eventos",
+   "texto": "Eventos por segundo no pico",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "engenheiro",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.latencia",
+     "near_real_time"
+    ],
+    [
+     "dados.latencia",
+     "tempo_real"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_100",
+     "rotulo": "Até 100/s"
+    },
+    {
+     "valor": "100_5k",
+     "rotulo": "100 a 5 mil/s"
+    },
+    {
+     "valor": "mais_5k",
+     "rotulo": "Mais de 5 mil/s"
+    }
+   ]
+  },
+  {
+   "id": "dados.historico",
+   "texto": "Quanto histórico precisa ser carregado?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "finops",
+    "cientista",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "1",
+     "rotulo": "1 ano"
+    },
+    {
+     "valor": "2_5",
+     "rotulo": "2 a 5 anos"
+    },
+    {
+     "valor": "5_mais",
+     "rotulo": "Mais de 5 anos"
+    },
+    {
+     "valor": "todo",
+     "rotulo": "Todo o histórico"
+    }
+   ]
+  },
+  {
+   "id": "dados.qualidade",
+   "texto": "De 1 a 5: quanto confia nos dados de hoje?",
+   "tipo": "escala",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "analista",
+    "negocios"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": 1,
+   "max": 5,
+   "opcoes": []
+  },
+  {
+   "id": "dados.qualidade.problemas",
+   "texto": "Problemas de qualidade conhecidos",
+   "tipo": "multipla",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "analista"
+   ],
+   "mostrar_se": {
+    "pergunta": "dados.qualidade",
+    "em": [
+     "1",
+     "2",
+     "3"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "duplicidade",
+     "rotulo": "Cadastros duplicados"
+    },
+    {
+     "valor": "sem_chave",
+     "rotulo": "Sem chave comum entre sistemas (cliente/produto)"
+    },
+    {
+     "valor": "divergencia",
+     "rotulo": "Áreas com números diferentes para a mesma coisa"
+    },
+    {
+     "valor": "faltantes",
+     "rotulo": "Campos faltando / preenchimento manual"
+    },
+    {
+     "valor": "atraso",
+     "rotulo": "Dados chegam atrasados"
+    }
+   ]
+  },
+  {
+   "id": "dados.pessoais",
+   "texto": "A plataforma vai armazenar dados pessoais?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "cyber",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "dados.pessoais.tipos",
+   "texto": "Quais tipos?",
+   "tipo": "multipla",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber",
+    "arquiteto",
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.pessoais",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "identificacao",
+     "rotulo": "Identificação (nome, CPF, RG)"
+    },
+    {
+     "valor": "contato",
+     "rotulo": "Contato (e-mail, telefone, endereço)"
+    },
+    {
+     "valor": "financeiro",
+     "rotulo": "Financeiro (renda, crédito, conta)"
+    },
+    {
+     "valor": "localizacao",
+     "rotulo": "Localização / GPS"
+    },
+    {
+     "valor": "saude",
+     "rotulo": "Saúde (sensível)"
+    },
+    {
+     "valor": "biometria",
+     "rotulo": "Biometria / imagem facial (sensível)"
+    },
+    {
+     "valor": "menores",
+     "rotulo": "Dados de crianças e adolescentes"
+    }
+   ]
+  },
+  {
+   "id": "dados.pessoais.titulares",
+   "texto": "Número de titulares (pessoas) na base",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "dados.pessoais",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_10k",
+     "rotulo": "Até 10 mil"
+    },
+    {
+     "valor": "10k_100k",
+     "rotulo": "10 mil a 100 mil"
+    },
+    {
+     "valor": "100k_1m",
+     "rotulo": "100 mil a 1 milhão"
+    },
+    {
+     "valor": "mais_1m",
+     "rotulo": "Mais de 1 milhão"
+    }
+   ]
+  },
+  {
+   "id": "dados.governanca",
+   "texto": "Quem é dono dos dados hoje?",
+   "tipo": "unica",
+   "secao": "dados",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "analista",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "areas",
+     "rotulo": "Cada área cuida do seu"
+    },
+    {
+     "valor": "ti",
+     "rotulo": "A TI"
+    },
+    {
+     "valor": "ninguem",
+     "rotulo": "Ninguém claramente"
+    },
+    {
+     "valor": "governanca",
+     "rotulo": "Existe governança / data owners definidos"
+    }
+   ]
+  },
+  {
+   "id": "infra.atual",
+   "texto": "Onde a TI roda hoje?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "arquiteto",
+    "devops",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "nada",
+     "rotulo": "Nada definido / tudo em SaaS de terceiros"
+    },
+    {
+     "valor": "on_premise",
+     "rotulo": "Servidores próprios (on-premise)"
+    },
+    {
+     "valor": "cloud",
+     "rotulo": "Cloud pública"
+    },
+    {
+     "valor": "hibrido",
+     "rotulo": "Híbrido (on-premise + cloud)"
+    }
+   ]
+  },
+  {
+   "id": "infra.onprem.servidores",
+   "texto": "Quantos servidores físicos / VMs?",
+   "tipo": "numero",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "devops",
+    "arquiteto",
+    "dba"
+   ],
+   "mostrar_se": {
+    "pergunta": "infra.atual",
+    "em": [
+     "on_premise",
+     "hibrido"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "infra.onprem.virtualizacao",
+   "texto": "Virtualização",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "devops",
+    "dba"
+   ],
+   "mostrar_se": {
+    "pergunta": "infra.atual",
+    "em": [
+     "on_premise",
+     "hibrido"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "vmware",
+     "rotulo": "VMware"
+    },
+    {
+     "valor": "hyperv",
+     "rotulo": "Hyper-V"
+    },
+    {
+     "valor": "proxmox",
+     "rotulo": "Proxmox"
+    },
+    {
+     "valor": "zimaos_casaos",
+     "rotulo": "ZimaOS / CasaOS / NAS"
+    },
+    {
+     "valor": "bare_metal",
+     "rotulo": "Bare metal"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "infra.onprem.ociosa",
+   "texto": "Há capacidade ociosa nos servidores (CPU, RAM, disco)?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "finops",
+    "dba"
+   ],
+   "mostrar_se": {
+    "pergunta": "infra.atual",
+    "em": [
+     "on_premise",
+     "hibrido"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "infra.onprem.ociosa.detalhe",
+   "texto": "Quanto aproximadamente (vCPUs, GB de RAM, TB de disco)?",
+   "tipo": "texto",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.onprem.ociosa",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "infra.onprem.idade",
+   "texto": "Idade dos servidores",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "finops",
+    "devops"
+   ],
+   "mostrar_se": {
+    "pergunta": "infra.atual",
+    "em": [
+     "on_premise",
+     "hibrido"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_3",
+     "rotulo": "Até 3 anos"
+    },
+    {
+     "valor": "3_5",
+     "rotulo": "3 a 5 anos"
+    },
+    {
+     "valor": "mais_5",
+     "rotulo": "Mais de 5 anos (renovação próxima)"
+    }
+   ]
+  },
+  {
+   "id": "infra.cloud.provedores",
+   "texto": "Quais clouds já usa?",
+   "tipo": "multipla",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "devops",
+    "finops"
+   ],
+   "mostrar_se": {
+    "pergunta": "infra.atual",
+    "em": [
+     "cloud",
+     "hibrido"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "aws",
+     "rotulo": "AWS"
+    },
+    {
+     "valor": "gcp",
+     "rotulo": "Google Cloud"
+    },
+    {
+     "valor": "azure",
+     "rotulo": "Microsoft Azure"
+    },
+    {
+     "valor": "oci",
+     "rotulo": "Oracle Cloud (OCI)"
+    },
+    {
+     "valor": "outra",
+     "rotulo": "Outra (Magalu Cloud, Huawei, DigitalOcean, Hetzner, Locaweb...)"
+    }
+   ]
+  },
+  {
+   "id": "infra.cloud.aws.gasto",
+   "texto": "Gasto mensal na AWS (R$)",
+   "tipo": "numero",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.cloud.provedores",
+     "aws"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "infra.cloud.aws.contrato",
+   "texto": "Tem créditos, EDP, Savings Plans ou RIs?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.cloud.provedores",
+     "aws"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "infra.cloud.aws.contrato.detalhe",
+   "texto": "Detalhe (valor, vencimento)",
+   "tipo": "texto",
+   "secao": "infraestrutura",
+   "profundidade": 2,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.cloud.aws.contrato",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "infra.cloud.gcp.gasto",
+   "texto": "Gasto mensal no GCP (R$)",
+   "tipo": "numero",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.cloud.provedores",
+     "gcp"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "infra.cloud.gcp.contrato",
+   "texto": "Tem créditos ou CUDs (committed use)?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.cloud.provedores",
+     "gcp"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "infra.cloud.azure.gasto",
+   "texto": "Gasto mensal no Azure (R$)",
+   "tipo": "numero",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.cloud.provedores",
+     "azure"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "infra.cloud.azure.contrato",
+   "texto": "Contrata via EA, CSP ou MCA? Tem Azure Hybrid Benefit?",
+   "tipo": "texto",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.cloud.provedores",
+     "azure"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "infra.cloud.oci.gasto",
+   "texto": "Gasto mensal na OCI (R$)",
+   "tipo": "numero",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.cloud.provedores",
+     "oci"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "infra.cloud.oci.contrato",
+   "texto": "Tem Universal Credits ou BYOL de licenças Oracle?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.cloud.provedores",
+     "oci"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "infra.cloud.outra",
+   "texto": "Qual e para quê?",
+   "tipo": "texto",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.cloud.provedores",
+     "outra"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "infra.cloud.iac",
+   "texto": "A infraestrutura de cloud é versionada (Terraform / OpenTofu / CloudFormation / Bicep)?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "devops"
+   ],
+   "mostrar_se": {
+    "pergunta": "infra.atual",
+    "em": [
+     "cloud",
+     "hibrido"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "parcial",
+     "rotulo": "Parcialmente"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não, tudo pelo console"
+    }
+   ]
+  },
+  {
+   "id": "infra.plataforma_dados",
+   "texto": "Já usa alguma plataforma de dados na nuvem?",
+   "tipo": "multipla",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto",
+    "finops",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "nenhuma",
+     "rotulo": "Nenhuma"
+    },
+    {
+     "valor": "databricks",
+     "rotulo": "Databricks"
+    },
+    {
+     "valor": "snowflake",
+     "rotulo": "Snowflake"
+    },
+    {
+     "valor": "bigquery",
+     "rotulo": "Google BigQuery"
+    },
+    {
+     "valor": "redshift",
+     "rotulo": "Amazon Redshift"
+    },
+    {
+     "valor": "fabric_synapse",
+     "rotulo": "Microsoft Fabric / Synapse"
+    },
+    {
+     "valor": "oracle_adw",
+     "rotulo": "Oracle Autonomous Data Warehouse"
+    },
+    {
+     "valor": "outra",
+     "rotulo": "Outra (ClickHouse Cloud, MotherDuck, Firebolt...)"
+    }
+   ]
+  },
+  {
+   "id": "infra.databricks.cloud",
+   "texto": "Em qual cloud roda o Databricks?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "databricks"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "aws",
+     "rotulo": "AWS"
+    },
+    {
+     "valor": "azure",
+     "rotulo": "Azure"
+    },
+    {
+     "valor": "gcp",
+     "rotulo": "Google Cloud"
+    }
+   ]
+  },
+  {
+   "id": "infra.databricks.git",
+   "texto": "Notebooks e jobs estão versionados no Git?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "databricks"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "bundles",
+     "rotulo": "Sim, com Asset Bundles e CI/CD"
+    },
+    {
+     "valor": "git_folders",
+     "rotulo": "Sim, só com Git folders"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não, editados direto no workspace"
+    }
+   ]
+  },
+  {
+   "id": "infra.databricks.unity",
+   "texto": "Usa Unity Catalog?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "cyber",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "databricks"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "infra.databricks.gasto",
+   "texto": "Gasto mensal com Databricks (R$ ou DBUs)",
+   "tipo": "texto",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "databricks"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "infra.snowflake.cloud",
+   "texto": "Em qual cloud e região está a conta Snowflake?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "snowflake"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "aws_sp",
+     "rotulo": "AWS São Paulo"
+    },
+    {
+     "valor": "aws_outra",
+     "rotulo": "AWS em outra região"
+    },
+    {
+     "valor": "azure",
+     "rotulo": "Azure"
+    },
+    {
+     "valor": "gcp",
+     "rotulo": "Google Cloud"
+    }
+   ]
+  },
+  {
+   "id": "infra.snowflake.edicao",
+   "texto": "Edição do Snowflake",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops",
+    "cyber",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "snowflake"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "standard",
+     "rotulo": "Standard"
+    },
+    {
+     "valor": "enterprise",
+     "rotulo": "Enterprise"
+    },
+    {
+     "valor": "business_critical",
+     "rotulo": "Business Critical"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "infra.snowflake.git",
+   "texto": "Scripts e modelos estão versionados no Git (dbt, schemachange, integração Git do Snowflake)?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "snowflake"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "infra.snowflake.gasto",
+   "texto": "Gasto mensal com Snowflake (R$ ou créditos)",
+   "tipo": "texto",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.plataforma_dados",
+     "snowflake"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "infra.microsoft365",
+   "texto": "Usa Microsoft 365 / Entra ID (Azure AD)?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "cyber",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "infra.microsoft365.powerbi",
+   "texto": "Já tem licenças Power BI Pro / Premium / Fabric?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "analista",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.microsoft365",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "infra.google_workspace",
+   "texto": "Usa Google Workspace?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "cyber",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "infra.link",
+   "texto": "Link de internet da sede",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_100",
+     "rotulo": "Até 100 Mbps"
+    },
+    {
+     "valor": "100_500",
+     "rotulo": "100 a 500 Mbps"
+    },
+    {
+     "valor": "500_1g",
+     "rotulo": "500 Mbps a 1 Gbps"
+    },
+    {
+     "valor": "mais_1g",
+     "rotulo": "Mais de 1 Gbps / dedicado"
+    }
+   ]
+  },
+  {
+   "id": "infra.link.redundante",
+   "texto": "Tem link redundante / IP fixo?",
+   "tipo": "multipla",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "devops",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "redundante",
+     "rotulo": "Link redundante"
+    },
+    {
+     "valor": "ip_fixo",
+     "rotulo": "IP fixo"
+    },
+    {
+     "valor": "nenhum",
+     "rotulo": "Nenhum dos dois"
+    }
+   ]
+  },
+  {
+   "id": "infra.preferencia",
+   "texto": "Preferência de hospedagem da nova plataforma",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "arquiteto",
+    "finops",
+    "devops",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "indiferente",
+     "rotulo": "Sem preferência — recomendem"
+    },
+    {
+     "valor": "mais_barato",
+     "rotulo": "O que for mais barato no total (TCO)"
+    },
+    {
+     "valor": "cloud",
+     "rotulo": "Cloud pública"
+    },
+    {
+     "valor": "on_premise",
+     "rotulo": "On-premise (servidor próprio)"
+    },
+    {
+     "valor": "hibrido",
+     "rotulo": "Híbrido"
+    }
+   ]
+  },
+  {
+   "id": "infra.preferencia.cloud",
+   "texto": "Qual cloud?",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "infra.preferencia",
+     "cloud"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "indiferente",
+     "rotulo": "Indiferente"
+    },
+    {
+     "valor": "aws",
+     "rotulo": "AWS"
+    },
+    {
+     "valor": "gcp",
+     "rotulo": "Google Cloud"
+    },
+    {
+     "valor": "azure",
+     "rotulo": "Azure"
+    },
+    {
+     "valor": "oci",
+     "rotulo": "Oracle Cloud"
+    }
+   ]
+  },
+  {
+   "id": "infra.restricoes",
+   "texto": "Restrições que devemos respeitar",
+   "tipo": "multipla",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "cyber",
+    "finops",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "dados_brasil",
+     "rotulo": "Dados não podem sair do Brasil"
+    },
+    {
+     "valor": "sem_saas",
+     "rotulo": "Política proíbe SaaS / dados em terceiros"
+    },
+    {
+     "valor": "air_gapped",
+     "rotulo": "Ambiente isolado (sem internet)"
+    },
+    {
+     "valor": "pagamento_brl",
+     "rotulo": "Pagamento só em reais com nota fiscal (sem cartão internacional)"
+    },
+    {
+     "valor": "cambio",
+     "rotulo": "Variação do dólar é um risco relevante"
+    },
+    {
+     "valor": "sem_experiencia_cloud",
+     "rotulo": "Equipe sem experiência em cloud"
+    },
+    {
+     "valor": "nenhuma",
+     "rotulo": "Nenhuma"
+    }
+   ]
+  },
+  {
+   "id": "infra.disponibilidade",
+   "texto": "Se a plataforma cair, quanto tempo a empresa aguenta sem ela? (RTO)",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "devops",
+    "finops",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "dias",
+     "rotulo": "Alguns dias"
+    },
+    {
+     "valor": "horas",
+     "rotulo": "Algumas horas"
+    },
+    {
+     "valor": "minutos",
+     "rotulo": "Minutos — é crítica"
+    }
+   ]
+  },
+  {
+   "id": "infra.perda_dados",
+   "texto": "Quanto dado pode ser perdido em um desastre? (RPO)",
+   "tipo": "unica",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "devops",
+    "cyber",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "24h",
+     "rotulo": "Até 1 dia"
+    },
+    {
+     "valor": "1h",
+     "rotulo": "Até 1 hora"
+    },
+    {
+     "valor": "zero",
+     "rotulo": "Praticamente zero"
+    }
+   ]
+  },
+  {
+   "id": "infra.ambientes",
+   "texto": "Ambientes necessários",
+   "tipo": "multipla",
+   "secao": "infraestrutura",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "devops",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "prod",
+     "rotulo": "Produção"
+    },
+    {
+     "valor": "homolog",
+     "rotulo": "Homologação"
+    },
+    {
+     "valor": "dev",
+     "rotulo": "Desenvolvimento"
+    }
+   ]
+  },
+  {
+   "id": "cons.bi",
+   "texto": "Ferramenta de BI",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "analista",
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "powerbi",
+     "rotulo": "Power BI"
+    },
+    {
+     "valor": "looker_studio",
+     "rotulo": "Looker Studio"
+    },
+    {
+     "valor": "looker",
+     "rotulo": "Looker"
+    },
+    {
+     "valor": "tableau",
+     "rotulo": "Tableau"
+    },
+    {
+     "valor": "qlik",
+     "rotulo": "Qlik"
+    },
+    {
+     "valor": "quicksight",
+     "rotulo": "Amazon QuickSight"
+    },
+    {
+     "valor": "metabase_superset",
+     "rotulo": "Metabase / Superset"
+    },
+    {
+     "valor": "excel",
+     "rotulo": "Só Excel"
+    },
+    {
+     "valor": "recomendar",
+     "rotulo": "Nenhuma — recomendem"
+    }
+   ]
+  },
+  {
+   "id": "cons.powerbi.licenca",
+   "texto": "Licenciamento",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "analista",
+    "finops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "cons.bi",
+     "powerbi"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "free",
+     "rotulo": "Free / Desktop"
+    },
+    {
+     "valor": "pro",
+     "rotulo": "Pro"
+    },
+    {
+     "valor": "ppu",
+     "rotulo": "Premium por usuário"
+    },
+    {
+     "valor": "fabric",
+     "rotulo": "Capacidade Fabric / Premium"
+    }
+   ]
+  },
+  {
+   "id": "cons.usuarios",
+   "texto": "Quantas pessoas vão consumir os painéis?",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "analista",
+    "finops",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "1_5",
+     "rotulo": "1 a 5"
+    },
+    {
+     "valor": "6_20",
+     "rotulo": "6 a 20"
+    },
+    {
+     "valor": "21_100",
+     "rotulo": "21 a 100"
+    },
+    {
+     "valor": "101_500",
+     "rotulo": "101 a 500"
+    },
+    {
+     "valor": "mais_500",
+     "rotulo": "Mais de 500"
+    }
+   ]
+  },
+  {
+   "id": "cons.perfis",
+   "texto": "Quem são os consumidores?",
+   "tipo": "multipla",
+   "secao": "consumo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "analista",
+    "cyber",
+    "arquiteto",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "diretoria",
+     "rotulo": "Diretoria"
+    },
+    {
+     "valor": "gestores",
+     "rotulo": "Gestores de área"
+    },
+    {
+     "valor": "analistas",
+     "rotulo": "Analistas (self-service)"
+    },
+    {
+     "valor": "operacao",
+     "rotulo": "Operação / campo (celular)"
+    },
+    {
+     "valor": "clientes_externos",
+     "rotulo": "Clientes externos (portal / embedded)"
+    },
+    {
+     "valor": "parceiros",
+     "rotulo": "Parceiros / franqueados / representantes"
+    }
+   ]
+  },
+  {
+   "id": "cons.externos.qtd",
+   "texto": "Quantos clientes externos acessariam?",
+   "tipo": "numero",
+   "secao": "consumo",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "finops",
+    "cyber",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "cons.perfis",
+     "clientes_externos"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "cons.externos.marca",
+   "texto": "Precisa ser com a marca do cliente (white-label)?",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "analista",
+    "comercial",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "cons.perfis",
+     "clientes_externos"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "cons.seguranca_linha",
+   "texto": "Cada usuário deve ver só os dados da sua unidade / carteira (segurança em nível de linha)?",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "analista",
+    "cyber",
+    "arquiteto",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "cons.alertas",
+   "texto": "Canais para alertas automáticos",
+   "tipo": "multipla",
+   "secao": "consumo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "email",
+     "rotulo": "E-mail"
+    },
+    {
+     "valor": "whatsapp",
+     "rotulo": "WhatsApp"
+    },
+    {
+     "valor": "teams",
+     "rotulo": "Microsoft Teams"
+    },
+    {
+     "valor": "slack",
+     "rotulo": "Slack"
+    },
+    {
+     "valor": "telegram",
+     "rotulo": "Telegram"
+    },
+    {
+     "valor": "nenhum",
+     "rotulo": "Nenhum"
+    }
+   ]
+  },
+  {
+   "id": "cons.api",
+   "texto": "Precisa disponibilizar dados para outros sistemas ou parceiros (API / arquivo)?",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "engenheiro",
+    "cyber",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "cons.api.detalhe",
+   "texto": "Para quem e com que frequência?",
+   "tipo": "texto",
+   "secao": "consumo",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "engenheiro",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "cons.api",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "cons.apps",
+   "texto": "Além dos painéis, precisa de alguma aplicação sob medida?",
+   "tipo": "multipla",
+   "secao": "consumo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "fullstack",
+    "arquiteto",
+    "cyber",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "nenhuma",
+     "rotulo": "Não, painéis bastam"
+    },
+    {
+     "valor": "portal_clientes",
+     "rotulo": "Portal / área do cliente com login"
+    },
+    {
+     "valor": "app_campo",
+     "rotulo": "App para equipe de campo (coleta, visitas, vistorias)"
+    },
+    {
+     "valor": "formularios",
+     "rotulo": "Formulários para substituir planilhas (com validação e histórico)"
+    },
+    {
+     "valor": "aprovacoes",
+     "rotulo": "Fluxos de aprovação (pedidos, descontos, despesas)"
+    },
+    {
+     "valor": "embedded",
+     "rotulo": "Painéis dentro do nosso sistema ou produto (embedded)"
+    }
+   ]
+  },
+  {
+   "id": "cons.apps.portal_login",
+   "texto": "Como os clientes externos entrariam no portal?",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "fullstack",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "cons.apps",
+     "portal_clientes"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "email",
+     "rotulo": "E-mail e senha, com código de verificação"
+    },
+    {
+     "valor": "google_microsoft",
+     "rotulo": "Conta Google ou Microsoft"
+    },
+    {
+     "valor": "sso_cliente",
+     "rotulo": "Login corporativo do próprio cliente (SSO)"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "cons.apps.offline",
+   "texto": "Precisa funcionar sem internet e sincronizar depois?",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "fullstack",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "cons.apps",
+     "app_campo"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "cons.apps.stack",
+   "texto": "Quem vai manter essas aplicações depois?",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "fullstack",
+    "devops",
+    "comercial"
+   ],
+   "mostrar_se": {
+    "todas": [
+     {
+      "pergunta": "cons.apps",
+      "preenchida": true
+     },
+     {
+      "nao": {
+       "pergunta": "cons.apps",
+       "em": [
+        "nenhuma"
+       ]
+      }
+     }
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "consultoria",
+     "rotulo": "Vocês, no pacote gerenciado"
+    },
+    {
+     "valor": "time_js",
+     "rotulo": "Nosso time, em JavaScript/TypeScript"
+    },
+    {
+     "valor": "time_python",
+     "rotulo": "Nosso time, em Python"
+    },
+    {
+     "valor": "time_dotnet_java",
+     "rotulo": "Nosso time, em .NET ou Java"
+    },
+    {
+     "valor": "lowcode",
+     "rotulo": "Preferimos low-code (Power Apps, AppSheet, Appsmith)"
+    }
+   ]
+  },
+  {
+   "id": "cons.perguntas_linguagem",
+   "texto": "Gostaria de fazer perguntas aos dados em linguagem natural (\"quanto vendemos ontem em Cascavel?\")?",
+   "tipo": "unica",
+   "secao": "consumo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista",
+    "analista",
+    "arquiteto",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "cons.nl.canal",
+   "texto": "Por onde?",
+   "tipo": "multipla",
+   "secao": "consumo",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista",
+    "engenheiro",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "cons.perguntas_linguagem",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "whatsapp",
+     "rotulo": "WhatsApp"
+    },
+    {
+     "valor": "teams_slack",
+     "rotulo": "Teams / Slack"
+    },
+    {
+     "valor": "web",
+     "rotulo": "Portal web"
+    }
+   ]
+  },
+  {
+   "id": "ia.interesse",
+   "texto": "Em que ponto a empresa está com IA?",
+   "tipo": "unica",
+   "secao": "ia",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "cientista",
+    "arquiteto",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "nenhum",
+     "rotulo": "Sem interesse agora"
+    },
+    {
+     "valor": "explorar",
+     "rotulo": "Quer explorar possibilidades"
+    },
+    {
+     "valor": "caso_definido",
+     "rotulo": "Já tem um caso de uso definido"
+    },
+    {
+     "valor": "producao",
+     "rotulo": "Já tem modelos em produção"
+    }
+   ]
+  },
+  {
+   "id": "ia.prod.stack",
+   "texto": "Stack atual (ferramentas, onde roda, quem mantém)",
+   "tipo": "texto_longo",
+   "secao": "ia",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "ia.interesse",
+     "producao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "ia.prod.monitoramento",
+   "texto": "Os modelos são monitorados (drift, performance)?",
+   "tipo": "unica",
+   "secao": "ia",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "ia.interesse",
+     "producao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "ia.casos",
+   "texto": "Casos de uso de interesse",
+   "tipo": "multipla",
+   "secao": "ia",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista",
+    "arquiteto",
+    "finops",
+    "comercial"
+   ],
+   "mostrar_se": {
+    "pergunta": "ia.interesse",
+    "em": [
+     "explorar",
+     "caso_definido",
+     "producao"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "previsao_demanda",
+     "rotulo": "Previsão de demanda / vendas"
+    },
+    {
+     "valor": "churn",
+     "rotulo": "Churn / cancelamento"
+    },
+    {
+     "valor": "precificacao",
+     "rotulo": "Precificação"
+    },
+    {
+     "valor": "fraude_anomalia",
+     "rotulo": "Fraude / anomalias"
+    },
+    {
+     "valor": "credito",
+     "rotulo": "Crédito / inadimplência"
+    },
+    {
+     "valor": "recomendacao",
+     "rotulo": "Recomendação de produtos"
+    },
+    {
+     "valor": "segmentacao",
+     "rotulo": "Segmentação de clientes"
+    },
+    {
+     "valor": "rotas",
+     "rotulo": "Otimização de rotas / recursos"
+    },
+    {
+     "valor": "manutencao",
+     "rotulo": "Manutenção preditiva"
+    },
+    {
+     "valor": "visao",
+     "rotulo": "Visão computacional"
+    },
+    {
+     "valor": "ocr",
+     "rotulo": "Extração de documentos (OCR / IA)"
+    },
+    {
+     "valor": "rag",
+     "rotulo": "Assistente com base de conhecimento (RAG)"
+    },
+    {
+     "valor": "agentes",
+     "rotulo": "Agentes de IA que executam tarefas"
+    },
+    {
+     "valor": "sentimento",
+     "rotulo": "Análise de sentimento / texto"
+    },
+    {
+     "valor": "outro",
+     "rotulo": "Outro"
+    }
+   ]
+  },
+  {
+   "id": "ia.rag.base",
+   "texto": "Base de conhecimento",
+   "tipo": "multipla",
+   "secao": "ia",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista",
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "ia.casos",
+     "rag"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "documentos",
+     "rotulo": "Documentos (PDF, Word, manuais)"
+    },
+    {
+     "valor": "site",
+     "rotulo": "Site / FAQ"
+    },
+    {
+     "valor": "tickets",
+     "rotulo": "Histórico de atendimento"
+    },
+    {
+     "valor": "banco",
+     "rotulo": "Dados do banco (text-to-SQL)"
+    }
+   ]
+  },
+  {
+   "id": "ia.rag.publico",
+   "texto": "Quem vai usar o assistente?",
+   "tipo": "unica",
+   "secao": "ia",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "ia.casos",
+     "rag"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "interno",
+     "rotulo": "Colaboradores"
+    },
+    {
+     "valor": "clientes",
+     "rotulo": "Clientes (externo)"
+    }
+   ]
+  },
+  {
+   "id": "ia.casos.outro",
+   "texto": "Descreva",
+   "tipo": "texto_longo",
+   "secao": "ia",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "ia.casos",
+     "outro"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "ia.dados_rotulados",
+   "texto": "Existe histórico com o resultado conhecido (ex.: quem cancelou, quais sinistros eram fraude)?",
+   "tipo": "unica",
+   "secao": "ia",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista"
+   ],
+   "mostrar_se": {
+    "pergunta": "ia.interesse",
+    "em": [
+     "caso_definido",
+     "producao",
+     "explorar"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "parcial",
+     "rotulo": "Parcialmente"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    },
+    {
+     "valor": "nao_sei",
+     "rotulo": "Não sei"
+    }
+   ]
+  },
+  {
+   "id": "ia.llm_privacidade",
+   "texto": "Para IA generativa (LLMs): os dados podem ir para APIs externas?",
+   "tipo": "unica",
+   "secao": "ia",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista",
+    "cyber",
+    "arquiteto",
+    "finops"
+   ],
+   "mostrar_se": {
+    "pergunta": "ia.interesse",
+    "em": [
+     "explorar",
+     "caso_definido",
+     "producao"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim, com contrato que não usa os dados para treino"
+    },
+    {
+     "valor": "anonimizado",
+     "rotulo": "Só dados anonimizados"
+    },
+    {
+     "valor": "local",
+     "rotulo": "Não — precisa rodar 100% local"
+    }
+   ]
+  },
+  {
+   "id": "ia.explicabilidade",
+   "texto": "As decisões do modelo precisam ser explicáveis (auditoria, regulador, cliente)?",
+   "tipo": "unica",
+   "secao": "ia",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cientista",
+    "cyber"
+   ],
+   "mostrar_se": {
+    "pergunta": "ia.interesse",
+    "em": [
+     "caso_definido",
+     "producao"
+    ]
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "aut.processos",
+   "texto": "O que gostaria de automatizar?",
+   "tipo": "multipla",
+   "secao": "automacao",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "devops",
+    "negocios",
+    "comercial",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "relatorios",
+     "rotulo": "Geração e envio de relatórios"
+    },
+    {
+     "valor": "integracao",
+     "rotulo": "Integração entre sistemas (ERP ↔ CRM ↔ e-commerce)"
+    },
+    {
+     "valor": "alertas",
+     "rotulo": "Alertas de exceção (estoque, inadimplência, metas)"
+    },
+    {
+     "valor": "conciliacao",
+     "rotulo": "Conciliação financeira"
+    },
+    {
+     "valor": "cobranca",
+     "rotulo": "Cobrança (WhatsApp / e-mail)"
+    },
+    {
+     "valor": "atendimento",
+     "rotulo": "Atendimento / triagem"
+    },
+    {
+     "valor": "documentos",
+     "rotulo": "Leitura e lançamento de documentos"
+    },
+    {
+     "valor": "rpa",
+     "rotulo": "Tarefas em sistemas sem API (RPA)"
+    },
+    {
+     "valor": "aprovacoes",
+     "rotulo": "Fluxos de aprovação"
+    },
+    {
+     "valor": "nada",
+     "rotulo": "Nada por enquanto"
+    }
+   ]
+  },
+  {
+   "id": "aut.rpa.sistemas",
+   "texto": "Quais sistemas e tarefas?",
+   "tipo": "texto_longo",
+   "secao": "automacao",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "aut.processos",
+     "rpa"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "aut.ferramentas",
+   "texto": "Ferramentas de automação em uso",
+   "tipo": "multipla",
+   "secao": "automacao",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "nenhuma",
+     "rotulo": "Nenhuma"
+    },
+    {
+     "valor": "n8n",
+     "rotulo": "n8n"
+    },
+    {
+     "valor": "make_zapier",
+     "rotulo": "Make / Zapier"
+    },
+    {
+     "valor": "power_automate",
+     "rotulo": "Power Automate"
+    },
+    {
+     "valor": "airflow",
+     "rotulo": "Airflow / Dagster / Prefect"
+    },
+    {
+     "valor": "scripts",
+     "rotulo": "Scripts agendados (cron / Agendador do Windows)"
+    },
+    {
+     "valor": "rpa",
+     "rotulo": "UiPath / Automation Anywhere"
+    }
+   ]
+  },
+  {
+   "id": "aut.horas_manuais",
+   "texto": "Horas por semana gastas com tarefas manuais repetitivas (somando todas as pessoas)",
+   "tipo": "numero",
+   "secao": "automacao",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial",
+    "negocios",
+    "finops"
+   ],
+   "mostrar_se": {
+    "pergunta": "aut.processos",
+    "preenchida": true
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "aut.custo_hora",
+   "texto": "Custo médio da hora dessas pessoas (R$, opcional — usado no cálculo de ROI)",
+   "tipo": "numero",
+   "secao": "automacao",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial",
+    "finops"
+   ],
+   "mostrar_se": {
+    "pergunta": "aut.horas_manuais",
+    "preenchida": true
+   },
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "aut.whatsapp",
+   "texto": "Precisa enviar/receber WhatsApp pela API oficial (Cloud API)?",
+   "tipo": "unica",
+   "secao": "automacao",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "engenheiro",
+    "finops",
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "aut.whatsapp.volume",
+   "texto": "Conversas por mês",
+   "tipo": "unica",
+   "secao": "automacao",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "finops",
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "aut.whatsapp",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_1k",
+     "rotulo": "Até 1 mil"
+    },
+    {
+     "valor": "1k_10k",
+     "rotulo": "1 mil a 10 mil"
+    },
+    {
+     "valor": "mais_10k",
+     "rotulo": "Mais de 10 mil"
+    }
+   ]
+  },
+  {
+   "id": "seg.certificacoes",
+   "texto": "Certificações ou frameworks exigidos",
+   "tipo": "multipla",
+   "secao": "seguranca",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber",
+    "arquiteto",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "nenhuma",
+     "rotulo": "Nenhuma formal"
+    },
+    {
+     "valor": "iso27001",
+     "rotulo": "ISO 27001"
+    },
+    {
+     "valor": "soc2",
+     "rotulo": "SOC 2"
+    },
+    {
+     "valor": "pci",
+     "rotulo": "PCI-DSS (cartões)"
+    },
+    {
+     "valor": "bacen",
+     "rotulo": "BACEN 4.893 / BCB 85"
+    },
+    {
+     "valor": "cliente_exige",
+     "rotulo": "Questionário de segurança dos clientes"
+    }
+   ]
+  },
+  {
+   "id": "seg.dpo",
+   "texto": "Há encarregado de dados (DPO) nomeado?",
+   "tipo": "unica",
+   "secao": "seguranca",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "seg.incidente",
+   "texto": "Já sofreu incidente de segurança?",
+   "tipo": "unica",
+   "secao": "seguranca",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber",
+    "devops",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "seg.incidente.tipo",
+   "texto": "Tipo",
+   "tipo": "multipla",
+   "secao": "seguranca",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "seg.incidente",
+     "sim"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ransomware",
+     "rotulo": "Ransomware"
+    },
+    {
+     "valor": "vazamento",
+     "rotulo": "Vazamento de dados"
+    },
+    {
+     "valor": "acesso_indevido",
+     "rotulo": "Acesso indevido / conta invadida"
+    },
+    {
+     "valor": "fraude",
+     "rotulo": "Fraude / golpe (e-mail, PIX)"
+    }
+   ]
+  },
+  {
+   "id": "seg.identidade",
+   "texto": "Login corporativo (SSO)",
+   "tipo": "unica",
+   "secao": "seguranca",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber",
+    "arquiteto",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "entra",
+     "rotulo": "Microsoft Entra ID"
+    },
+    {
+     "valor": "google",
+     "rotulo": "Google Workspace"
+    },
+    {
+     "valor": "okta",
+     "rotulo": "Okta / outro IdP"
+    },
+    {
+     "valor": "ad_local",
+     "rotulo": "Active Directory local"
+    },
+    {
+     "valor": "nenhum",
+     "rotulo": "Nenhum — cada sistema tem sua senha"
+    }
+   ]
+  },
+  {
+   "id": "seg.mfa",
+   "texto": "MFA (autenticação em dois fatores) é obrigatório?",
+   "tipo": "unica",
+   "secao": "seguranca",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "seg.mfa.aviso",
+   "texto": "Podemos exigir MFA na plataforma nova?",
+   "tipo": "unica",
+   "secao": "seguranca",
+   "profundidade": 1,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber"
+   ],
+   "mostrar_se": null,
+   "pais": [
+    [
+     "seg.mfa",
+     "nao"
+    ]
+   ],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "seg.backup",
+   "texto": "Backup hoje",
+   "tipo": "unica",
+   "secao": "seguranca",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber",
+    "devops",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "nao",
+     "rotulo": "Não há backup confiável"
+    },
+    {
+     "valor": "local",
+     "rotulo": "Só local (mesmo prédio)"
+    },
+    {
+     "valor": "offsite",
+     "rotulo": "Cópia fora da empresa"
+    },
+    {
+     "valor": "321",
+     "rotulo": "Regra 3-2-1 com cópia imutável"
+    }
+   ]
+  },
+  {
+   "id": "seg.acesso_remoto",
+   "texto": "Como acessam sistemas de fora da empresa?",
+   "tipo": "unica",
+   "secao": "seguranca",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "vpn",
+     "rotulo": "VPN"
+    },
+    {
+     "valor": "publico",
+     "rotulo": "Sistemas expostos na internet"
+    },
+    {
+     "valor": "rdp",
+     "rotulo": "Acesso remoto (AnyDesk / TeamViewer / RDP)"
+    },
+    {
+     "valor": "zero_trust",
+     "rotulo": "Zero trust (Cloudflare, Tailscale, Entra)"
+    },
+    {
+     "valor": "nao_acessam",
+     "rotulo": "Não acessam"
+    }
+   ]
+  },
+  {
+   "id": "seg.auditoria",
+   "texto": "Precisa de trilha de auditoria (quem acessou qual dado e quando)?",
+   "tipo": "unica",
+   "secao": "seguranca",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "cyber",
+    "arquiteto",
+    "dba"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "sim",
+     "rotulo": "Sim"
+    },
+    {
+     "valor": "nao",
+     "rotulo": "Não"
+    }
+   ]
+  },
+  {
+   "id": "orc.infra_mensal",
+   "texto": "Orçamento mensal para infraestrutura (cloud, licenças)",
+   "tipo": "unica",
+   "secao": "orcamento",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "finops",
+    "arquiteto",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_500",
+     "rotulo": "Até R$ 500"
+    },
+    {
+     "valor": "500_2k",
+     "rotulo": "R$ 500 a R$ 2 mil"
+    },
+    {
+     "valor": "2k_5k",
+     "rotulo": "R$ 2 mil a R$ 5 mil"
+    },
+    {
+     "valor": "5k_15k",
+     "rotulo": "R$ 5 mil a R$ 15 mil"
+    },
+    {
+     "valor": "15k_50k",
+     "rotulo": "R$ 15 mil a R$ 50 mil"
+    },
+    {
+     "valor": "mais_50k",
+     "rotulo": "Mais de R$ 50 mil"
+    },
+    {
+     "valor": "nao_definido",
+     "rotulo": "Não definido"
+    }
+   ]
+  },
+  {
+   "id": "orc.projeto",
+   "texto": "Orçamento para o projeto de implantação",
+   "tipo": "unica",
+   "secao": "orcamento",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "ate_15k",
+     "rotulo": "Até R$ 15 mil"
+    },
+    {
+     "valor": "15k_50k",
+     "rotulo": "R$ 15 mil a R$ 50 mil"
+    },
+    {
+     "valor": "50k_150k",
+     "rotulo": "R$ 50 mil a R$ 150 mil"
+    },
+    {
+     "valor": "150k_500k",
+     "rotulo": "R$ 150 mil a R$ 500 mil"
+    },
+    {
+     "valor": "mais_500k",
+     "rotulo": "Mais de R$ 500 mil"
+    },
+    {
+     "valor": "nao_definido",
+     "rotulo": "Não definido"
+    }
+   ]
+  },
+  {
+   "id": "orc.modelo",
+   "texto": "Modelos de contratação aceitáveis",
+   "tipo": "multipla",
+   "secao": "orcamento",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "projeto_fechado",
+     "rotulo": "Projeto fechado"
+    },
+    {
+     "valor": "mensalidade",
+     "rotulo": "Mensalidade (plataforma como serviço)"
+    },
+    {
+     "valor": "banco_horas",
+     "rotulo": "Banco de horas"
+    },
+    {
+     "valor": "squad",
+     "rotulo": "Squad dedicada"
+    },
+    {
+     "valor": "sucesso",
+     "rotulo": "Fee + % do ganho gerado"
+    }
+   ]
+  },
+  {
+   "id": "orc.prazo",
+   "texto": "Prazo desejado para a primeira entrega",
+   "tipo": "unica",
+   "secao": "orcamento",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial",
+    "arquiteto",
+    "devops"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "urgente",
+     "rotulo": "Menos de 1 mês"
+    },
+    {
+     "valor": "1_3",
+     "rotulo": "1 a 3 meses"
+    },
+    {
+     "valor": "3_6",
+     "rotulo": "3 a 6 meses"
+    },
+    {
+     "valor": "mais_6",
+     "rotulo": "Mais de 6 meses"
+    }
+   ]
+  },
+  {
+   "id": "orc.compra",
+   "texto": "Como é o processo de compra?",
+   "tipo": "unica",
+   "secao": "orcamento",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "direto",
+     "rotulo": "Decisão direta do sócio / diretor"
+    },
+    {
+     "valor": "cotacao",
+     "rotulo": "Cotação com 3 fornecedores"
+    },
+    {
+     "valor": "comite",
+     "rotulo": "Comitê / conselho"
+    },
+    {
+     "valor": "licitacao",
+     "rotulo": "Licitação"
+    }
+   ]
+  },
+  {
+   "id": "orc.data_decisao",
+   "texto": "Quando pretende decidir?",
+   "tipo": "texto",
+   "secao": "orcamento",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "obj.objetivo",
+   "texto": "Qual o objetivo principal da plataforma? (escreva livremente)",
+   "tipo": "texto_longo",
+   "secao": "objetivo",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "negocios",
+    "arquiteto",
+    "engenheiro",
+    "analista",
+    "cientista",
+    "cyber",
+    "devops",
+    "finops",
+    "comercial",
+    "dba",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "obj.perguntas",
+   "texto": "Quais 3 a 5 perguntas de negócio ela precisa responder? (uma por linha — ex.: \"Qual a margem real por cliente e por produto?\")",
+   "tipo": "texto_longo",
+   "secao": "objetivo",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "negocios",
+    "analista",
+    "cientista",
+    "arquiteto",
+    "engenheiro"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "obj.entregas",
+   "texto": "O que espera receber?",
+   "tipo": "multipla",
+   "secao": "objetivo",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "arquiteto",
+    "comercial",
+    "finops",
+    "fullstack"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "dashboards",
+     "rotulo": "Dashboards executivos e operacionais"
+    },
+    {
+     "valor": "dw",
+     "rotulo": "Data warehouse / lakehouse central"
+    },
+    {
+     "valor": "integracoes",
+     "rotulo": "Integrações entre sistemas"
+    },
+    {
+     "valor": "automacoes",
+     "rotulo": "Automações"
+    },
+    {
+     "valor": "modelos_ia",
+     "rotulo": "Modelos de IA / agentes"
+    },
+    {
+     "valor": "portal",
+     "rotulo": "Portal / app para clientes"
+    },
+    {
+     "valor": "api",
+     "rotulo": "API de dados"
+    },
+    {
+     "valor": "governanca",
+     "rotulo": "Governança, catálogo e qualidade"
+    }
+   ]
+  },
+  {
+   "id": "obj.sucesso",
+   "texto": "Como vamos saber, em 90 dias, que deu certo? (KPI de sucesso)",
+   "tipo": "texto_longo",
+   "secao": "objetivo",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "negocios",
+    "comercial",
+    "analista"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "obj.prioridade",
+   "texto": "Se precisar escolher UMA prioridade:",
+   "tipo": "unica",
+   "secao": "objetivo",
+   "profundidade": 0,
+   "obrigatoria": true,
+   "agentes": [
+    "arquiteto",
+    "finops",
+    "devops",
+    "cyber",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "custo",
+     "rotulo": "Menor custo"
+    },
+    {
+     "valor": "velocidade",
+     "rotulo": "Entrega mais rápida"
+    },
+    {
+     "valor": "escala",
+     "rotulo": "Escalabilidade futura"
+    },
+    {
+     "valor": "seguranca",
+     "rotulo": "Segurança e compliance"
+    },
+    {
+     "valor": "autonomia",
+     "rotulo": "Autonomia do nosso time"
+    }
+   ]
+  },
+  {
+   "id": "obj.horizonte",
+   "texto": "Horizonte do plano",
+   "tipo": "unica",
+   "secao": "objetivo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "arquiteto",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": [
+    {
+     "valor": "mvp_30",
+     "rotulo": "MVP em 30 dias"
+    },
+    {
+     "valor": "fase1_90",
+     "rotulo": "Fase 1 em 90 dias"
+    },
+    {
+     "valor": "roadmap_12m",
+     "rotulo": "Roadmap de 12 meses"
+    }
+   ]
+  },
+  {
+   "id": "obj.riscos",
+   "texto": "O que poderia fazer este projeto falhar?",
+   "tipo": "texto_longo",
+   "secao": "objetivo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "comercial",
+    "arquiteto"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  },
+  {
+   "id": "obj.observacoes",
+   "texto": "Algo mais que devemos saber?",
+   "tipo": "texto_longo",
+   "secao": "objetivo",
+   "profundidade": 0,
+   "obrigatoria": false,
+   "agentes": [
+    "negocios",
+    "comercial"
+   ],
+   "mostrar_se": null,
+   "pais": [],
+   "min": null,
+   "max": null,
+   "opcoes": []
+  }
+ ]
+}

@@ -1,0 +1,677 @@
+<title>Discovery Cardume</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400..700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: trilha de seções à esquerda, perguntas no centro, radar de sinais à direita;
+   no celular vira coluna única com trilha horizontal no topo. */
+:root {
+  --fundo: #f2f6f6;
+  --superficie: #ffffff;
+  --tinta: #0b2238;
+  --suave: #4a6070;
+  --linha: #d5e0e1;
+  --cardume: #0f7c7a;
+  --cardume-texto: #ffffff;
+  --espuma: #dcf0ed;
+  --coral: #d9512b;
+  --coral-fundo: #fde9e2;
+  --ok: #1f8a4c;
+  --alerta: #b5730a;
+  --sombra: 0 1px 2px rgba(11, 34, 56, .06), 0 8px 24px rgba(11, 34, 56, .06);
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-texto: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --raio: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fundo: #071725; --superficie: #0d2235; --tinta: #e6f0f2; --suave: #93aab8;
+    --linha: #1f3a52; --cardume: #3cc6be; --cardume-texto: #04202a; --espuma: #0f3a44;
+    --coral: #ff8a63; --coral-fundo: #3a1d16; --ok: #4cc98a; --alerta: #f0b44c;
+    --sombra: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --fundo: #071725; --superficie: #0d2235; --tinta: #e6f0f2; --suave: #93aab8;
+  --linha: #1f3a52; --cardume: #3cc6be; --cardume-texto: #04202a; --espuma: #0f3a44;
+  --coral: #ff8a63; --coral-fundo: #3a1d16; --ok: #4cc98a; --alerta: #f0b44c;
+  --sombra: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--fundo); color: var(--tinta);
+  font: 400 16px/1.55 var(--f-texto);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--fundo);
+}
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -.01em; }
+button, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+
+.topo {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--fundo); border-bottom: 1px solid var(--linha);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;
+  padding-block: 14px; max-width: 1240px; margin: 0 auto;
+}
+.marca { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.marca svg { width: 38px; height: 38px; flex: none; }
+.marca b { font: 800 20px/1 var(--f-display); display: block; }
+.marca small { color: var(--suave); font-size: 13px; }
+.cliente { display: flex; align-items: center; gap: 8px; flex: 1 1 280px; min-width: 0; }
+.cliente label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--suave); white-space: nowrap; }
+.cliente input {
+  flex: 1; min-width: 0; padding: 9px 12px; border: 1px solid var(--linha);
+  border-radius: 8px; background: var(--superficie);
+}
+.estado {
+  font: 600 12px/1 var(--f-mono); padding: 7px 10px; border-radius: 999px;
+  background: var(--espuma); color: var(--tinta); white-space: nowrap;
+}
+.estado[data-tipo="pendente"] { background: var(--coral-fundo); }
+.acoes-topo { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.layout {
+  max-width: 1240px; margin: 0 auto; padding-top: 24px;
+  display: grid; grid-template-columns: 240px minmax(0, 1fr) 260px; gap: 28px; align-items: start;
+}
+.trilha { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 92px); display: grid; gap: 2px; }
+.trilha button {
+  display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center;
+  text-align: left; padding: 9px 12px; border: 0; border-radius: 8px; background: none; cursor: pointer;
+  color: var(--suave);
+}
+.trilha button:hover { background: var(--superficie); color: var(--tinta); }
+.trilha button[aria-current="step"] { background: var(--superficie); color: var(--tinta); box-shadow: var(--sombra); font-weight: 600; }
+.trilha .cont { font: 500 12px/1 var(--f-mono); font-variant-numeric: tabular-nums; }
+.trilha .cont[data-completo="1"] { color: var(--ok); }
+.trilha .cont[data-falta="1"] { color: var(--coral); }
+
+main { min-width: 0; }
+.cab-secao { display: grid; gap: 6px; margin-bottom: 20px; }
+.cab-secao h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 750; }
+.cab-secao p { margin: 0; color: var(--suave); max-width: 62ch; }
+.barra { height: 6px; border-radius: 3px; background: var(--linha); overflow: hidden; margin-top: 6px; }
+.barra i { display: block; height: 100%; background: var(--cardume); width: 0; transition: width .3s ease; }
+
+.perguntas { display: grid; gap: 14px; }
+.pergunta {
+  background: var(--superficie); border: 1px solid var(--linha); border-radius: var(--raio);
+  padding: 16px 18px; display: grid; gap: 10px; min-width: 0;
+}
+.pergunta[data-prof="1"] { margin-left: 22px; border-left: 3px solid var(--cardume); }
+.pergunta[data-prof="2"] { margin-left: 44px; border-left: 3px solid var(--coral); }
+.pergunta.nova { animation: entra .45s ease both; }
+@keyframes entra { from { transform: translateY(-6px); background: var(--espuma); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .pergunta.nova { animation: none; } .barra i { transition: none; } }
+.ramo { font: 500 12px/1.3 var(--f-mono); color: var(--cardume); }
+.pergunta[data-prof="2"] .ramo { color: var(--coral); }
+.enunciado { font-weight: 600; font-size: 17px; line-height: 1.4; }
+.enunciado .obr { color: var(--coral); margin-left: 4px; }
+.pid { font: 400 11px/1 var(--f-mono); color: var(--suave); opacity: .75; }
+.opcoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.op {
+  border: 1px solid var(--linha); background: var(--fundo); border-radius: 999px;
+  padding: 8px 14px; cursor: pointer; text-align: left; line-height: 1.3; max-width: 100%;
+}
+.op:hover { border-color: var(--cardume); }
+.op[aria-pressed="true"], .op[aria-checked="true"] {
+  background: var(--cardume); color: var(--cardume-texto); border-color: var(--cardume); font-weight: 600;
+}
+.op .abre { font: 500 11px/1 var(--f-mono); opacity: .8; margin-left: 6px; }
+.escala { display: flex; gap: 6px; }
+.escala .op { width: 46px; text-align: center; padding-inline: 0; font-variant-numeric: tabular-nums; }
+.campo {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--linha); border-radius: 8px;
+  background: var(--fundo); min-width: 0;
+}
+textarea.campo { min-height: 110px; resize: vertical; line-height: 1.5; }
+
+.navegar { display: flex; justify-content: space-between; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+.btn {
+  border: 1px solid var(--linha); background: var(--superficie); border-radius: 8px;
+  padding: 10px 16px; cursor: pointer; font-weight: 600;
+}
+.btn:hover { border-color: var(--cardume); }
+.btn.primario { background: var(--cardume); color: var(--cardume-texto); border-color: var(--cardume); }
+.btn.pequeno { padding: 7px 12px; font-size: 14px; }
+
+.sinais {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 92px);
+  background: var(--superficie); border: 1px solid var(--linha); border-radius: var(--raio);
+  padding: 16px; display: grid; gap: 14px;
+}
+.sinais h3 { font-size: 15px; font-weight: 700; }
+.sinais p { margin: 0; font-size: 13px; color: var(--suave); }
+.medidor { display: grid; grid-template-columns: 78px 1fr 28px; gap: 8px; align-items: center; font-size: 13px; }
+.medidor .trilho { height: 8px; background: var(--fundo); border-radius: 4px; overflow: hidden; }
+.medidor .trilho i { display: block; height: 100%; background: var(--cardume); border-radius: 4px; }
+.medidor.intensidade .trilho i { background: var(--coral); }
+.medidor b { font: 600 12px/1 var(--f-mono); text-align: right; font-variant-numeric: tabular-nums; }
+.lider { font-size: 13px; padding: 8px 10px; border-radius: 8px; background: var(--espuma); }
+
+.revisao { display: grid; gap: 18px; }
+.bloco { background: var(--superficie); border: 1px solid var(--linha); border-radius: var(--raio); padding: 18px; min-width: 0; }
+.bloco h3 { font-size: 18px; margin-bottom: 10px; }
+.bloco dl { margin: 0; display: grid; gap: 8px; }
+.bloco dt { font-size: 13px; color: var(--suave); }
+.bloco dd { margin: 0 0 6px; overflow-wrap: anywhere; }
+.faltando { color: var(--coral); }
+.faltando button { border: 0; background: none; color: inherit; text-decoration: underline; cursor: pointer; padding: 0; }
+
+.painel { background: var(--superficie); border: 1px solid var(--linha); border-radius: var(--raio); padding: 18px; display: grid; gap: 12px; margin-top: 16px; }
+.painel textarea { font: 400 12px/1.45 var(--f-mono); min-height: 180px; }
+.lista-clientes { display: flex; flex-wrap: wrap; gap: 8px; }
+.aviso { font-size: 14px; color: var(--suave); }
+
+@media (max-width: 1080px) {
+  .layout { grid-template-columns: 210px minmax(0, 1fr); }
+  .sinais { position: static; grid-column: 1 / -1; }
+}
+@media (max-width: 760px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 18px; padding-top: 14px; }
+  .trilha { position: static; display: flex; overflow-x: auto; gap: 6px; padding-bottom: 6px; }
+  .trilha button { white-space: nowrap; grid-template-columns: auto auto; }
+  .pergunta[data-prof="1"] { margin-left: 10px; }
+  .pergunta[data-prof="2"] { margin-left: 20px; }
+  .marca small { display: none; }
+  .topo { position: static; gap: 10px 12px; }
+}
+</style>
+
+<header class="topo">
+  <div class="marca">
+    <svg viewBox="0 0 48 48" aria-hidden="true">
+      <rect width="48" height="48" rx="12" fill="var(--cardume)"></rect>
+      <g fill="var(--cardume-texto)">
+        <path d="M10 17l6-3v6z"></path><path d="M18 13l6-3v6z"></path><path d="M26 17l6-3v6z"></path>
+        <path d="M14 25l6-3v6z"></path><path d="M22 21l6-3v6z"></path><path d="M30 25l6-3v6z"></path>
+        <path d="M18 33l6-3v6z"></path><path d="M26 29l6-3v6z"></path>
+      </g>
+      <path d="M34 31l6-3v6z" fill="var(--coral)"></path>
+    </svg>
+    <div><b>Cardume</b><small>Discovery de Plataforma de Dados</small></div>
+  </div>
+  <div class="cliente">
+    <label for="empresa">Cliente</label>
+    <input id="empresa" type="text" autocomplete="organization" placeholder="Nome da empresa">
+  </div>
+  <span class="estado" id="estado">Rascunho local</span>
+  <div class="acoes-topo">
+    <button class="btn pequeno" id="btn-abrir" type="button">Abrir / trocar</button>
+    <button class="btn pequeno" id="btn-exportar" type="button">Exportar</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="trilha" id="trilha" aria-label="Seções do questionário"></nav>
+  <main>
+    <div id="painel-clientes" class="painel" hidden></div>
+    <div id="painel-exportar" class="painel" hidden></div>
+    <section id="conteudo" aria-live="polite"></section>
+    <div class="navegar">
+      <button class="btn" id="btn-voltar" type="button">← Seção anterior</button>
+      <button class="btn primario" id="btn-avancar" type="button">Próxima seção →</button>
+    </div>
+  </main>
+  <aside class="sinais" id="sinais" aria-label="Sinais acumulados"></aside>
+</div>
+
+<script type="application/json" id="dados-questionario">/*__QUESTIONARIO__*/</script>
+<script>
+(() => {
+  "use strict";
+
+  // ---------------------------------------------------------------- dados
+  let Q;
+  try {
+    Q = JSON.parse(document.getElementById("dados-questionario").textContent);
+  } catch (e) {
+    document.getElementById("conteudo").textContent =
+      "O questionário não foi embutido nesta página. Gere com scripts/construir_questionario.py.";
+    return;
+  }
+  const P = new Map(Q.perguntas.map((p) => [p.id, p]));
+  const ORDEM = Q.perguntas.map((p) => p.id);
+  const SECOES = [...Q.secoes, { id: "_revisao", titulo: "Revisão e envio", descricao: "Confira o que falta, veja os sinais e salve." }];
+
+  // ------------------------------------------------- motor (espelha questionario.py)
+  const escolhidas = (v) => (v == null || v === "" ? [] : Array.isArray(v) ? v.map(String) : [String(v)]);
+  const preenchida = (v) => v != null && (typeof v === "string" ? v.trim() !== "" : Array.isArray(v) ? v.length > 0 : true);
+
+  function visivel(id, r, cache) {
+    if (cache.has(id)) return cache.get(id);
+    cache.set(id, false);
+    const p = P.get(id);
+    let ok = true;
+    if (p.pais.length) ok = p.pais.some(([pai, val]) => visivel(pai, r, cache) && escolhidas(r[pai]).includes(val));
+    if (ok && p.mostrar_se) ok = avaliar(p.mostrar_se, r, cache);
+    cache.set(id, ok);
+    return ok;
+  }
+  function avaliar(c, r, cache) {
+    if (c.qualquer) return c.qualquer.some((x) => avaliar(x, r, cache));
+    if (c.todas) return c.todas.every((x) => avaliar(x, r, cache));
+    if (c.nao) return !avaliar(c.nao, r, cache);
+    if (!P.has(c.pergunta) || !visivel(c.pergunta, r, cache)) return false;
+    const v = r[c.pergunta];
+    if (c.em) return c.em.map(String).some((x) => escolhidas(v).includes(x));
+    if ("preenchida" in c) return preenchida(v) === !!c.preenchida;
+    if ("maior_que" in c) return Number(v) > Number(c.maior_que);
+    return false;
+  }
+  const visiveis = (r) => { const cache = new Map(); return ORDEM.filter((id) => visivel(id, r, cache)).map((id) => P.get(id)); };
+  function limparOrfas(r) {
+    const out = { ...r };
+    for (;;) {
+      const vis = new Set(visiveis(out).map((p) => p.id));
+      const orfas = Object.keys(out).filter((k) => P.has(k) && !vis.has(k));
+      if (!orfas.length) return out;
+      orfas.forEach((k) => delete out[k]);
+    }
+  }
+  function rotulo(p, v) {
+    const o = p.opcoes.find((x) => x.valor === v);
+    return o ? o.rotulo : v;
+  }
+
+  // Pesos dos sinais, achatados por "id" e "id=valor" (ver Questionario.para_json).
+  const PESOS = Q.pesos || {};
+  function sinais(r) {
+    const t = {};
+    for (const p of visiveis(r)) {
+      const v = r[p.id];
+      if (!preenchida(v)) continue;
+      const somar = (d) => d && Object.entries(d).forEach(([k, n]) => (t[k] = (t[k] || 0) + n));
+      somar(PESOS[p.id]);
+      if (p.tipo === "unica" || p.tipo === "multipla") escolhidas(v).forEach((val) => somar(PESOS[p.id + "=" + val]));
+    }
+    return t;
+  }
+
+  // ---------------------------------------------------------------- estado
+  const CHAVE = "cardume.discovery.v1";
+  const estado = { empresa: "", respostas: {}, secao: 0, novas: new Set(), salvoEm: null, exemplo: false };
+  const lerLocal = () => { try { return JSON.parse(localStorage.getItem(CHAVE) || "null"); } catch { return null; } };
+  const gravarLocal = () => { try { localStorage.setItem(CHAVE, JSON.stringify({ empresa: estado.empresa, respostas: estado.respostas, secao: estado.secao })); } catch {} };
+  const slug = (s) => (s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
+
+  // Persistência remota: servidor da plataforma (ZimaOS) ou banco do artefato.
+  const remoto = { tipo: null, db: null, ultimo: "" };
+  async function detectarRemoto() {
+    try {
+      const r = await fetch("api/saude", { headers: { Accept: "application/json" } });
+      if (r.ok && (await r.json()).ok) { remoto.tipo = "servidor"; return; }
+    } catch {}
+    if (window.claude && typeof window.claude.use === "function") {
+      try {
+        const db = await window.claude.use("db");
+        if (db) { remoto.tipo = "artefato"; remoto.db = db; }
+      } catch {}
+    }
+  }
+  async function salvarRemoto() {
+    const id = slug(estado.empresa);
+    if (!remoto.tipo || !id) return false;
+    const corpo = { empresa: estado.empresa, respostas: limparOrfas(estado.respostas), atualizado_em: new Date().toISOString(), versao: Q.meta.versao };
+    const assinatura = JSON.stringify([corpo.empresa, corpo.respostas]);
+    if (assinatura === remoto.ultimo) return true;
+    if (remoto.tipo === "servidor") {
+      const r = await fetch("api/discovery/" + encodeURIComponent(id), {
+        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(corpo),
+      });
+      if (!r.ok) throw new Error((await r.text()) || r.statusText);
+    } else {
+      await remoto.db.doc("discovery/" + id).set(corpo);
+    }
+    remoto.ultimo = assinatura;
+    estado.salvoEm = new Date();
+    return true;
+  }
+  async function listarRemoto() {
+    if (remoto.tipo === "servidor") {
+      const r = await fetch("api/discovery");
+      return r.ok ? (await r.json()).itens : [];
+    }
+    if (remoto.tipo === "artefato") {
+      const snap = await remoto.db.collection("discovery").orderBy("atualizado_em", "desc").limit(100).get();
+      return snap.docs.map((d) => ({ slug: d.id, ...d.data() }));
+    }
+    return [];
+  }
+  async function abrirRemoto(id) {
+    if (remoto.tipo === "servidor") {
+      const r = await fetch("api/discovery/" + encodeURIComponent(id));
+      return r.ok ? r.json() : null;
+    }
+    if (remoto.tipo === "artefato") {
+      const d = await remoto.db.doc("discovery/" + id).get();
+      return d.exists ? d.data() : null;
+    }
+    return null;
+  }
+
+  let timer = null;
+  function agendarSalvar() {
+    gravarLocal();
+    marcarEstado("pendente", "Alterações não salvas");
+    clearTimeout(timer);
+    timer = setTimeout(salvarAgora, 2500);
+  }
+  async function salvarAgora() {
+    clearTimeout(timer);
+    gravarLocal();
+    if (!remoto.tipo) { marcarEstado("local", "Rascunho neste aparelho"); return; }
+    if (estado.exemplo) { marcarEstado("pendente", "Exemplo: troque o nome do cliente para salvar"); return; }
+    if (!slug(estado.empresa)) { marcarEstado("pendente", "Informe o cliente para salvar"); return; }
+    try {
+      await salvarRemoto();
+      const onde = remoto.tipo === "servidor" ? "na plataforma" : "no banco desta página";
+      marcarEstado("ok", "Salvo " + onde + " · " + estado.salvoEm.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }));
+    } catch (e) {
+      marcarEstado("pendente", "Sem conexão: guardado no aparelho");
+    }
+  }
+  function marcarEstado(tipo, texto) {
+    const el = document.getElementById("estado");
+    el.dataset.tipo = tipo;
+    el.textContent = texto;
+  }
+
+  // ---------------------------------------------------------------- render
+  const $ = (s) => document.querySelector(s);
+  const el = (tag, attrs = {}, ...filhos) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null || v === false) continue;
+      if (k === "class") n.className = v;
+      else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+      else if (k === "dataset") Object.assign(n.dataset, v);
+      else n.setAttribute(k, v === true ? "" : v);
+    }
+    for (const f of filhos.flat()) if (f != null) n.append(f.nodeType ? f : document.createTextNode(f));
+    return n;
+  };
+
+  function contagem(secaoId) {
+    const vis = visiveis(estado.respostas).filter((p) => p.secao === secaoId);
+    const resp = vis.filter((p) => preenchida(estado.respostas[p.id])).length;
+    const falta = vis.filter((p) => p.obrigatoria && !preenchida(estado.respostas[p.id])).length;
+    return { total: vis.length, resp, falta };
+  }
+
+  function renderTrilha() {
+    const nav = $("#trilha");
+    nav.replaceChildren(
+      ...SECOES.map((s, i) => {
+        let cont = "";
+        let attrs = {};
+        if (s.id !== "_revisao") {
+          const c = contagem(s.id);
+          cont = c.resp + "/" + c.total;
+          attrs = { "data-completo": c.total && c.resp === c.total ? "1" : null, "data-falta": c.falta ? "1" : null };
+        }
+        return el("button", { type: "button", "aria-current": i === estado.secao ? "step" : null, onclick: () => irPara(i) },
+          el("span", {}, s.titulo), el("span", { class: "cont", ...attrs }, cont));
+      })
+    );
+  }
+
+  function campoPergunta(p) {
+    const v = estado.respostas[p.id];
+    const definir = (novo, rerender) => {
+      if (preenchida(novo)) estado.respostas[p.id] = novo; else delete estado.respostas[p.id];
+      agendarSalvar();
+      if (rerender) render();
+      else { renderTrilha(); renderSinais(); }
+    };
+    if (p.tipo === "unica" || p.tipo === "multipla") {
+      const multi = p.tipo === "multipla";
+      const atuais = escolhidas(v);
+      const filhosPor = (val) => Q.perguntas.filter((q) => q.pais.some(([pai, x]) => pai === p.id && x === val)).length;
+      return el("div", { class: "opcoes", role: multi ? "group" : "radiogroup", "aria-labelledby": "t-" + p.id },
+        p.opcoes.map((o) => {
+          const ativo = atuais.includes(o.valor);
+          const n = filhosPor(o.valor);
+          return el("button", {
+            type: "button", class: "op", role: multi ? null : "radio",
+            "aria-pressed": multi ? String(ativo) : null, "aria-checked": multi ? null : String(ativo),
+            onclick: () => {
+              const antes = new Set(visiveis(estado.respostas).map((q) => q.id));
+              let novo;
+              if (multi) novo = ativo ? atuais.filter((x) => x !== o.valor) : [...atuais, o.valor];
+              else novo = ativo ? "" : o.valor;
+              if (preenchida(novo)) estado.respostas[p.id] = novo; else delete estado.respostas[p.id];
+              estado.novas = new Set(visiveis(estado.respostas).map((q) => q.id).filter((id) => !antes.has(id)));
+              agendarSalvar();
+              render();
+            },
+          }, o.rotulo, n ? el("span", { class: "abre", title: "Abre " + n + " pergunta(s)" }, "+" + n) : null);
+        })
+      );
+    }
+    if (p.tipo === "escala") {
+      const lo = p.min || 1, hi = p.max || 5;
+      const itens = [];
+      for (let i = lo; i <= hi; i++) itens.push(String(i));
+      return el("div", { class: "escala", role: "radiogroup", "aria-labelledby": "t-" + p.id },
+        itens.map((i) => el("button", {
+          type: "button", class: "op", role: "radio", "aria-checked": String(String(v) === i),
+          onclick: () => definir(String(v) === i ? "" : i, true),
+        }, i)));
+    }
+    const comum = {
+      id: "c-" + p.id, class: "campo", "aria-labelledby": "t-" + p.id,
+      oninput: (e) => { const x = e.target.value; if (preenchida(x)) estado.respostas[p.id] = x; else delete estado.respostas[p.id]; agendarSalvar(); },
+      onchange: (e) => definir(e.target.value, true),
+    };
+    if (p.tipo === "texto_longo") { const t = el("textarea", comum); t.value = v || ""; return t; }
+    const i = el("input", { ...comum, type: "text", inputmode: p.tipo === "numero" ? "decimal" : null });
+    i.value = v == null ? "" : String(v);
+    return i;
+  }
+
+  function renderSecao() {
+    const s = SECOES[estado.secao];
+    const alvo = $("#conteudo");
+    if (s.id === "_revisao") return renderRevisao(alvo);
+    const c = contagem(s.id);
+    const perguntas = visiveis(estado.respostas).filter((p) => p.secao === s.id);
+    alvo.replaceChildren(
+      el("div", { class: "cab-secao" },
+        el("h2", {}, s.titulo),
+        s.descricao ? el("p", {}, s.descricao) : null,
+        el("div", { class: "barra", "aria-hidden": "true" }, el("i", { style: "width:" + (c.total ? (100 * c.resp) / c.total : 0) + "%" }))),
+      el("div", { class: "perguntas" },
+        perguntas.map((p) => {
+          let ramo = null;
+          if (p.profundidade > 0) {
+            const pai = p.pais.find(([pid, val]) => escolhidas(estado.respostas[pid]).includes(val));
+            if (pai) ramo = el("div", { class: "ramo" }, "↳ porque você marcou “" + rotulo(P.get(pai[0]), pai[1]) + "”");
+          }
+          return el("div", { class: "pergunta" + (estado.novas.has(p.id) ? " nova" : ""), dataset: { prof: String(Math.min(p.profundidade, 2)) } },
+            ramo,
+            el("div", { class: "enunciado", id: "t-" + p.id }, p.texto, p.obrigatoria ? el("span", { class: "obr", title: "Obrigatória" }, "*") : null),
+            campoPergunta(p),
+            el("div", { class: "pid" }, p.id));
+        }))
+    );
+    estado.novas = new Set();
+  }
+
+  function renderRevisao(alvo) {
+    const r = estado.respostas;
+    const faltam = visiveis(r).filter((p) => p.obrigatoria && !preenchida(r[p.id]));
+    const blocos = Q.secoes.map((s) => {
+      const itens = visiveis(r).filter((p) => p.secao === s.id && preenchida(r[p.id]));
+      if (!itens.length) return null;
+      return el("div", { class: "bloco" }, el("h3", {}, s.titulo),
+        el("dl", {}, itens.map((p) => [
+          el("dt", {}, p.texto),
+          el("dd", {}, p.tipo === "unica" || p.tipo === "multipla" ? escolhidas(r[p.id]).map((v) => rotulo(p, v)).join("; ") : String(r[p.id])),
+        ])));
+    });
+    alvo.replaceChildren(
+      el("div", { class: "cab-secao" }, el("h2", {}, "Revisão e envio"),
+        el("p", {}, "Com tudo preenchido, os agentes Analista de Negócios, Arquiteto, Engenheiro, DevOps, Cyber, Cientista, Analista, FinOps e Comercial começam a trabalhar sobre estas respostas.")),
+      el("div", { class: "revisao" },
+        el("div", { class: "bloco" },
+          el("h3", {}, faltam.length ? "Faltam " + faltam.length + " obrigatórias" : "Todas as obrigatórias respondidas"),
+          faltam.length ? el("ul", { class: "faltando" }, faltam.map((p) =>
+            el("li", {}, el("button", { type: "button", onclick: () => irPara(SECOES.findIndex((s) => s.id === p.secao)) }, p.texto)))) : null,
+          el("div", { class: "navegar" },
+            el("button", { class: "btn primario", type: "button", onclick: salvarAgora }, "Salvar agora"),
+            el("button", { class: "btn", type: "button", onclick: abrirExportar }, "Exportar JSON"))),
+        ...blocos)
+    );
+  }
+
+  const ROTULOS_SINAIS = {
+    hospedagem: [["aws", "AWS"], ["gcp", "GCP"], ["azure", "Azure"], ["oci", "OCI"], ["onprem", "On-premise"]],
+    intensidade: [["complexidade", "Complexidade"], ["risco", "Risco"], ["ia", "IA"], ["automacao", "Automação"], ["tempo_real", "Tempo real"]],
+  };
+  function renderSinais() {
+    const s = sinais(estado.respostas);
+    const grupo = (pares, classe) => {
+      const max = Math.max(4, ...pares.map(([k]) => Math.abs(s[k] || 0)));
+      return pares.map(([k, nome]) => {
+        const v = s[k] || 0;
+        return el("div", { class: "medidor " + classe },
+          el("span", {}, nome),
+          el("div", { class: "trilho" }, el("i", { style: "width:" + Math.max(0, (100 * v) / max) + "%" })),
+          el("b", {}, (v > 0 ? "+" : "") + v));
+      });
+    };
+    const host = ROTULOS_SINAIS.hospedagem.map(([k, n]) => [n, s[k] || 0]).sort((a, b) => b[1] - a[1]);
+    const lider = host[0][1] > 0 ? host[0][0] + " lidera a afinidade até aqui" : "Sem afinidade de hospedagem ainda";
+    $("#sinais").replaceChildren(
+      el("h3", {}, "Sinais para os agentes"),
+      el("p", {}, "Cada resposta soma pontos. O FinOps e o Arquiteto usam isso junto com o custo calculado."),
+      el("div", { class: "lider" }, lider),
+      ...grupo(ROTULOS_SINAIS.hospedagem, "hospedagem"),
+      el("h3", {}, "Intensidade do projeto"),
+      ...grupo(ROTULOS_SINAIS.intensidade, "intensidade"));
+  }
+
+  function render() {
+    renderTrilha();
+    renderSecao();
+    renderSinais();
+    $("#btn-voltar").hidden = estado.secao === 0;
+    $("#btn-avancar").textContent = estado.secao === SECOES.length - 2 ? "Revisar →" : "Próxima seção →";
+    $("#btn-avancar").hidden = estado.secao === SECOES.length - 1;
+  }
+  function irPara(i) {
+    estado.secao = Math.max(0, Math.min(SECOES.length - 1, i));
+    gravarLocal();
+    salvarAgora();
+    render();
+    window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }
+
+  // ------------------------------------------------------ painéis auxiliares
+  function exportacao() {
+    return JSON.stringify({ empresa: estado.empresa, versao: Q.meta.versao, respostas: limparOrfas(estado.respostas) }, null, 2);
+  }
+  function abrirExportar() {
+    const painel = $("#painel-exportar");
+    if (!painel.hidden) { painel.hidden = true; return; }
+    $("#painel-clientes").hidden = true;
+    const area = el("textarea", { id: "json-export", class: "campo", "aria-label": "Respostas em JSON" });
+    area.value = exportacao();
+    const msg = el("span", { class: "aviso" }, "");
+    const filhos = [
+      el("h3", {}, "Exportar ou importar respostas"),
+      el("p", { class: "aviso" }, "Copie o JSON para importar no servidor MCP (ferramenta respostas_importar) ou cole aqui um JSON salvo para continuar de onde parou."),
+      area,
+      el("div", { class: "navegar" },
+        el("button", { class: "btn primario", type: "button", onclick: async () => {
+          try { await navigator.clipboard.writeText(area.value); msg.textContent = "JSON copiado."; }
+          catch { area.select(); msg.textContent = "Selecionado. Use Ctrl+C / Copiar."; }
+        } }, "Copiar JSON"),
+        el("button", { class: "btn", type: "button", onclick: () => {
+          try {
+            const d = JSON.parse(area.value);
+            estado.empresa = d.empresa || estado.empresa;
+            estado.respostas = d.respostas || {};
+            $("#empresa").value = estado.empresa;
+            agendarSalvar(); render(); msg.textContent = "Respostas importadas.";
+          } catch { msg.textContent = "JSON inválido: confira se copiou o conteúdo inteiro."; }
+        } }, "Importar o que está no campo"),
+        msg),
+    ];
+    if (remoto.tipo === "servidor") {
+      filhos.splice(3, 0, el("a", { class: "btn", href: "api/discovery/" + encodeURIComponent(slug(estado.empresa)) + "?formato=markdown" }, "Ver resumo em Markdown"));
+    }
+    painel.replaceChildren(...filhos);
+    painel.hidden = false;
+  }
+  async function abrirClientes() {
+    const painel = $("#painel-clientes");
+    if (!painel.hidden) { painel.hidden = true; return; }
+    $("#painel-exportar").hidden = true;
+    painel.replaceChildren(el("h3", {}, "Discoveries salvos"), el("p", { class: "aviso" }, "Carregando…"));
+    painel.hidden = false;
+    let itens = [];
+    try { itens = await listarRemoto(); } catch {}
+    const novo = el("button", { class: "btn primario pequeno", type: "button", onclick: () => {
+      estado.empresa = ""; estado.respostas = {}; estado.secao = 0; remoto.ultimo = ""; estado.exemplo = false;
+      $("#empresa").value = ""; painel.hidden = true; gravarLocal(); render(); $("#empresa").focus();
+    } }, "Novo cliente");
+    painel.replaceChildren(
+      el("h3", {}, "Discoveries salvos"),
+      remoto.tipo ? null : el("p", { class: "aviso" }, "Esta visualização não tem banco remoto: as respostas ficam neste aparelho. Use Exportar para levar ao servidor."),
+      el("div", { class: "lista-clientes" }, novo,
+        itens.map((it) => el("button", { class: "btn pequeno", type: "button", onclick: async () => {
+          const d = await abrirRemoto(it.slug);
+          if (!d) return;
+          estado.empresa = d.empresa || it.slug; estado.respostas = d.respostas || {}; estado.secao = 0; estado.exemplo = false;
+          remoto.ultimo = JSON.stringify([estado.empresa, limparOrfas(estado.respostas)]);
+          $("#empresa").value = estado.empresa; painel.hidden = true; gravarLocal(); render();
+          marcarEstado("ok", "Aberto: " + estado.empresa);
+        } }, it.empresa || it.slug))),
+      itens.length ? null : el("p", { class: "aviso" }, remoto.tipo ? "Nenhum discovery salvo ainda." : ""));
+  }
+
+  // ---------------------------------------------------------------- início
+  const salvo = lerLocal();
+  if (salvo) { estado.empresa = salvo.empresa || ""; estado.respostas = salvo.respostas || {}; estado.secao = salvo.secao || 0; }
+  else {
+    // Primeira abertura: um cliente fictício, marcado como exemplo e nunca salvo remotamente.
+    estado.exemplo = true;
+    estado.empresa = "Exemplo — Cooperativa Oeste (fictícia)";
+    estado.respostas = { "id.empresa": estado.empresa, "neg.segmento": "agro", "neg.agro.tipo": ["cooperativa"], "neg.areas": ["financeiro", "comercial"], "neg.area.fin.dores": ["fluxo_caixa", "dre_lento"] };
+  }
+  estado.exemplo = estado.exemplo || estado.empresa.startsWith("Exemplo —");
+  $("#empresa").value = estado.empresa;
+  $("#empresa").addEventListener("input", (e) => {
+    const anterior = estado.empresa;
+    estado.empresa = e.target.value;
+    estado.exemplo = false;
+    const atual = estado.respostas["id.empresa"];
+    if (!preenchida(atual) || atual === anterior) estado.respostas["id.empresa"] = estado.empresa;
+    remoto.ultimo = "";
+    agendarSalvar();
+  });
+  $("#btn-voltar").addEventListener("click", () => irPara(estado.secao - 1));
+  $("#btn-avancar").addEventListener("click", () => irPara(estado.secao + 1));
+  $("#btn-exportar").addEventListener("click", abrirExportar);
+  $("#btn-abrir").addEventListener("click", abrirClientes);
+  render();
+  detectarRemoto().then(() => {
+    if (remoto.tipo) marcarEstado("ok", remoto.tipo === "servidor" ? "Conectado à plataforma" : "Banco da página ativo");
+    else marcarEstado("local", "Rascunho neste aparelho");
+  });
+})();
+</script>

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plataforma-dados"
+version = "1.0.0"
+description = "Servidor MCP da plataforma de dados com agentes (questionário, agentes, memória vetorial e custos)"
+requires-python = ">=3.11"
+dependencies = [
+  "mcp>=2.3,<3",
+  "pyyaml>=6.0",
+  "uvicorn>=0.30",
+]
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=2.3,<3"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+plataforma-mcp = "plataforma.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+plataforma = ["web/*.html", "dados/*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

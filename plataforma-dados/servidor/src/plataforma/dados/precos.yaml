@@ -1,0 +1,198 @@
+# =============================================================================
+#  CATÁLOGO DE PREÇOS DE REFERÊNCIA (USD, preço de lista, sob demanda)
+# =============================================================================
+#  ATENÇÃO: valores de referência para COMPARAÇÃO entre provedores, coletados
+#  das páginas públicas de preço (base: regiões dos EUA, final de 2025).
+#  Preços mudam. Antes de enviar uma proposta, o Agente FinOps deve validar:
+#    - Azure: Retail Prices API (pública)  -> ferramenta precos_azure_consultar
+#    - OCI:   Price List API (pública)     -> ferramenta precos_oci_consultar
+#    - AWS:   Price List API / calculator.aws
+#    - GCP:   Cloud Billing Catalog API / cloud.google.com/products/calculator
+#  Para atualizar, edite este arquivo; o servidor relê a cada chamada.
+# =============================================================================
+
+data_referencia: "2025-Q4 — validar antes de propor"
+
+# Multiplicador sobre o preço dos EUA para as regiões no Brasil
+# (AWS sa-east-1, GCP southamerica-east1, Azure Brazil South, OCI sa-saopaulo-1).
+# A OCI cobra o mesmo preço em todas as regiões.
+regiao_brasil:
+  aws: 1.60
+  gcp: 1.50
+  azure: 1.55
+  oci: 1.00
+
+provedores:
+  aws:
+    nome: "AWS"
+    armazenamento_objeto_gb: 0.023        # S3 Standard
+    armazenamento_frio_gb: 0.004          # S3 Glacier Instant Retrieval
+    disco_gb: 0.08                        # EBS gp3
+    vm_pequena_h: 0.0672                  # t4g.large 2 vCPU / 8 GB
+    vm_media_h: 0.1344                    # t4g.xlarge 4 vCPU / 16 GB
+    vm_grande_h: 0.2688                   # t4g.2xlarge 8 vCPU / 32 GB
+    consulta_tb: 5.00                     # Athena (TB varrido)
+    spark_vcpu_h: 0.0526                  # EMR Serverless (vCPU-hora; + memória embutida no fator)
+    streaming_base_mes: 29.0              # Kinesis Data Streams on-demand (1 stream)
+    streaming_gb: 0.08
+    saida_internet_gb: 0.09               # primeiros 100 GB/mês grátis
+    saida_gratis_gb: 100
+    bi_por_usuario: 3.0                   # QuickSight Reader
+    bi_autor: 24.0                        # QuickSight Author
+    gpu_h: 0.805                          # g6.xlarge (NVIDIA L4 24 GB)
+    fixos_mes: 12.0                       # KMS, Secrets Manager, CloudWatch básico
+    gratuidades: "Free Plan de créditos para contas novas; S3/Athena sem franquia permanente relevante"
+    servicos:
+      objeto: "Amazon S3"
+      consulta: "Amazon Athena (ou Redshift Serverless no porte G)"
+      computacao: "EC2 Graviton (t4g/m7g) ou ECS Fargate"
+      spark: "EMR Serverless / AWS Glue"
+      streaming: "Kinesis Data Streams / Amazon MSK"
+      orquestracao_gerenciada: "Amazon MWAA (Airflow)"
+      bi: "Amazon QuickSight"
+      catalogo: "AWS Glue Data Catalog + Lake Formation"
+      ia: "Amazon Bedrock (Claude) / SageMaker"
+      segredos: "AWS Secrets Manager + KMS"
+      iac: "Terraform/OpenTofu ou CloudFormation/CDK"
+
+  gcp:
+    nome: "Google Cloud"
+    armazenamento_objeto_gb: 0.020        # Cloud Storage Standard (regional)
+    armazenamento_frio_gb: 0.004          # Coldline
+    disco_gb: 0.10                        # pd-balanced
+    vm_pequena_h: 0.0670                  # e2-standard-2
+    vm_media_h: 0.1340                    # e2-standard-4
+    vm_grande_h: 0.2681                   # e2-standard-8
+    consulta_tb: 6.25                     # BigQuery on-demand (1 TiB/mês grátis)
+    consulta_gratis_tb: 1.0
+    armazenamento_dw_gb: 0.02             # BigQuery active storage (10 GB grátis)
+    spark_vcpu_h: 0.060                   # Dataproc Serverless (DCU-hora)
+    streaming_base_mes: 0.0
+    streaming_gb: 0.04                    # Pub/Sub (10 GiB grátis)
+    saida_internet_gb: 0.12
+    saida_gratis_gb: 1
+    bi_por_usuario: 0.0                   # Looker Studio
+    bi_autor: 0.0
+    gpu_h: 0.71                           # g2-standard-4 (NVIDIA L4)
+    fixos_mes: 6.0                        # Secret Manager, KMS, Logging básico
+    gratuidades: "BigQuery: 1 TiB de consulta e 10 GB de armazenamento por mês; e2-micro grátis (regiões EUA); US$ 300 em créditos para contas novas"
+    servicos:
+      objeto: "Cloud Storage"
+      consulta: "BigQuery"
+      computacao: "Compute Engine e2 / Cloud Run Jobs"
+      spark: "Dataproc Serverless"
+      streaming: "Pub/Sub + Dataflow"
+      orquestracao_gerenciada: "Cloud Composer (Airflow)"
+      bi: "Looker Studio (grátis) / Looker"
+      catalogo: "Dataplex / Data Catalog"
+      ia: "Vertex AI (Claude disponível) / BigQuery ML"
+      segredos: "Secret Manager + Cloud KMS"
+      iac: "Terraform/OpenTofu"
+
+  azure:
+    nome: "Microsoft Azure"
+    armazenamento_objeto_gb: 0.0184       # Blob/ADLS Gen2 Hot LRS
+    armazenamento_frio_gb: 0.0036         # Cold tier
+    disco_gb: 0.075                       # Standard SSD
+    vm_pequena_h: 0.0832                  # B2ms 2 vCPU / 8 GB
+    vm_media_h: 0.1660                    # B4ms 4 vCPU / 16 GB
+    vm_grande_h: 0.3330                   # B8ms 8 vCPU / 32 GB
+    consulta_tb: 5.00                     # Synapse Serverless SQL
+    spark_vcpu_h: 0.075                   # Synapse Spark / Fabric (aprox. por vCore-hora)
+    streaming_base_mes: 22.0              # Event Hubs Standard (1 TU)
+    streaming_gb: 0.03
+    saida_internet_gb: 0.087
+    saida_gratis_gb: 100
+    bi_por_usuario: 14.0                  # Power BI Pro
+    bi_autor: 14.0
+    gpu_h: 0.526                          # NC4as T4 v3 (NVIDIA T4 16 GB)
+    fixos_mes: 10.0                       # Key Vault, Monitor básico
+    gratuidades: "US$ 200 em créditos por 30 dias e serviços gratuitos por 12 meses para contas novas; Power BI Pro incluso no Microsoft 365 E5"
+    servicos:
+      objeto: "Azure Data Lake Storage Gen2"
+      consulta: "Synapse Serverless SQL / Microsoft Fabric"
+      computacao: "Azure VMs B-series / Container Apps Jobs"
+      spark: "Fabric Spark / Azure Databricks"
+      streaming: "Event Hubs + Stream Analytics"
+      orquestracao_gerenciada: "Azure Data Factory / Fabric Data Pipelines"
+      bi: "Power BI"
+      catalogo: "Microsoft Purview"
+      ia: "Azure AI Foundry (Claude disponível) / Azure ML"
+      segredos: "Key Vault"
+      iac: "Terraform/OpenTofu ou Bicep"
+
+  oci:
+    nome: "Oracle Cloud (OCI)"
+    armazenamento_objeto_gb: 0.0255       # Object Storage Standard
+    armazenamento_frio_gb: 0.0026         # Archive
+    disco_gb: 0.0425                      # Block Volume balanced (0,0255 + 10 VPU)
+    vm_pequena_h: 0.038                   # A1.Flex 2 OCPU / 12 GB (Ampere)
+    vm_media_h: 0.076                     # A1.Flex 4 OCPU / 24 GB
+    vm_grande_h: 0.152                    # A1.Flex 8 OCPU / 48 GB
+    consulta_tb: 0.0                      # sem cobrança por TB: paga ECPU do ADW ou computação própria
+    adw_ecpu_h: 0.336                     # Autonomous Data Warehouse (por ECPU-hora; validar)
+    spark_vcpu_h: 0.0125                  # Data Flow usa preço de computação (E4: US$ 0,025 por OCPU = 2 vCPU)
+    streaming_base_mes: 14.0
+    streaming_gb: 0.025
+    saida_internet_gb: 0.0085
+    saida_gratis_gb: 10240                # 10 TB/mês grátis
+    bi_por_usuario: 0.0                   # Superset/Metabase próprios; Oracle Analytics Cloud é cobrado por OCPU
+    bi_autor: 0.0
+    gpu_h: 2.00                           # VM.GPU.A10.1 (NVIDIA A10 24 GB)
+    fixos_mes: 0.0                        # Vault com chaves de software sem custo
+    gratuidades: "Always Free: 4 OCPU + 24 GB RAM em Ampere A1, 200 GB de block storage, 20 GB de object storage, 2 Autonomous DB de 20 GB, 10 TB/mês de saída"
+    free_tier:
+      ocpu_h_mes: 3000
+      gb_ram_h_mes: 18000
+      disco_gb: 200
+      objeto_gb: 20
+    servicos:
+      objeto: "OCI Object Storage"
+      consulta: "Autonomous Data Warehouse (ou PostgreSQL/DuckDB em A1)"
+      computacao: "Compute A1.Flex (Ampere) / E5.Flex"
+      spark: "OCI Data Flow (Spark gerenciado)"
+      streaming: "OCI Streaming (compatível com Kafka)"
+      orquestracao_gerenciada: "OCI Data Integration"
+      bi: "Oracle Analytics Cloud ou Superset/Metabase em VM"
+      catalogo: "OCI Data Catalog"
+      ia: "OCI Generative AI / Data Science"
+      segredos: "OCI Vault"
+      iac: "Terraform/OpenTofu (Resource Manager)"
+
+# On-premise: valores em BRL. Hardware amortizado em `amortizacao_meses`.
+on_premise:
+  amortizacao_meses: 36
+  perfis:
+    P:
+      descricao: "Mini servidor / NAS (ex.: ZimaCube, Ryzen 8 núcleos, 32–64 GB RAM, 2×4 TB)"
+      hardware_brl: 7000
+      potencia_media_w: 80
+      horas_operacao_mes: 4
+    M:
+      descricao: "Servidor torre (Xeon/EPYC 16 núcleos, 128 GB RAM, RAID 10 com 4×8 TB, nobreak)"
+      hardware_brl: 32000
+      potencia_media_w: 260
+      horas_operacao_mes: 10
+    G:
+      descricao: "3 nós (cluster) + storage + switch 10 GbE + nobreak dedicado"
+      hardware_brl: 160000
+      potencia_media_w: 1500
+      horas_operacao_mes: 40
+  backup_externo_gb_usd: 0.00695          # Backblaze B2 / Cloudflare R2 como cópia fora do site
+  link_ip_fixo_brl: 150                    # quando o cliente não tem IP fixo / link adequado
+  gpu_local:
+    descricao: "GPU dedicada para LLM local (ex.: RTX 3060 12 GB / RTX 4060 Ti 16 GB)"
+    hardware_brl: 2600
+    potencia_media_w: 120
+
+# Horas de operação estimadas por mês para ambientes em cloud (sustentação)
+operacao_cloud_horas: {P: 2, M: 6, G: 20}
+
+# Modelos de linguagem por API (USD por milhão de tokens) para estimar custo de IA
+llm_api:
+  claude-haiku-5-5: {entrada: 0.10, saida: 0.50}
+  claude-sonnet-5-5: {entrada: 2.00, saida: 10.00}
+  claude-opus-5-5: {entrada: 4.00, saida: 20.00}
+
+pagamento:
+  iof_cartao_internacional: 0.035          # sobre faturas em USD pagas com cartão
